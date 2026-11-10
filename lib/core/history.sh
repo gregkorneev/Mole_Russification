@@ -735,8 +735,8 @@ history_render_text() {
                 count_text+=", $(mole_t history_legacy_uncertain)"
             fi
             [[ -z "$ended" ]] && ended="$(mole_t history_not_ended)"
-            printf '  %-10s %s, %s %s, %s\n' "$command" "$started" "$items" "$(mole_t history_items)" "$size"
-            printf '             %s, %s %s\n' "$count_text" "$(mole_t history_ended)" "$ended"
+            printf '  %-10s %s, %s, %s\n' "$command" "$started" "$(mole_t history_items_count "$items")" "$size"
+            printf '             %s, %s\n' "$count_text" "$(mole_t history_ended_at "$ended")"
             idx=$((idx - 1))
         done
     fi

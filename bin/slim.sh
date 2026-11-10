@@ -515,7 +515,7 @@ print_slim_list() {
         printf '  %s\n' "$(slim_display_row "${SLIM_APP_NAMES[i]}" "${SLIM_APP_BYTES[i]}" "$name_width")"
         total=$((total + SLIM_APP_BYTES[i]))
     done
-    printf '\n%s apps, %s of Intel code\n' "${#SLIM_APP_PATHS[@]}" "$(bytes_to_human "$total")"
+    printf '\n%s\n' "$(mole_t slim_summary_apps_intel "${#SLIM_APP_PATHS[@]}" "$(bytes_to_human "$total")")"
 }
 
 record_slim_failure() {

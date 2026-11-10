@@ -146,7 +146,10 @@ _main_menu_controls_line() {
 # Render-time look of the cached update notice: a blank line above and the
 # command in green. The cache and the after-command line stay plain text.
 _main_menu_update_notice() {
-    local message="$1"
+    local message
+    # The cache keeps the English notice that update checks parse; only the
+    # displayed copy is localized, and it still ends with the command.
+    message="$(mole_display_text "$1")"
     case "$message" in
         *"mo update --nightly") message="${message%mo update --nightly}${GREEN}mo update --nightly${NC}" ;;
         *"mo update") message="${message%mo update}${GREEN}mo update${NC}" ;;

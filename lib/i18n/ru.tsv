@@ -505,17 +505,17 @@ analyze_measure_read_error	ошибка чтения
 analyze_measure_unknown	неизвестно
 analyze_partial_scan	Частичное сканирование · %s
 analyze_scanned	Просканировано: %s
-analyze_controls_overview	↑↓←→ Навигация | Enter Открыть | R Обновить | O Открыть | P Просмотр | F Файл | Esc Назад | Q Выход
-analyze_controls_overview_short	↑↓→ Навигация | Enter Открыть | R Обновить | O Открыть | P Просмотр | F Файл | Esc/Q Выход
-analyze_controls_filter	Фильтр: ввод | Enter Применить | Esc Очистить | Ctrl+C Выход
-analyze_controls_large_filtered	↑↓← Перемещение | Space Выбрать | / Изменить | Esc Сбросить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | Q Выход
-analyze_controls_large	↑↓← Перемещение | Space Выбрать | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить %d | Esc Назад | Q Выход
-analyze_controls_large_plain	↑↓← Перемещение | Space Выбрать | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | Esc Назад | Q Выход
-analyze_controls_entry_filtered	↑↓←→ Навигация | Enter Открыть | Space Выбрать | / Изменить | Esc Сбросить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | Q Выход
-analyze_controls_entries	↑↓←→ Навигация | Space Выбрать | Enter Открыть | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить %d | T Крупные %d | Esc Назад | Q Выход
-analyze_controls_entries_no_top	↑↓←→ Навигация | Space Выбрать | Enter Открыть | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить %d | Esc Назад | Q Выход
-analyze_controls_entries_plain	↑↓←→ Навигация | Space Выбрать | Enter Открыть | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | T Крупные %d | Esc Назад | Q Выход
-analyze_controls_entries_plain_no_top	↑↓←→ Навигация | Space Выбрать | Enter Открыть | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | Esc Назад | Q Выход
+analyze_controls_overview	↑↓←→ | Enter | R Обновить | O Открыть | P Просмотр | F Файл | Esc Назад | Q Выход
+analyze_controls_overview_short	↑↓→ | Enter | R Обнов. | O Откр. | P Просмотр | F Файл | Esc/Q Выход
+analyze_controls_filter	Ввод: фильтр | Enter Применить | Esc Сброс | Ctrl+C Выход
+analyze_controls_large_filtered	↑↓← | Space Выбор | / Правка | Esc Сброс | O Открыть | P Просмотр | F Файл | ⌫ Удал. | Q Выход
+analyze_controls_large	↑↓← | Space Выбор | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удал. %d | Esc Назад | Q Выход
+analyze_controls_large_plain	↑↓← | Space Выбор | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удал. | Esc Назад | Q Выход
+analyze_controls_entry_filtered	↑↓←→ | Enter | Space Выбор | / Правка | Esc Сброс | O Открыть | P Просмотр | F Файл | ⌫ Удал. | Q Выход
+analyze_controls_entries	↑↓←→ | Space Выбор | Enter | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удал. %d | T Топ %d | Esc Назад | Q Выход
+analyze_controls_entries_no_top	↑↓←→ | Space Выбор | Enter | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удал. %d | Esc Назад | Q Выход
+analyze_controls_entries_plain	↑↓←→ | Space Выбор | Enter | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удал. | T Топ %d | Esc Назад | Q Выход
+analyze_controls_entries_plain_no_top	↑↓←→ | Space Выбор | Enter | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удал. | Esc Назад | Q Выход
 analyze_confirm_many	Переместить в Корзину: элементов %d, %s  Enter — подтвердить | Esc — отмена
 analyze_confirm_one	Переместить в Корзину: %s, %s  Enter — подтвердить | Esc — отмена
 analyze_app_bundle_many	В Корзину попадёт только приложение. Для удаления связанных файлов выполните mo uninstall <App>.
@@ -544,7 +544,7 @@ status_total	Всего
 status_used	Занято
 status_free	Свободно
 status_free_short	Своб.
-status_swap	Подкачка
+status_swap	Своп
 status_cache	Кеш
 status_available	Доступ
 status_status	Состояние
@@ -704,9 +704,9 @@ history_count_other	прочее %s
 history_no_file_actions	нет действий с файлами
 history_failed_optimize_tasks	сбоев задач оптимизации: %s
 history_legacy_uncertain	принадлежность запуска к сеансу неясна
-history_not_ended	не завершён
-history_items	объектов
-history_ended	завершён
+history_not_ended	нет записи
+history_items_count	объектов: %s
+history_ended_at	завершение: %s
 history_deletion_audit	Журнал удаления
 history_no_deletions	Записей об удалении пока нет.
 history_logs	Журналы
@@ -1534,3 +1534,543 @@ analyze_insight_uv_cache	Кеш uv
 analyze_insight_gradle_cache	Кеш Gradle
 analyze_insight_cocoapods_cache	Кеш CocoaPods
 analyze_insight_orbstack_data	Данные OrbStack
+update_notice_available	Доступно обновление %s, выполните mo update
+update_notice_nightly_available	Доступен новый ночной коммит %s, выполните mo update --nightly
+clean_desc_obsolete_editor_label_extension	Устаревшее расширение %s
+clean_desc_vs_code_logs	Журналы VS Code
+clean_desc_vs_code_cache	Кеш кода VS
+clean_desc_vs_code_extension_cache	Кеш расширений VS Code
+clean_desc_cursor_extension_cache	Кеш расширений Cursor
+clean_desc_vs_code_data_cache	Кеш данных VS Code
+clean_desc_vs_code_webview_cache	Кеш WebView VS Code
+clean_desc_sublime_text_cache	Кеш Sublime Text
+clean_desc_zed_cache	Кеш Zed
+clean_desc_zed_npm_cache	Кеш npm Zed
+clean_desc_zed_logs	Журналы Zed
+clean_desc_codebuddy_extension_cache	Кеш расширений CodeBuddy
+clean_desc_codebuddy_extension_logs	Журналы CodeBuddy Extension
+clean_desc_codebuddy_cn_cache	Кеш CodeBuddy CN
+clean_desc_codebuddy_cn_cached_data	Кешированные данные CodeBuddy CN
+clean_desc_codebuddy_cn_extension_cache	Кеш расширений CodeBuddy CN
+clean_desc_codebuddy_cn_code_cache	Кеш кода CodeBuddy CN
+clean_desc_codebuddy_cn_gpu_cache	Кеш GPU CodeBuddy CN
+clean_desc_codebuddy_cn_dawn_cache	Кеш Dawn CodeBuddy CN
+clean_desc_codebuddy_cn_webgpu_cache	Кеш WebGPU CodeBuddy CN
+clean_desc_codebuddy_cn_logs	Журналы CodeBuddy CN
+clean_desc_discord_cache	Кеш Discord
+clean_desc_legcord_cache	Кеш Legcord
+clean_desc_vesktop_cache	Кеш Vesktop
+clean_desc_vesktop_code_cache	Кеш кода Vesktop
+clean_desc_slack_cache	Кеш Slack
+clean_desc_zoom_cache	Кеш Zoom
+clean_desc_wechat_cache	Кеш WeChat
+clean_desc_telegram_cache	Кеш Telegram
+clean_desc_microsoft_teams_cache	Кеш Microsoft Teams
+clean_desc_whatsapp_cache	Кеш WhatsApp
+clean_desc_skype_cache	Кеш Skype
+clean_desc_tencent_meeting_cache	Кеш Tencent Meeting
+clean_desc_wecom_cache	Кеш WeCom
+clean_desc_qq_cache	Кеш QQ
+clean_desc_feishu_cache	Кеш Feishu
+clean_desc_microsoft_teams_legacy_cache	Кеш Microsoft Teams (старая версия)
+clean_desc_microsoft_teams_legacy_application_cache	Кеш приложения Microsoft Teams (старая версия)
+clean_desc_microsoft_teams_legacy_code_cache	Кеш кода Microsoft Teams (старая версия)
+clean_desc_microsoft_teams_legacy_gpu_cache	Кеш GPU Microsoft Teams (старая версия)
+clean_desc_microsoft_teams_legacy_logs	Журналы Microsoft Teams (старая версия)
+clean_desc_microsoft_teams_legacy_temp_files	Временные файлы Microsoft Teams (старая версия)
+clean_desc_dingtalk_idingtalk_cache	Кеш DingTalk iDingTalk
+clean_desc_alilang_security_component	Компонент безопасности AliLang
+clean_desc_dingtalk_logs	Журналы DingTalk
+clean_desc_dingtalk_holmes_logs	Журналы DingTalk holmes
+clean_desc_chatgpt_cache	Кеш ChatGPT
+clean_desc_claude_desktop_cache	Кеш Claude Desktop
+clean_desc_claude_logs	Журналы Claude
+clean_desc_lm_studio_cache	Кеш LM Studio
+clean_desc_sketch_cache	Кеш Sketch
+clean_desc_sketch_app_cache	Кеш приложения Sketch
+clean_desc_adobe_cache	Кеш Adobe
+clean_desc_adobe_app_caches	Кеши приложений Adobe
+clean_desc_figma_cache	Кеш Figma
+clean_desc_adobe_media_cache_files	Файлы медиакеша Adobe
+clean_desc_jianyingpro_generated_cache	Сгенерированный кеш JianyingPro
+clean_desc_screenflow_cache	Кеш ScreenFlow
+clean_desc_final_cut_pro_cache	Кеш Final Cut Pro
+clean_desc_davinci_resolve_cache	Кеш DaVinci Resolve
+clean_desc_davinci_resolve_cacheclip	CacheClip в DaVinci Resolve
+clean_desc_premiere_pro_cache	Кеш Premiere Pro
+clean_desc_blender_cache	Кеш Blender
+clean_desc_cinema_4d_cache	Кеш Cinema 4D
+clean_desc_sketchup_cache	Кеш SketchUp
+clean_desc_futu_update_downloads	Загруженные обновления Futu
+clean_desc_miaoyan_cache	Кеш MiaoYan
+clean_desc_klee_cache	Кеш Klee
+clean_desc_klee_desktop_cache	Кеш Klee desktop
+clean_desc_ora_browser_cache	Кеш браузера Ora
+clean_desc_filo_cache	Кеш Filo
+clean_desc_flomo_cache	Кеш Flomo
+clean_desc_quark_video_cache	Кеш видео Quark
+clean_desc_netnewswire_cache	Кеш NetNewsWire
+clean_desc_mindnode_cache	Кеш MindNode
+clean_desc_kaku_cache	Кеш Kaku
+clean_desc_spacedrive_thumbnail_cache	Кеш миниатюр Spacedrive
+clean_desc_folo_cache	Кеш Folo
+clean_desc_apple_music_cache	Кеш Apple Music
+clean_desc_apple_podcasts_cache	Кеш Apple Podcasts
+clean_desc_podcasts_streamed_media	Потоковые медиафайлы Podcasts
+clean_desc_podcasts_artwork_cache	Кеш обложек Podcasts
+clean_desc_podcasts_image_cache	Кеш изображений Podcasts
+clean_desc_podcasts_download_temp	Временные загрузки Podcasts
+clean_desc_apple_tv_cache	Кеш Apple TV
+clean_desc_plex_cache	Кеш Plex
+clean_desc_netease_music_cache	Кеш NetEase Music
+clean_desc_qq_music_cache	Кеш QQ Music
+clean_desc_qq_music_mac_cache	Кеш QQ Music Mac
+clean_desc_qq_music_streaming_cache	Кеш потоков QQ Music
+clean_desc_qq_music_logs	Журналы QQ Music
+clean_desc_qq_music_temp_files	Временные файлы QQ Music
+clean_desc_qq_music_container_cache	Кеш контейнера QQ Music
+clean_desc_kugou_music_cache	Кеш Kugou Music
+clean_desc_kuwo_music_cache	Кеш Kuwo Music
+clean_desc_iina_cache	Кеш IINA
+clean_desc_vlc_cache	Кеш VLC
+clean_desc_mpv_cache	Кеш MPV
+clean_desc_iqiyi_cache	Кеш iQIYI
+clean_desc_tencent_video_cache	Кеш видео Tencent
+clean_desc_tencent_video_old_installer	Старый установщик Tencent Video
+clean_desc_tencent_video_native_cache	Нативный кеш Tencent Video
+clean_desc_tencent_video_document_cache	Кеш документов Tencent Video
+clean_desc_bilibili_cache	Кеш Bilibili
+clean_desc_douyu_cache	Кеш Douyu
+clean_desc_huya_cache	Кеш Huya
+clean_desc_senplayer_video_cache	Кеш видео SenPlayer
+clean_desc_stremio_cache	Кеш Stremio
+clean_desc_stremio_server_cache	Кеш сервера Stremio
+clean_desc_aria2_cache	Кеш Aria2
+clean_desc_transmission_cache	Кеш Transmission
+clean_desc_qbittorrent_cache	Кеш qBittorrent
+clean_desc_downie_cache	Кеш Downie
+clean_desc_folx_cache	Кеш Folx
+clean_desc_pacifist_cache	Кеш Pacifist
+clean_desc_steam_cache	Кеш Steam
+clean_desc_steam_web_cache	Веб-кеш Steam
+clean_desc_steam_app_cache	Кеш приложения Steam
+clean_desc_steam_depot_cache	Кеш депо Steam
+clean_desc_steam_shader_cache	Кеш шейдеров Steam
+clean_desc_steam_logs	Журналы Steam
+clean_desc_epic_games_cache	Кеш Epic Games
+clean_desc_battle_net_cache	Кеш Battle.net
+clean_desc_battle_net_app_cache	Кеш приложения Battle.net
+clean_desc_ea_origin_cache	Кеш EA Origin
+clean_desc_gog_galaxy_cache	Кеш GOG Galaxy
+clean_desc_riot_games_cache	Кеш Riot Games
+clean_desc_minecraft_logs	Журналы Minecraft
+clean_desc_minecraft_crash_reports	Отчёты о сбоях Minecraft
+clean_desc_minecraft_web_cache	Веб-кеш Minecraft
+clean_desc_minecraft_web_cache_2	Веб-кеш Minecraft 2
+clean_desc_lunar_client_game_cache	Кеш игры Lunar Client
+clean_desc_lunar_client_launcher_cache	Кеш лаунчера Lunar Client
+clean_desc_lunar_client_logs	Журналы Lunar Client
+clean_desc_lunar_client_offline_logs	Офлайн-журналы Lunar Client
+clean_desc_lunar_client_offline_file_logs	Офлайн-журналы файлов Lunar Client
+clean_desc_pcsx2_cache	Кеш PCSX2
+clean_desc_pcsx2_shader_cache	Кеш шейдеров PCSX2
+clean_desc_pcsx2_logs	Журналы PCSX2
+clean_desc_rpcs3_cache	Кеш RPCS3
+clean_desc_rpcs3_logs	Журналы RPCS3
+clean_desc_youdao_dictionary_cache	Кеш Youdao Dictionary
+clean_desc_eudict_cache	Кеш Eudict
+clean_desc_bob_translation_cache	Кеш Bob Translation
+clean_desc_cleanshot_cache	Кеш CleanShot
+clean_desc_camo_cache	Кеш Camo
+clean_desc_xnip_cache	Кеш Xnip
+clean_desc_spark_cache	Кеш Spark
+clean_desc_airmail_cache	Кеш Airmail
+clean_desc_todoist_cache	Кеш Todoist
+clean_desc_any_do_cache	Кеш Any.do
+clean_desc_zsh_completion_cache	Кеш автодополнения Zsh
+clean_desc_less_history	История less
+clean_desc_vim_temporary_files	Временные файлы Vim
+clean_desc_wget_hsts_cache	Кеш HSTS wget
+clean_desc_cacher_logs	Журналы Cacher
+clean_desc_kite_logs	Журналы Kite
+clean_desc_warp_cache	Кеш Warp
+clean_desc_warp_log	Журнал Warp
+clean_desc_warp_sentry_crash_reports	Отчёты о сбоях Warp Sentry
+clean_desc_ghostty_cache	Кеш Ghostty
+clean_desc_input_source_pro_cache	Кеш Input Source Pro
+clean_desc_wakatime_cache	Кеш WakaTime
+clean_desc_wetype_image_cache	Кеш изображений WeType
+clean_desc_wetype_dict_update_cache	Кеш обновлений словаря WeType
+clean_desc_mihomo_party_cache	Кеш mihomo-party
+clean_desc_mihomo_party_code_cache	Кеш кода mihomo-party
+clean_desc_mihomo_party_gpu_cache	Кеш GPU mihomo-party
+clean_desc_mihomo_party_dawn_cache	Кеш Dawn mihomo-party
+clean_desc_mihomo_party_webgpu_cache	Кеш WebGPU mihomo-party
+clean_desc_mihomo_party_logs	Журналы mihomo-party
+clean_desc_stash_cache	Кеш Stash
+clean_desc_notion_cache	Кеш Notion
+clean_desc_obsidian_cache	Кеш Obsidian
+clean_desc_logseq_cache	Кеш Logseq
+clean_desc_bear_cache	Кеш Bear
+clean_desc_evernote_cache	Кеш Evernote
+clean_desc_yinxiang_note_cache	Кеш Yinxiang Note
+clean_desc_alfred_cache	Кеш Alfred
+clean_desc_the_unarchiver_cache	Кеш The Unarchiver
+clean_desc_teamviewer_cache	Кеш TeamViewer
+clean_desc_anydesk_cache	Кеш AnyDesk
+clean_desc_todesk_cache	Кеш ToDesk
+clean_desc_sunlogin_cache	Кеш Sunlogin
+clean_desc_corepack_cache	Кеш Corepack
+clean_desc_npm_descriptions_i_custom_path	%s (пользовательский путь)
+clean_desc_pnpm_metadata_cache	Кеш метаданных pnpm
+clean_desc_tnpm_cache_directory	Каталог кеша tnpm
+clean_desc_tnpm_logs	Журналы tnpm
+clean_desc_yarn_v1_cache	Кеш Yarn v1
+clean_desc_pyenv_cache	Кеш pyenv
+clean_desc_poetry_cache	Кеш Poetry
+clean_desc_poetry_artifacts_cache	Кеш артефактов Poetry
+clean_desc_poetry_package_cache	Кеш пакетов Poetry
+clean_desc_ruff_cache	Кеш Ruff
+clean_desc_mypy_cache	Кеш MyPy
+clean_desc_pytest_cache	Кеш Pytest
+clean_desc_rustup_downloads_cache	Кеш загрузок Rustup
+clean_desc_rbenv_download_cache	Кеш загрузок rbenv
+clean_desc_gem_spec_cache	Кеш спецификаций gem
+clean_desc_gem_package_cache	Кеш пакетов gem
+clean_desc_ruby_bundler_cache	Кеш Ruby Bundler
+clean_desc_cpan_build_artifacts	Артефакты сборки CPAN
+clean_desc_docker_buildx_cache	Кеш Docker BuildX
+clean_desc_kubernetes_cache	Кеш Kubernetes
+clean_desc_container_storage_temp	Временные данные хранилища контейнеров
+clean_desc_aws_cli_cache	Кеш AWS CLI
+clean_desc_google_cloud_logs	Журналы Google Cloud
+clean_desc_azure_cli_logs	Журналы Azure CLI
+clean_desc_typescript_cache	Кеш TypeScript
+clean_desc_electron_cache	Кеш Electron
+clean_desc_node_gyp_cache	Кеш node-gyp
+clean_desc_node_gyp_build_cache	Кеш сборки node-gyp
+clean_desc_turbo_cache	Кеш Turbo
+clean_desc_vite_cache	Кеш Vite
+clean_desc_vite_global_cache	Глобальный кеш Vite
+clean_desc_webpack_cache	Кеш Webpack
+clean_desc_parcel_cache	Кеш Parcel
+clean_desc_eslint_cache	Кеш ESLint
+clean_desc_prettier_cache	Кеш Prettier
+clean_desc_android_studio_cache	Кеш Android Studio
+clean_desc_android_build_cache	Кеш сборки Android
+clean_desc_android_sdk_cache	Кеш Android SDK
+clean_desc_swift_package_manager_cache	Кеш Swift Package Manager
+clean_desc_swift_package_manager_library_cache	Кеш библиотек Swift Package Manager
+clean_desc_expo_go_cache	Кеш Expo Go
+clean_desc_expo_android_apk_cache	Кеш Expo Android APK
+clean_desc_expo_ios_simulator_app_cache	Кеш приложений симулятора iOS (Expo)
+clean_desc_expo_native_modules_cache	Кеш нативных модулей Expo
+clean_desc_expo_schema_cache	Кеш схем Expo
+clean_desc_expo_template_cache	Кеш шаблонов Expo
+clean_desc_expo_versions_cache	Кеш версий Expo
+clean_desc_jetbrains_toolbox_old_ide_version	Старая версия IDE в JetBrains Toolbox
+clean_desc_jetbrains_ide_logs	Журналы IDE JetBrains
+clean_desc_leaked_browser_profiles	Оставшиеся профили браузеров
+clean_desc_php_composer_cache_legacy	Кеш PHP Composer (старый)
+clean_desc_php_composer_cache	Кеш PHP Composer
+clean_desc_bazel_cache	Кеш Bazel
+clean_desc_zig_cache	Кеш Zig
+clean_desc_terraform_cache	Кеш Terraform
+clean_desc_grafana_cache	Кеш Grafana
+clean_desc_jenkins_workspace_cache	Кеш рабочих областей Jenkins
+clean_desc_gitlab_runner_cache	Кеш GitLab Runner
+clean_desc_github_actions_cache	Кеш GitHub Actions
+clean_desc_circleci_cache	Кеш CircleCI
+clean_desc_sonarqube_cache	Кеш SonarQube
+clean_desc_sequel_ace_cache	Кеш Sequel Ace
+clean_desc_sequel_pro_cache	Кеш Sequel Pro
+clean_desc_redis_desktop_manager_cache	Кеш Redis Desktop Manager
+clean_desc_navicat_cache	Кеш Navicat
+clean_desc_dbeaver_cache	Кеш DBeaver
+clean_desc_redis_insight_cache	Кеш Redis Insight
+clean_desc_postman_cache	Кеш Postman
+clean_desc_insomnia_cache	Кеш Insomnia
+clean_desc_tableplus_cache	Кеш TablePlus
+clean_desc_paw_api_cache	Кеш Paw API
+clean_desc_charles_proxy_cache	Кеш Charles Proxy
+clean_desc_proxyman_cache	Кеш Proxyman
+clean_desc_codex_desktop_stale_update_staging	Устаревшие файлы обновления Codex Desktop
+clean_desc_codex_cli_runtimes	Среды выполнения Codex CLI
+clean_desc_label_browser_cache	Кеш браузера %s
+clean_desc_label_code_cache	Кеш кода %s
+clean_desc_label_gpu_cache	Кеш GPU %s
+clean_desc_label_dawn_cache	Кеш Dawn %s
+clean_desc_label_webgpu_cache	Кеш WebGPU %s
+clean_desc_unity_cache	Кеш Unity
+clean_desc_mongodb_compass_cache	Кеш MongoDB Compass
+clean_desc_github_desktop_cache	Кеш GitHub Desktop
+clean_desc_sentry_crash_reports	Отчёты о сбоях Sentry
+clean_desc_kscrash_reports	Отчёты KSCrash
+clean_desc_crashlytics_data	Данные Crashlytics
+clean_desc_antigravity_cache	Кеш Antigravity
+clean_desc_antigravity_code_cache	Кеш кода Antigravity
+clean_desc_antigravity_gpu_cache	Кеш GPU Antigravity
+clean_desc_antigravity_dawn_cache	Кеш Dawn Antigravity
+clean_desc_antigravity_webgpu_cache	Кеш WebGPU Antigravity
+clean_desc_filo_code_cache	Кеш кода Filo
+clean_desc_filo_gpu_cache	Кеш GPU Filo
+clean_desc_filo_dawn_cache	Кеш Dawn Filo
+clean_desc_filo_webgpu_cache	Кеш WebGPU Filo
+clean_desc_claude_cache	Кеш Claude
+clean_desc_claude_code_cache	Кеш кода Claude
+clean_desc_claude_gpu_cache	Кеш GPU Claude
+clean_desc_claude_dawn_cache	Кеш Dawn Claude
+clean_desc_claude_webgpu_cache	Кеш WebGPU Claude
+clean_desc_claude_sentry_cache	Кеш Sentry для Claude
+clean_desc_qoder_cache	Кеш Qoder
+clean_desc_qoder_cached_data	Кешированные данные Qoder
+clean_desc_qoder_extension_cache	Кеш расширений Qoder
+clean_desc_qoder_code_cache	Кеш кода Qoder
+clean_desc_qoder_gpu_cache	Кеш GPU Qoder
+clean_desc_qoder_dawn_cache	Кеш Dawn Qoder
+clean_desc_qoder_webgpu_cache	Кеш WebGPU Qoder
+clean_desc_qoder_logs	Журналы Qoder
+clean_desc_prisma_cache	Кеш Prisma
+clean_desc_opencode_cache	Кеш OpenCode
+clean_desc_oh_my_zsh_cache	Кеш Oh My Zsh
+clean_desc_pre_commit_cache	Кеш pre-commit
+clean_desc_curl_cache	Кеш curl
+clean_desc_wget_cache	Кеш wget
+clean_desc_macos_curl_cache	Кеш curl (macOS)
+clean_desc_macos_wget_cache	Кеш wget (macOS)
+clean_desc_hex_cache	Кеш Hex
+clean_desc_opam_cache	Кеш Opam
+clean_desc_homebrew_cache	Кеш Homebrew
+clean_desc_recent_items_list	Список недавних объектов
+clean_desc_recent_items_preferences	Настройки недавних объектов
+clean_desc_messages_sticker_cache	Кеш стикеров Сообщений
+clean_desc_messages_preview_attachment_cache	Кеш предпросмотра вложений Сообщений
+clean_desc_messages_preview_sticker_cache	Кеш предпросмотра стикеров Сообщений
+clean_desc_wallpaper_agent_cache	Кеш агента обоев
+clean_desc_saved_application_states	Сохранённые состояния приложений
+clean_desc_photo_analysis_cache	Кеш анализа фото
+clean_desc_apple_id_cache	Кеш Apple ID
+clean_desc_webkit_network_cache	Сетевой кеш WebKit
+clean_desc_quicklook_thumbnails	Миниатюры QuickLook
+clean_desc_quicklook_cache	Кеш QuickLook
+clean_desc_icon_services_cache	Кеш служб значков
+clean_desc_identity_caches	Кеши удостоверений
+clean_desc_siri_suggestions_cache	Кеш предложений Siri
+clean_desc_address_book_photo_cache	Кеш фото Контактов
+clean_desc_media_analysis_cache	Кеш анализа медиа
+clean_desc_media_analysis_temp_files	Временные файлы анализа медиа
+clean_desc_app_store_cache	Кеш App Store
+clean_desc_apple_configurator_temp_files	Временные файлы Apple Configurator
+clean_desc_wallpaper_aerials_temp_files	Временные файлы аэрозаставок
+clean_desc_geod_temp_files	Временные файлы Geod
+clean_desc_stocks_cache	Кеш Акций
+clean_desc_macos_help_system_cache	Кеш справочной системы macOS
+clean_desc_maps_geo_tile_cache	Кеш геоплиток Карт
+clean_desc_memoji_picker_cache	Кеш выбора Memoji
+clean_desc_music_album_art_cache	Кеш обложек альбомов Музыки
+clean_desc_coredevice_service_cache	Кеш службы CoreDevice
+clean_desc_apple_intelligence_extension_cache	Кеш расширений Apple Intelligence
+clean_desc_apple_media_services_temp_files	Временные файлы Apple Media Services
+clean_desc_apple_media_services_cache	Кеш Apple Media Services
+clean_desc_duet_expert_cache	Кеш Duet Expert
+clean_desc_parsecd_cache	Кеш Parsecd
+clean_desc_apple_python_cache	Кеш Apple Python
+clean_desc_safari_cache	Кеш Safari
+clean_desc_googleupdater_crx_cache	Кеш GoogleUpdater CRX
+clean_desc_googleupdater_old_files	Старые файлы GoogleUpdater
+clean_desc_chromium_cache	Кеш Chromium
+clean_desc_puppeteer_browser_cache	Кеш браузера Puppeteer
+clean_desc_edge_cache	Кеш Edge
+clean_desc_arc_cache	Кеш Arc
+clean_desc_arc_code_cache	Кеш кода Arc
+clean_desc_arc_gpu_cache	Кеш GPU Arc
+clean_desc_arc_dawn_cache	Кеш Dawn Arc
+clean_desc_arc_gr_shader_cache	Кеш шейдеров GR Arc
+clean_desc_arc_graphite_dawn_cache	Кеш Graphite Dawn Arc
+clean_desc_arc_shader_cache	Кеш шейдеров Arc
+clean_desc_arc_crash_reports	Отчёты о сбоях Arc
+clean_desc_arc_component_crx_cache	Кеш CRX компонентов Arc
+clean_desc_arc_extensions_crx_cache	Кеш CRX расширений Arc
+clean_desc_dia_cache	Кеш Dia
+clean_desc_dia_http_cache	HTTP-кеш Dia
+clean_desc_dia_code_cache	Кеш кода Dia
+clean_desc_dia_graphite_dawn_cache	Кеш Graphite Dawn Dia
+clean_desc_dia_gpu_cache	Кеш GPU Dia
+clean_desc_dia_component_crx_cache	Кеш CRX компонентов Dia
+clean_desc_dia_extensions_crx_cache	Кеш CRX расширений Dia
+clean_desc_dia_dawn_graphite_cache	Кеш Dawn Graphite Dia
+clean_desc_dia_dawn_webgpu_cache	Кеш Dawn WebGPU Dia
+clean_desc_brave_app_cache	Кеш приложения Brave
+clean_desc_brave_code_cache	Кеш кода Brave
+clean_desc_brave_gpu_cache	Кеш GPU Brave
+clean_desc_brave_dawn_cache	Кеш Dawn Brave
+clean_desc_brave_gr_shader_cache	Кеш шейдеров GR Brave
+clean_desc_brave_graphite_dawn_cache	Кеш Graphite Dawn Brave
+clean_desc_brave_component_crx_cache	Кеш CRX компонентов Brave
+clean_desc_brave_shader_cache	Кеш шейдеров Brave
+clean_desc_brave_crash_reports	Отчёты о сбоях Brave
+clean_desc_helium_cache	Кеш Helium
+clean_desc_helium_gpu_cache	Кеш GPU Helium
+clean_desc_helium_component_cache	Кеш компонентов Helium
+clean_desc_helium_extensions_cache	Кеш расширений Helium
+clean_desc_helium_shader_cache	Кеш шейдеров Helium
+clean_desc_helium_dawn_cache	Кеш Dawn Helium
+clean_desc_helium_app_cache	Кеш приложения Helium
+clean_desc_yandex_cache	Кеш Yandex
+clean_desc_yandex_shader_cache	Кеш шейдеров Yandex
+clean_desc_yandex_gr_shader_cache	Кеш шейдеров GR Yandex
+clean_desc_yandex_dawn_cache	Кеш Dawn Yandex
+clean_desc_yandex_gpu_cache	Кеш GPU Yandex
+clean_desc_opera_cache	Кеш Opera
+clean_desc_vivaldi_cache	Кеш Vivaldi
+clean_desc_vivaldi_code_cache	Кеш кода Vivaldi
+clean_desc_vivaldi_gpu_cache	Кеш GPU Vivaldi
+clean_desc_vivaldi_dawn_cache	Кеш Dawn Vivaldi
+clean_desc_vivaldi_gr_shader_cache	Кеш шейдеров GR Vivaldi
+clean_desc_vivaldi_graphite_dawn_cache	Кеш Graphite Dawn Vivaldi
+clean_desc_vivaldi_shader_cache	Кеш шейдеров Vivaldi
+clean_desc_vivaldi_crash_reports	Отчёты о сбоях Vivaldi
+clean_desc_comet_cache	Кеш Comet
+clean_desc_orion_cache	Кеш Orion
+clean_desc_zen_cache	Кеш Zen
+clean_desc_qq_browser_cache	Кеш браузера QQ
+clean_desc_qq_browser_code_cache	Кеш кода QQ Browser
+clean_desc_qq_browser_gpu_cache	Кеш GPU QQ Browser
+clean_desc_qq_browser_shader_cache	Кеш шейдеров QQ Browser
+clean_desc_qq_browser_gr_shader_cache	Кеш шейдеров GR QQ Browser
+clean_desc_qq_browser_dawn_cache	Кеш Dawn QQ Browser
+clean_desc_qq_browser_component_cache	Кеш компонентов QQ Browser
+clean_desc_qq_browser_crash_reports	Отчёты о сбоях QQ Browser
+clean_desc_browseros_http_cache	HTTP-кеш BrowserOS
+clean_desc_browseros_code_cache	Кеш кода BrowserOS
+clean_desc_browseros_gpu_cache	Кеш GPU BrowserOS
+clean_desc_browseros_dawn_graphite_cache	Кеш Dawn Graphite BrowserOS
+clean_desc_browseros_dawn_webgpu_cache	Кеш Dawn WebGPU BrowserOS
+clean_desc_browseros_shader_cache	Кеш шейдеров BrowserOS
+clean_desc_browseros_gr_shader_cache	Кеш шейдеров GR BrowserOS
+clean_desc_browseros_dawn_cache	Кеш Dawn BrowserOS
+clean_desc_browseros_gpu_persistent_cache	Постоянный кеш GPU BrowserOS
+clean_desc_browseros_component_cache	Кеш компонентов BrowserOS
+clean_desc_browseros_crash_reports	Отчёты о сбоях BrowserOS
+clean_desc_baidu_netdisk_cache	Кеш Baidu Netdisk
+clean_desc_alibaba_cloud_cache	Кеш Alibaba Cloud
+clean_desc_box_cache	Кеш Box
+clean_desc_microsoft_word_cache	Кеш Microsoft Word
+clean_desc_microsoft_word_container_cache	Кеш контейнера Microsoft Word
+clean_desc_microsoft_word_temp_files	Временные файлы Microsoft Word
+clean_desc_microsoft_word_container_logs	Журналы контейнера Microsoft Word
+clean_desc_microsoft_excel_cache	Кеш Microsoft Excel
+clean_desc_microsoft_excel_container_cache	Кеш контейнера Microsoft Excel
+clean_desc_microsoft_excel_temp_files	Временные файлы Microsoft Excel
+clean_desc_microsoft_excel_container_logs	Журналы контейнера Microsoft Excel
+clean_desc_microsoft_powerpoint_cache	Кеш Microsoft PowerPoint
+clean_desc_microsoft_outlook_cache	Кеш Microsoft Outlook
+clean_desc_apple_iwork_cache	Кеш Apple iWork
+clean_desc_wps_office_cache	Кеш WPS Office
+clean_desc_thunderbird_cache	Кеш Thunderbird
+clean_desc_apple_mail_cache	Кеш Apple Mail
+clean_desc_utm_app_cache	Кеш приложения UTM
+clean_desc_utm_sandbox_cache	Кеш песочницы UTM
+clean_desc_utm_temporary_files	Временные файлы UTM
+clean_desc_vmware_fusion_cache	Кеш VMware Fusion
+clean_desc_parallels_cache	Кеш Parallels
+clean_desc_virtualbox_cache	Кеш VirtualBox
+clean_desc_lima_download_cache	Кеш загрузок Lima
+clean_desc_vagrant_temporary_files	Временные файлы Vagrant
+clean_desc_rosetta_2_cache	Кеш Rosetta 2
+clean_desc_rosetta_2_user_cache	Пользовательский кеш Rosetta 2
+clean_desc_apple_silicon_media_service_cache	Кеш медиаслужбы Apple Silicon
+clean_desc_simulator_cache	Кеш симулятора
+clean_desc_simulator_temp_files	Временные файлы симулятора
+clean_desc_simulator_device_data	Данные устройств симулятора
+clean_desc_coresimulator_logs	Журналы CoreSimulator
+clean_desc_xcode_cache	Кеш Xcode
+clean_desc_family_container_caches	Кеши контейнеров %s
+clean_desc_wechat_logs	Журналы WeChat
+clean_desc_wechat_mini_program_cache	Кеш мини-программ WeChat
+clean_desc_wechat_web_cache	Веб-кеш WeChat
+clean_desc_wechat_service_worker_cache	Кеш service worker WeChat
+clean_desc_wecom_logs	Журналы WeCom
+clean_desc_wecom_service_worker_cache	Кеш service worker WeCom
+clean_desc_wecom_web_cache	Веб-кеш WeCom
+clean_desc_wecom_code_cache	Кеш кода WeCom
+clean_desc_wecom_gpu_cache	Кеш GPU WeCom
+clean_desc_uv_cache	Кеш uv
+clean_desc_bun_cache	Кеш Bun
+clean_desc_bun_cache_alt	Кеш bun
+clean_desc_orphaned_bun_cache	Осиротевший кеш bun
+clean_desc_pyinstaller_binary_cache	Кеш бинарных файлов PyInstaller
+clean_desc_clang_module_cache	Кеш модулей Clang
+clean_desc_go_module_cache	Кеш модулей Go
+clean_desc_go_build_cache	Кеш сборки Go
+clean_desc_rust_cargo_cache	Кеш Rust cargo
+clean_desc_android_ndk_versions	Версии Android NDK
+clean_desc_compiled_model_cache	Кеш скомпилированных моделей
+clean_desc_xcode_xctestdevices_test_data	Тестовые данные Xcode XCTestDevices
+clean_desc_display_name_symbol_cache	Кеш символов %s
+clean_desc_simulator_runtime_cache	Кеш сред выполнения симулятора
+clean_desc_xcode_interface_builder_cache	Кеш Xcode Interface Builder
+clean_desc_gradle_build_cache	Кеш сборки Gradle
+clean_desc_gradle_notifications_cache	Кеш уведомлений Gradle
+clean_desc_codex_crash_reports	Отчёты о сбоях Codex
+clean_desc_antigravity_graphite_cache	Кеш Graphite Antigravity
+clean_desc_antigravity_component_cache	Кеш компонентов Antigravity
+clean_desc_antigravity_extension_cache	Кеш расширений Antigravity
+clean_desc_chrome_devtools_mcp_dawn_cache	Кеш Dawn Chrome DevTools MCP
+clean_desc_chrome_devtools_mcp_shader_cache	Кеш шейдеров Chrome DevTools MCP
+clean_desc_chrome_devtools_mcp_graphite_cache	Кеш Graphite Chrome DevTools MCP
+clean_desc_chrome_devtools_mcp_component_cache	Кеш компонентов Chrome DevTools MCP
+clean_desc_chrome_devtools_mcp_extension_cache	Кеш расширений Chrome DevTools MCP
+clean_desc_homebrew_service_logs	Журналы служб Homebrew
+clean_desc_next_js_build_cache	Кеш сборки Next.js
+clean_desc_user_app_logs	Журналы пользовательских приложений
+clean_desc_safari_incomplete_downloads	Незавершённые загрузки Safari
+clean_desc_chrome_incomplete_downloads	Незавершённые загрузки Chrome
+clean_desc_partial_incomplete_downloads	Незавершённые частичные загрузки
+clean_desc_chrome_app_cache	Кеш приложения Chrome
+clean_desc_chrome_code_cache	Кеш кода Chrome
+clean_desc_chrome_gpu_cache	Кеш GPU Chrome
+clean_desc_chrome_dawn_cache	Кеш Dawn Chrome
+clean_desc_chrome_gr_shader_cache	Кеш шейдеров GR Chrome
+clean_desc_chrome_graphite_dawn_cache	Кеш Graphite Dawn Chrome
+clean_desc_chrome_component_crx_cache	Кеш CRX компонентов Chrome
+clean_desc_chrome_shader_cache	Кеш шейдеров Chrome
+clean_desc_chrome_crash_reports	Отчёты о сбоях Chrome
+clean_desc_chrome_on_device_model_cache	Кеш локальных моделей Chrome
+clean_desc_chrome_on_device_classifier_cache	Кеш локального классификатора Chrome
+clean_desc_firefox_cache	Кеш Firefox
+clean_desc_firefox_profile_cache	Кеш профиля Firefox
+clean_desc_diagnostic_reports	Диагностические отчёты
+clean_desc_chrome_cache	Кеш Chrome
+clean_desc_brave_cache	Кеш Brave
+clean_desc_mail_data	Данные Почты
+clean_desc_mail_downloads	Загрузки Почты
+clean_desc_macos_installer	Установщик macOS
+clean_desc_macos_updates_cache	Кеш обновлений macOS
+clean_desc_time_machine_local_snapshots	Локальные снимки Time Machine
+clean_desc_simulator_data	Данные симулятора
+clean_desc_docker_desktop_data	Данные Docker Desktop
+clean_desc_ios_backups	Резервные копии iOS
+clean_desc_orbstack_data	Данные OrbStack
+clean_desc_lima_data	Данные Lima
+clean_desc_deno_module_cache	Кеш модулей Deno
+clean_desc_gradle_caches	Кеши Gradle
+clean_desc_android_system_images	Системные образы Android
+clean_desc_hugging_face_cache	Кеш Hugging Face
+clean_desc_jetbrains_old_version_data	Данные старых версий JetBrains
+clean_desc_macos_installer_files	Файлы установщика macOS
+clean_desc_browser_code_signature_caches	Кеши подписей кода браузеров
+clean_desc_rebuildable_system_caches	Пересоздаваемые системные кеши
+clean_desc_accessible_rebuildable_gpu_caches	Доступные пересоздаваемые кеши GPU
+count_label_dir	каталогов: %s
+count_label_item	объектов: %s
+count_label_project	проектов: %s
+count_label_simulator	симуляторов: %s
+count_label_build	сборок: %s
+clean_desc_npm_cache_directory	Каталог кеша npm
+clean_desc_npm_prebuilds	Готовые сборки npm
+purge_summary_freed	Освобождено примерно: %s
+purge_summary_would_free	Можно освободить примерно: %s
+purge_summary_items	Объектов: %s
+purge_summary_free	Свободно: %s
+slim_summary_apps_intel	Приложений: %s, кода Intel: %s

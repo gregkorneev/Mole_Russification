@@ -1082,6 +1082,15 @@ bytes_to_human() {
 # "1 item", "3 items": a count with its noun, singular for exactly one.
 mole_count_label() {
     local count="${1:-0}" noun="$2"
+    # Russian has no single plural suffix, so a translated run uses the
+    # catalog's "noun: N" form. English and core-only callers keep the suffix.
+    if [[ "${MOLE_LANG:-en}" != "en" && "$noun" =~ ^[a-z]+$ ]] && declare -F mole_t > /dev/null 2>&1; then
+        local label_var="MOLE_I18N_${MOLE_LANG}_count_label_${noun}"
+        if [[ -n "${!label_var:-}" ]]; then
+            mole_t "count_label_${noun}" "$count"
+            return 0
+        fi
+    fi
     if [[ "$count" == "1" ]]; then
         printf '%s %s' "$count" "$noun"
     else

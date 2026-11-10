@@ -203,3 +203,31 @@ func sortedKeys(values map[string]string) []string {
 	slices.Sort(keys)
 	return keys
 }
+
+// Analyze prints its key hints on one unwrapped line, so a Russian footer much
+// wider than the English one loses its last keys (Back, Quit) on a
+// standard-width terminal.
+func TestRussianAnalyzeControlsStayCloseToEnglishWidth(t *testing.T) {
+	english, err := readCatalog(filepath.Join("..", "..", "lib", "i18n", "en.tsv"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	russian, err := readCatalog(filepath.Join("..", "..", "lib", "i18n", "ru.tsv"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	checked := 0
+	for key, value := range english {
+		if !strings.HasPrefix(key, "analyze_controls_") {
+			continue
+		}
+		checked++
+		en, ru := len([]rune(value)), len([]rune(russian[key]))
+		if ru > en+2 {
+			t.Errorf("%s: Russian footer is %d columns, English is %d", key, ru, en)
+		}
+	}
+	if checked == 0 {
+		t.Fatal("no analyze_controls_ keys found")
+	}
+}

@@ -705,8 +705,8 @@ history_no_file_actions	no file actions
 history_failed_optimize_tasks	%s optimize tasks failed
 history_legacy_uncertain	legacy run attribution uncertain
 history_not_ended	not ended
-history_items	items
-history_ended	ended
+history_items_count	%s items
+history_ended_at	ended %s
 history_deletion_audit	Deletion audit
 history_no_deletions	No deletion audit entries yet.
 history_logs	Logs
@@ -1534,3 +1534,543 @@ analyze_insight_uv_cache	uv Cache
 analyze_insight_gradle_cache	Gradle Cache
 analyze_insight_cocoapods_cache	CocoaPods Cache
 analyze_insight_orbstack_data	OrbStack Data
+update_notice_available	Update %s available, run mo update
+update_notice_nightly_available	New nightly commit %s available, run mo update --nightly
+clean_desc_obsolete_editor_label_extension	Obsolete %s extension
+clean_desc_vs_code_logs	VS Code logs
+clean_desc_vs_code_cache	VS Code cache
+clean_desc_vs_code_extension_cache	VS Code extension cache
+clean_desc_cursor_extension_cache	Cursor extension cache
+clean_desc_vs_code_data_cache	VS Code data cache
+clean_desc_vs_code_webview_cache	VS Code webview cache
+clean_desc_sublime_text_cache	Sublime Text cache
+clean_desc_zed_cache	Zed cache
+clean_desc_zed_npm_cache	Zed npm cache
+clean_desc_zed_logs	Zed logs
+clean_desc_codebuddy_extension_cache	CodeBuddy Extension cache
+clean_desc_codebuddy_extension_logs	CodeBuddy Extension logs
+clean_desc_codebuddy_cn_cache	CodeBuddy CN cache
+clean_desc_codebuddy_cn_cached_data	CodeBuddy CN cached data
+clean_desc_codebuddy_cn_extension_cache	CodeBuddy CN extension cache
+clean_desc_codebuddy_cn_code_cache	CodeBuddy CN code cache
+clean_desc_codebuddy_cn_gpu_cache	CodeBuddy CN GPU cache
+clean_desc_codebuddy_cn_dawn_cache	CodeBuddy CN Dawn cache
+clean_desc_codebuddy_cn_webgpu_cache	CodeBuddy CN WebGPU cache
+clean_desc_codebuddy_cn_logs	CodeBuddy CN logs
+clean_desc_discord_cache	Discord cache
+clean_desc_legcord_cache	Legcord cache
+clean_desc_vesktop_cache	Vesktop cache
+clean_desc_vesktop_code_cache	Vesktop code cache
+clean_desc_slack_cache	Slack cache
+clean_desc_zoom_cache	Zoom cache
+clean_desc_wechat_cache	WeChat cache
+clean_desc_telegram_cache	Telegram cache
+clean_desc_microsoft_teams_cache	Microsoft Teams cache
+clean_desc_whatsapp_cache	WhatsApp cache
+clean_desc_skype_cache	Skype cache
+clean_desc_tencent_meeting_cache	Tencent Meeting cache
+clean_desc_wecom_cache	WeCom cache
+clean_desc_qq_cache	QQ cache
+clean_desc_feishu_cache	Feishu cache
+clean_desc_microsoft_teams_legacy_cache	Microsoft Teams legacy cache
+clean_desc_microsoft_teams_legacy_application_cache	Microsoft Teams legacy application cache
+clean_desc_microsoft_teams_legacy_code_cache	Microsoft Teams legacy code cache
+clean_desc_microsoft_teams_legacy_gpu_cache	Microsoft Teams legacy GPU cache
+clean_desc_microsoft_teams_legacy_logs	Microsoft Teams legacy logs
+clean_desc_microsoft_teams_legacy_temp_files	Microsoft Teams legacy temp files
+clean_desc_dingtalk_idingtalk_cache	DingTalk iDingTalk cache
+clean_desc_alilang_security_component	AliLang security component
+clean_desc_dingtalk_logs	DingTalk logs
+clean_desc_dingtalk_holmes_logs	DingTalk holmes logs
+clean_desc_chatgpt_cache	ChatGPT cache
+clean_desc_claude_desktop_cache	Claude desktop cache
+clean_desc_claude_logs	Claude logs
+clean_desc_lm_studio_cache	LM Studio cache
+clean_desc_sketch_cache	Sketch cache
+clean_desc_sketch_app_cache	Sketch app cache
+clean_desc_adobe_cache	Adobe cache
+clean_desc_adobe_app_caches	Adobe app caches
+clean_desc_figma_cache	Figma cache
+clean_desc_adobe_media_cache_files	Adobe media cache files
+clean_desc_jianyingpro_generated_cache	JianyingPro generated cache
+clean_desc_screenflow_cache	ScreenFlow cache
+clean_desc_final_cut_pro_cache	Final Cut Pro cache
+clean_desc_davinci_resolve_cache	DaVinci Resolve cache
+clean_desc_davinci_resolve_cacheclip	DaVinci Resolve CacheClip
+clean_desc_premiere_pro_cache	Premiere Pro cache
+clean_desc_blender_cache	Blender cache
+clean_desc_cinema_4d_cache	Cinema 4D cache
+clean_desc_sketchup_cache	SketchUp cache
+clean_desc_futu_update_downloads	Futu update downloads
+clean_desc_miaoyan_cache	MiaoYan cache
+clean_desc_klee_cache	Klee cache
+clean_desc_klee_desktop_cache	Klee desktop cache
+clean_desc_ora_browser_cache	Ora browser cache
+clean_desc_filo_cache	Filo cache
+clean_desc_flomo_cache	Flomo cache
+clean_desc_quark_video_cache	Quark video cache
+clean_desc_netnewswire_cache	NetNewsWire cache
+clean_desc_mindnode_cache	MindNode cache
+clean_desc_kaku_cache	Kaku cache
+clean_desc_spacedrive_thumbnail_cache	Spacedrive thumbnail cache
+clean_desc_folo_cache	Folo cache
+clean_desc_apple_music_cache	Apple Music cache
+clean_desc_apple_podcasts_cache	Apple Podcasts cache
+clean_desc_podcasts_streamed_media	Podcasts streamed media
+clean_desc_podcasts_artwork_cache	Podcasts artwork cache
+clean_desc_podcasts_image_cache	Podcasts image cache
+clean_desc_podcasts_download_temp	Podcasts download temp
+clean_desc_apple_tv_cache	Apple TV cache
+clean_desc_plex_cache	Plex cache
+clean_desc_netease_music_cache	NetEase Music cache
+clean_desc_qq_music_cache	QQ Music cache
+clean_desc_qq_music_mac_cache	QQ Music Mac cache
+clean_desc_qq_music_streaming_cache	QQ Music streaming cache
+clean_desc_qq_music_logs	QQ Music logs
+clean_desc_qq_music_temp_files	QQ Music temp files
+clean_desc_qq_music_container_cache	QQ Music container cache
+clean_desc_kugou_music_cache	Kugou Music cache
+clean_desc_kuwo_music_cache	Kuwo Music cache
+clean_desc_iina_cache	IINA cache
+clean_desc_vlc_cache	VLC cache
+clean_desc_mpv_cache	MPV cache
+clean_desc_iqiyi_cache	iQIYI cache
+clean_desc_tencent_video_cache	Tencent Video cache
+clean_desc_tencent_video_old_installer	Tencent Video old installer
+clean_desc_tencent_video_native_cache	Tencent Video native cache
+clean_desc_tencent_video_document_cache	Tencent Video document cache
+clean_desc_bilibili_cache	Bilibili cache
+clean_desc_douyu_cache	Douyu cache
+clean_desc_huya_cache	Huya cache
+clean_desc_senplayer_video_cache	SenPlayer video cache
+clean_desc_stremio_cache	Stremio cache
+clean_desc_stremio_server_cache	Stremio server cache
+clean_desc_aria2_cache	Aria2 cache
+clean_desc_transmission_cache	Transmission cache
+clean_desc_qbittorrent_cache	qBittorrent cache
+clean_desc_downie_cache	Downie cache
+clean_desc_folx_cache	Folx cache
+clean_desc_pacifist_cache	Pacifist cache
+clean_desc_steam_cache	Steam cache
+clean_desc_steam_web_cache	Steam web cache
+clean_desc_steam_app_cache	Steam app cache
+clean_desc_steam_depot_cache	Steam depot cache
+clean_desc_steam_shader_cache	Steam shader cache
+clean_desc_steam_logs	Steam logs
+clean_desc_epic_games_cache	Epic Games cache
+clean_desc_battle_net_cache	Battle.net cache
+clean_desc_battle_net_app_cache	Battle.net app cache
+clean_desc_ea_origin_cache	EA Origin cache
+clean_desc_gog_galaxy_cache	GOG Galaxy cache
+clean_desc_riot_games_cache	Riot Games cache
+clean_desc_minecraft_logs	Minecraft logs
+clean_desc_minecraft_crash_reports	Minecraft crash reports
+clean_desc_minecraft_web_cache	Minecraft web cache
+clean_desc_minecraft_web_cache_2	Minecraft web cache 2
+clean_desc_lunar_client_game_cache	Lunar Client game cache
+clean_desc_lunar_client_launcher_cache	Lunar Client launcher cache
+clean_desc_lunar_client_logs	Lunar Client logs
+clean_desc_lunar_client_offline_logs	Lunar Client offline logs
+clean_desc_lunar_client_offline_file_logs	Lunar Client offline file logs
+clean_desc_pcsx2_cache	PCSX2 cache
+clean_desc_pcsx2_shader_cache	PCSX2 shader cache
+clean_desc_pcsx2_logs	PCSX2 logs
+clean_desc_rpcs3_cache	RPCS3 cache
+clean_desc_rpcs3_logs	RPCS3 logs
+clean_desc_youdao_dictionary_cache	Youdao Dictionary cache
+clean_desc_eudict_cache	Eudict cache
+clean_desc_bob_translation_cache	Bob Translation cache
+clean_desc_cleanshot_cache	CleanShot cache
+clean_desc_camo_cache	Camo cache
+clean_desc_xnip_cache	Xnip cache
+clean_desc_spark_cache	Spark cache
+clean_desc_airmail_cache	Airmail cache
+clean_desc_todoist_cache	Todoist cache
+clean_desc_any_do_cache	Any.do cache
+clean_desc_zsh_completion_cache	Zsh completion cache
+clean_desc_less_history	less history
+clean_desc_vim_temporary_files	Vim temporary files
+clean_desc_wget_hsts_cache	wget HSTS cache
+clean_desc_cacher_logs	Cacher logs
+clean_desc_kite_logs	Kite logs
+clean_desc_warp_cache	Warp cache
+clean_desc_warp_log	Warp log
+clean_desc_warp_sentry_crash_reports	Warp Sentry crash reports
+clean_desc_ghostty_cache	Ghostty cache
+clean_desc_input_source_pro_cache	Input Source Pro cache
+clean_desc_wakatime_cache	WakaTime cache
+clean_desc_wetype_image_cache	WeType image cache
+clean_desc_wetype_dict_update_cache	WeType dict update cache
+clean_desc_mihomo_party_cache	mihomo-party cache
+clean_desc_mihomo_party_code_cache	mihomo-party code cache
+clean_desc_mihomo_party_gpu_cache	mihomo-party GPU cache
+clean_desc_mihomo_party_dawn_cache	mihomo-party Dawn cache
+clean_desc_mihomo_party_webgpu_cache	mihomo-party WebGPU cache
+clean_desc_mihomo_party_logs	mihomo-party logs
+clean_desc_stash_cache	Stash cache
+clean_desc_notion_cache	Notion cache
+clean_desc_obsidian_cache	Obsidian cache
+clean_desc_logseq_cache	Logseq cache
+clean_desc_bear_cache	Bear cache
+clean_desc_evernote_cache	Evernote cache
+clean_desc_yinxiang_note_cache	Yinxiang Note cache
+clean_desc_alfred_cache	Alfred cache
+clean_desc_the_unarchiver_cache	The Unarchiver cache
+clean_desc_teamviewer_cache	TeamViewer cache
+clean_desc_anydesk_cache	AnyDesk cache
+clean_desc_todesk_cache	ToDesk cache
+clean_desc_sunlogin_cache	Sunlogin cache
+clean_desc_corepack_cache	Corepack cache
+clean_desc_npm_descriptions_i_custom_path	%s (custom path)
+clean_desc_pnpm_metadata_cache	pnpm metadata cache
+clean_desc_tnpm_cache_directory	tnpm cache directory
+clean_desc_tnpm_logs	tnpm logs
+clean_desc_yarn_v1_cache	Yarn v1 cache
+clean_desc_pyenv_cache	pyenv cache
+clean_desc_poetry_cache	Poetry cache
+clean_desc_poetry_artifacts_cache	Poetry artifacts cache
+clean_desc_poetry_package_cache	Poetry package cache
+clean_desc_ruff_cache	Ruff cache
+clean_desc_mypy_cache	MyPy cache
+clean_desc_pytest_cache	Pytest cache
+clean_desc_rustup_downloads_cache	Rustup downloads cache
+clean_desc_rbenv_download_cache	rbenv download cache
+clean_desc_gem_spec_cache	gem spec cache
+clean_desc_gem_package_cache	gem package cache
+clean_desc_ruby_bundler_cache	Ruby Bundler cache
+clean_desc_cpan_build_artifacts	CPAN build artifacts
+clean_desc_docker_buildx_cache	Docker BuildX cache
+clean_desc_kubernetes_cache	Kubernetes cache
+clean_desc_container_storage_temp	Container storage temp
+clean_desc_aws_cli_cache	AWS CLI cache
+clean_desc_google_cloud_logs	Google Cloud logs
+clean_desc_azure_cli_logs	Azure CLI logs
+clean_desc_typescript_cache	TypeScript cache
+clean_desc_electron_cache	Electron cache
+clean_desc_node_gyp_cache	node-gyp cache
+clean_desc_node_gyp_build_cache	node-gyp build cache
+clean_desc_turbo_cache	Turbo cache
+clean_desc_vite_cache	Vite cache
+clean_desc_vite_global_cache	Vite global cache
+clean_desc_webpack_cache	Webpack cache
+clean_desc_parcel_cache	Parcel cache
+clean_desc_eslint_cache	ESLint cache
+clean_desc_prettier_cache	Prettier cache
+clean_desc_android_studio_cache	Android Studio cache
+clean_desc_android_build_cache	Android build cache
+clean_desc_android_sdk_cache	Android SDK cache
+clean_desc_swift_package_manager_cache	Swift package manager cache
+clean_desc_swift_package_manager_library_cache	Swift package manager library cache
+clean_desc_expo_go_cache	Expo Go cache
+clean_desc_expo_android_apk_cache	Expo Android APK cache
+clean_desc_expo_ios_simulator_app_cache	Expo iOS simulator app cache
+clean_desc_expo_native_modules_cache	Expo native modules cache
+clean_desc_expo_schema_cache	Expo schema cache
+clean_desc_expo_template_cache	Expo template cache
+clean_desc_expo_versions_cache	Expo versions cache
+clean_desc_jetbrains_toolbox_old_ide_version	JetBrains Toolbox old IDE version
+clean_desc_jetbrains_ide_logs	JetBrains IDE logs
+clean_desc_leaked_browser_profiles	Leaked browser profiles
+clean_desc_php_composer_cache_legacy	PHP Composer cache (legacy)
+clean_desc_php_composer_cache	PHP Composer cache
+clean_desc_bazel_cache	Bazel cache
+clean_desc_zig_cache	Zig cache
+clean_desc_terraform_cache	Terraform cache
+clean_desc_grafana_cache	Grafana cache
+clean_desc_jenkins_workspace_cache	Jenkins workspace cache
+clean_desc_gitlab_runner_cache	GitLab Runner cache
+clean_desc_github_actions_cache	GitHub Actions cache
+clean_desc_circleci_cache	CircleCI cache
+clean_desc_sonarqube_cache	SonarQube cache
+clean_desc_sequel_ace_cache	Sequel Ace cache
+clean_desc_sequel_pro_cache	Sequel Pro cache
+clean_desc_redis_desktop_manager_cache	Redis Desktop Manager cache
+clean_desc_navicat_cache	Navicat cache
+clean_desc_dbeaver_cache	DBeaver cache
+clean_desc_redis_insight_cache	Redis Insight cache
+clean_desc_postman_cache	Postman cache
+clean_desc_insomnia_cache	Insomnia cache
+clean_desc_tableplus_cache	TablePlus cache
+clean_desc_paw_api_cache	Paw API cache
+clean_desc_charles_proxy_cache	Charles Proxy cache
+clean_desc_proxyman_cache	Proxyman cache
+clean_desc_codex_desktop_stale_update_staging	Codex Desktop stale update staging
+clean_desc_codex_cli_runtimes	Codex CLI runtimes
+clean_desc_label_browser_cache	%s browser cache
+clean_desc_label_code_cache	%s code cache
+clean_desc_label_gpu_cache	%s GPU cache
+clean_desc_label_dawn_cache	%s Dawn cache
+clean_desc_label_webgpu_cache	%s WebGPU cache
+clean_desc_unity_cache	Unity cache
+clean_desc_mongodb_compass_cache	MongoDB Compass cache
+clean_desc_github_desktop_cache	GitHub Desktop cache
+clean_desc_sentry_crash_reports	Sentry crash reports
+clean_desc_kscrash_reports	KSCrash reports
+clean_desc_crashlytics_data	Crashlytics data
+clean_desc_antigravity_cache	Antigravity cache
+clean_desc_antigravity_code_cache	Antigravity code cache
+clean_desc_antigravity_gpu_cache	Antigravity GPU cache
+clean_desc_antigravity_dawn_cache	Antigravity Dawn cache
+clean_desc_antigravity_webgpu_cache	Antigravity WebGPU cache
+clean_desc_filo_code_cache	Filo code cache
+clean_desc_filo_gpu_cache	Filo GPU cache
+clean_desc_filo_dawn_cache	Filo Dawn cache
+clean_desc_filo_webgpu_cache	Filo WebGPU cache
+clean_desc_claude_cache	Claude cache
+clean_desc_claude_code_cache	Claude code cache
+clean_desc_claude_gpu_cache	Claude GPU cache
+clean_desc_claude_dawn_cache	Claude Dawn cache
+clean_desc_claude_webgpu_cache	Claude WebGPU cache
+clean_desc_claude_sentry_cache	Claude sentry cache
+clean_desc_qoder_cache	Qoder cache
+clean_desc_qoder_cached_data	Qoder cached data
+clean_desc_qoder_extension_cache	Qoder extension cache
+clean_desc_qoder_code_cache	Qoder code cache
+clean_desc_qoder_gpu_cache	Qoder GPU cache
+clean_desc_qoder_dawn_cache	Qoder Dawn cache
+clean_desc_qoder_webgpu_cache	Qoder WebGPU cache
+clean_desc_qoder_logs	Qoder logs
+clean_desc_prisma_cache	Prisma cache
+clean_desc_opencode_cache	OpenCode cache
+clean_desc_oh_my_zsh_cache	Oh My Zsh cache
+clean_desc_pre_commit_cache	pre-commit cache
+clean_desc_curl_cache	curl cache
+clean_desc_wget_cache	wget cache
+clean_desc_macos_curl_cache	macOS curl cache
+clean_desc_macos_wget_cache	macOS wget cache
+clean_desc_hex_cache	Hex cache
+clean_desc_opam_cache	Opam cache
+clean_desc_homebrew_cache	Homebrew cache
+clean_desc_recent_items_list	Recent items list
+clean_desc_recent_items_preferences	Recent items preferences
+clean_desc_messages_sticker_cache	Messages sticker cache
+clean_desc_messages_preview_attachment_cache	Messages preview attachment cache
+clean_desc_messages_preview_sticker_cache	Messages preview sticker cache
+clean_desc_wallpaper_agent_cache	Wallpaper agent cache
+clean_desc_saved_application_states	Saved application states
+clean_desc_photo_analysis_cache	Photo analysis cache
+clean_desc_apple_id_cache	Apple ID cache
+clean_desc_webkit_network_cache	WebKit network cache
+clean_desc_quicklook_thumbnails	QuickLook thumbnails
+clean_desc_quicklook_cache	QuickLook cache
+clean_desc_icon_services_cache	Icon services cache
+clean_desc_identity_caches	Identity caches
+clean_desc_siri_suggestions_cache	Siri suggestions cache
+clean_desc_address_book_photo_cache	Address Book photo cache
+clean_desc_media_analysis_cache	Media analysis cache
+clean_desc_media_analysis_temp_files	Media analysis temp files
+clean_desc_app_store_cache	App Store cache
+clean_desc_apple_configurator_temp_files	Apple Configurator temp files
+clean_desc_wallpaper_aerials_temp_files	Wallpaper aerials temp files
+clean_desc_geod_temp_files	Geod temp files
+clean_desc_stocks_cache	Stocks cache
+clean_desc_macos_help_system_cache	macOS Help system cache
+clean_desc_maps_geo_tile_cache	Maps geo tile cache
+clean_desc_memoji_picker_cache	Memoji picker cache
+clean_desc_music_album_art_cache	Music album art cache
+clean_desc_coredevice_service_cache	CoreDevice service cache
+clean_desc_apple_intelligence_extension_cache	Apple Intelligence extension cache
+clean_desc_apple_media_services_temp_files	Apple Media Services temp files
+clean_desc_apple_media_services_cache	Apple Media Services cache
+clean_desc_duet_expert_cache	Duet Expert cache
+clean_desc_parsecd_cache	Parsecd cache
+clean_desc_apple_python_cache	Apple Python cache
+clean_desc_safari_cache	Safari cache
+clean_desc_googleupdater_crx_cache	GoogleUpdater CRX cache
+clean_desc_googleupdater_old_files	GoogleUpdater old files
+clean_desc_chromium_cache	Chromium cache
+clean_desc_puppeteer_browser_cache	Puppeteer browser cache
+clean_desc_edge_cache	Edge cache
+clean_desc_arc_cache	Arc cache
+clean_desc_arc_code_cache	Arc code cache
+clean_desc_arc_gpu_cache	Arc GPU cache
+clean_desc_arc_dawn_cache	Arc Dawn cache
+clean_desc_arc_gr_shader_cache	Arc GR shader cache
+clean_desc_arc_graphite_dawn_cache	Arc Graphite Dawn cache
+clean_desc_arc_shader_cache	Arc shader cache
+clean_desc_arc_crash_reports	Arc crash reports
+clean_desc_arc_component_crx_cache	Arc component CRX cache
+clean_desc_arc_extensions_crx_cache	Arc extensions CRX cache
+clean_desc_dia_cache	Dia cache
+clean_desc_dia_http_cache	Dia HTTP cache
+clean_desc_dia_code_cache	Dia code cache
+clean_desc_dia_graphite_dawn_cache	Dia Graphite Dawn cache
+clean_desc_dia_gpu_cache	Dia GPU cache
+clean_desc_dia_component_crx_cache	Dia component CRX cache
+clean_desc_dia_extensions_crx_cache	Dia extensions CRX cache
+clean_desc_dia_dawn_graphite_cache	Dia Dawn Graphite cache
+clean_desc_dia_dawn_webgpu_cache	Dia Dawn WebGPU cache
+clean_desc_brave_app_cache	Brave app cache
+clean_desc_brave_code_cache	Brave code cache
+clean_desc_brave_gpu_cache	Brave GPU cache
+clean_desc_brave_dawn_cache	Brave Dawn cache
+clean_desc_brave_gr_shader_cache	Brave GR shader cache
+clean_desc_brave_graphite_dawn_cache	Brave Graphite Dawn cache
+clean_desc_brave_component_crx_cache	Brave component CRX cache
+clean_desc_brave_shader_cache	Brave shader cache
+clean_desc_brave_crash_reports	Brave crash reports
+clean_desc_helium_cache	Helium cache
+clean_desc_helium_gpu_cache	Helium GPU cache
+clean_desc_helium_component_cache	Helium component cache
+clean_desc_helium_extensions_cache	Helium extensions cache
+clean_desc_helium_shader_cache	Helium shader cache
+clean_desc_helium_dawn_cache	Helium Dawn cache
+clean_desc_helium_app_cache	Helium app cache
+clean_desc_yandex_cache	Yandex cache
+clean_desc_yandex_shader_cache	Yandex shader cache
+clean_desc_yandex_gr_shader_cache	Yandex GR shader cache
+clean_desc_yandex_dawn_cache	Yandex Dawn cache
+clean_desc_yandex_gpu_cache	Yandex GPU cache
+clean_desc_opera_cache	Opera cache
+clean_desc_vivaldi_cache	Vivaldi cache
+clean_desc_vivaldi_code_cache	Vivaldi code cache
+clean_desc_vivaldi_gpu_cache	Vivaldi GPU cache
+clean_desc_vivaldi_dawn_cache	Vivaldi Dawn cache
+clean_desc_vivaldi_gr_shader_cache	Vivaldi GR shader cache
+clean_desc_vivaldi_graphite_dawn_cache	Vivaldi Graphite Dawn cache
+clean_desc_vivaldi_shader_cache	Vivaldi shader cache
+clean_desc_vivaldi_crash_reports	Vivaldi crash reports
+clean_desc_comet_cache	Comet cache
+clean_desc_orion_cache	Orion cache
+clean_desc_zen_cache	Zen cache
+clean_desc_qq_browser_cache	QQ Browser cache
+clean_desc_qq_browser_code_cache	QQ Browser code cache
+clean_desc_qq_browser_gpu_cache	QQ Browser GPU cache
+clean_desc_qq_browser_shader_cache	QQ Browser shader cache
+clean_desc_qq_browser_gr_shader_cache	QQ Browser GR shader cache
+clean_desc_qq_browser_dawn_cache	QQ Browser Dawn cache
+clean_desc_qq_browser_component_cache	QQ Browser component cache
+clean_desc_qq_browser_crash_reports	QQ Browser crash reports
+clean_desc_browseros_http_cache	BrowserOS HTTP cache
+clean_desc_browseros_code_cache	BrowserOS code cache
+clean_desc_browseros_gpu_cache	BrowserOS GPU cache
+clean_desc_browseros_dawn_graphite_cache	BrowserOS Dawn Graphite cache
+clean_desc_browseros_dawn_webgpu_cache	BrowserOS Dawn WebGPU cache
+clean_desc_browseros_shader_cache	BrowserOS shader cache
+clean_desc_browseros_gr_shader_cache	BrowserOS GR shader cache
+clean_desc_browseros_dawn_cache	BrowserOS Dawn cache
+clean_desc_browseros_gpu_persistent_cache	BrowserOS GPU persistent cache
+clean_desc_browseros_component_cache	BrowserOS component cache
+clean_desc_browseros_crash_reports	BrowserOS crash reports
+clean_desc_baidu_netdisk_cache	Baidu Netdisk cache
+clean_desc_alibaba_cloud_cache	Alibaba Cloud cache
+clean_desc_box_cache	Box cache
+clean_desc_microsoft_word_cache	Microsoft Word cache
+clean_desc_microsoft_word_container_cache	Microsoft Word container cache
+clean_desc_microsoft_word_temp_files	Microsoft Word temp files
+clean_desc_microsoft_word_container_logs	Microsoft Word container logs
+clean_desc_microsoft_excel_cache	Microsoft Excel cache
+clean_desc_microsoft_excel_container_cache	Microsoft Excel container cache
+clean_desc_microsoft_excel_temp_files	Microsoft Excel temp files
+clean_desc_microsoft_excel_container_logs	Microsoft Excel container logs
+clean_desc_microsoft_powerpoint_cache	Microsoft PowerPoint cache
+clean_desc_microsoft_outlook_cache	Microsoft Outlook cache
+clean_desc_apple_iwork_cache	Apple iWork cache
+clean_desc_wps_office_cache	WPS Office cache
+clean_desc_thunderbird_cache	Thunderbird cache
+clean_desc_apple_mail_cache	Apple Mail cache
+clean_desc_utm_app_cache	UTM app cache
+clean_desc_utm_sandbox_cache	UTM sandbox cache
+clean_desc_utm_temporary_files	UTM temporary files
+clean_desc_vmware_fusion_cache	VMware Fusion cache
+clean_desc_parallels_cache	Parallels cache
+clean_desc_virtualbox_cache	VirtualBox cache
+clean_desc_lima_download_cache	Lima download cache
+clean_desc_vagrant_temporary_files	Vagrant temporary files
+clean_desc_rosetta_2_cache	Rosetta 2 cache
+clean_desc_rosetta_2_user_cache	Rosetta 2 user cache
+clean_desc_apple_silicon_media_service_cache	Apple Silicon media service cache
+clean_desc_simulator_cache	Simulator cache
+clean_desc_simulator_temp_files	Simulator temp files
+clean_desc_simulator_device_data	Simulator device data
+clean_desc_coresimulator_logs	CoreSimulator logs
+clean_desc_xcode_cache	Xcode cache
+clean_desc_family_container_caches	%s container caches
+clean_desc_wechat_logs	WeChat logs
+clean_desc_wechat_mini_program_cache	WeChat mini program cache
+clean_desc_wechat_web_cache	WeChat web cache
+clean_desc_wechat_service_worker_cache	WeChat service worker cache
+clean_desc_wecom_logs	WeCom logs
+clean_desc_wecom_service_worker_cache	WeCom service worker cache
+clean_desc_wecom_web_cache	WeCom web cache
+clean_desc_wecom_code_cache	WeCom code cache
+clean_desc_wecom_gpu_cache	WeCom GPU cache
+clean_desc_uv_cache	uv cache
+clean_desc_bun_cache	Bun cache
+clean_desc_bun_cache_alt	bun cache
+clean_desc_orphaned_bun_cache	Orphaned bun cache
+clean_desc_pyinstaller_binary_cache	PyInstaller binary cache
+clean_desc_clang_module_cache	Clang module cache
+clean_desc_go_module_cache	Go module cache
+clean_desc_go_build_cache	Go build cache
+clean_desc_rust_cargo_cache	Rust cargo cache
+clean_desc_android_ndk_versions	Android NDK versions
+clean_desc_compiled_model_cache	compiled model cache
+clean_desc_xcode_xctestdevices_test_data	Xcode XCTestDevices test data
+clean_desc_display_name_symbol_cache	%s symbol cache
+clean_desc_simulator_runtime_cache	Simulator runtime cache
+clean_desc_xcode_interface_builder_cache	Xcode Interface Builder cache
+clean_desc_gradle_build_cache	Gradle build cache
+clean_desc_gradle_notifications_cache	Gradle notifications cache
+clean_desc_codex_crash_reports	Codex crash reports
+clean_desc_antigravity_graphite_cache	Antigravity Graphite cache
+clean_desc_antigravity_component_cache	Antigravity component cache
+clean_desc_antigravity_extension_cache	Antigravity extension cache
+clean_desc_chrome_devtools_mcp_dawn_cache	Chrome DevTools MCP Dawn cache
+clean_desc_chrome_devtools_mcp_shader_cache	Chrome DevTools MCP shader cache
+clean_desc_chrome_devtools_mcp_graphite_cache	Chrome DevTools MCP Graphite cache
+clean_desc_chrome_devtools_mcp_component_cache	Chrome DevTools MCP component cache
+clean_desc_chrome_devtools_mcp_extension_cache	Chrome DevTools MCP extension cache
+clean_desc_homebrew_service_logs	Homebrew service logs
+clean_desc_next_js_build_cache	Next.js build cache
+clean_desc_user_app_logs	User app logs
+clean_desc_safari_incomplete_downloads	Safari incomplete downloads
+clean_desc_chrome_incomplete_downloads	Chrome incomplete downloads
+clean_desc_partial_incomplete_downloads	Partial incomplete downloads
+clean_desc_chrome_app_cache	Chrome app cache
+clean_desc_chrome_code_cache	Chrome code cache
+clean_desc_chrome_gpu_cache	Chrome GPU cache
+clean_desc_chrome_dawn_cache	Chrome Dawn cache
+clean_desc_chrome_gr_shader_cache	Chrome GR shader cache
+clean_desc_chrome_graphite_dawn_cache	Chrome Graphite Dawn cache
+clean_desc_chrome_component_crx_cache	Chrome component CRX cache
+clean_desc_chrome_shader_cache	Chrome shader cache
+clean_desc_chrome_crash_reports	Chrome crash reports
+clean_desc_chrome_on_device_model_cache	Chrome on-device model cache
+clean_desc_chrome_on_device_classifier_cache	Chrome on-device classifier cache
+clean_desc_firefox_cache	Firefox cache
+clean_desc_firefox_profile_cache	Firefox profile cache
+clean_desc_diagnostic_reports	Diagnostic reports
+clean_desc_chrome_cache	Chrome cache
+clean_desc_brave_cache	Brave cache
+clean_desc_mail_data	Mail data
+clean_desc_mail_downloads	Mail downloads
+clean_desc_macos_installer	macOS installer
+clean_desc_macos_updates_cache	macOS updates cache
+clean_desc_time_machine_local_snapshots	Time Machine local snapshots
+clean_desc_simulator_data	Simulator data
+clean_desc_docker_desktop_data	Docker Desktop data
+clean_desc_ios_backups	iOS backups
+clean_desc_orbstack_data	OrbStack data
+clean_desc_lima_data	Lima data
+clean_desc_deno_module_cache	Deno module cache
+clean_desc_gradle_caches	Gradle caches
+clean_desc_android_system_images	Android system images
+clean_desc_hugging_face_cache	Hugging Face cache
+clean_desc_jetbrains_old_version_data	JetBrains old version data
+clean_desc_macos_installer_files	macOS installer files
+clean_desc_browser_code_signature_caches	Browser code signature caches
+clean_desc_rebuildable_system_caches	Rebuildable system caches
+clean_desc_accessible_rebuildable_gpu_caches	Accessible rebuildable GPU caches
+count_label_dir	%s dir(s)
+count_label_item	%s item(s)
+count_label_project	%s project(s)
+count_label_simulator	%s simulator(s)
+count_label_build	%s build(s)
+clean_desc_npm_cache_directory	npm cache directory
+clean_desc_npm_prebuilds	npm prebuilds
+purge_summary_freed	Estimated space freed: %s
+purge_summary_would_free	Would free approximately: %s
+purge_summary_items	Items: %s
+purge_summary_free	Free: %s
+slim_summary_apps_intel	%s apps, %s of Intel code

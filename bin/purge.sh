@@ -281,15 +281,15 @@ perform_purge() {
         local freed_size_human
         freed_size_human=$(bytes_to_human_kb "$total_size_cleaned")
 
-        local summary_line="Estimated space freed: ${GREEN}${freed_size_human}${NC}"
+        local summary_line="$(mole_t purge_summary_freed "${GREEN}${freed_size_human}${NC}")"
         if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-            summary_line="Would free approximately: ${GREEN}${freed_size_human}${NC}"
+            summary_line="$(mole_t purge_summary_would_free "${GREEN}${freed_size_human}${NC}")"
         fi
         if [[ ${PURGE_UNKNOWN_SIZE_COUNT:-0} -gt 0 ]]; then
             summary_line+=" + ${PURGE_UNKNOWN_SIZE_COUNT} unmeasured"
         fi
-        [[ $total_items_cleaned -gt 0 ]] && summary_line+=" | Items: $total_items_cleaned"
-        summary_line+=" | Free: $(get_free_space)"
+        [[ $total_items_cleaned -gt 0 ]] && summary_line+=" | $(mole_t purge_summary_items "$total_items_cleaned")"
+        summary_line+=" | $(mole_t purge_summary_free "$(get_free_space)")"
         summary_details+=("$summary_line")
     else
         summary_details+=("No artifacts were removed.")

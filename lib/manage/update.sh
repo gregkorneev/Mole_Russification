@@ -1113,7 +1113,7 @@ run_mole_command() {
     if [[ "$rc" -lt 128 ]]; then
         local notice
         notice=$(read_update_message_cache "$HOME/.cache/mole/update_message")
-        [[ -z "$notice" ]] || printf '\n%s\n' "$notice" >&2
+        [[ -z "$notice" ]] || printf '\n%s\n' "$(mole_display_text "$notice")" >&2
     fi
     exit "$rc"
 }

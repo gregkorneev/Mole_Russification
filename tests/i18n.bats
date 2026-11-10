@@ -218,3 +218,29 @@ setup() {
     [ -f "$test_home/.Trash/example" ]
 }
 
+
+@test "update notice is localized for display while the cached text stays English" {
+    # shellcheck disable=SC2016 # The child Bash program expands its own variables.
+    run env HOME="$BATS_TEST_TMPDIR" MOLE_LANG=ru MOLE_TEST_NO_AUTH=1 \
+        /bin/bash -c 'source "$1/lib/core/common.sh"
+eval "$(sed -n "/^_main_menu_update_notice()/,/^}$/p" "$1/mole")"
+_main_menu_update_notice "Update 9.8.7 available, run mo update"
+_main_menu_update_notice "New nightly commit abc1234 available, run mo update --nightly"
+MOLE_LANG=en _main_menu_update_notice "Update 9.8.7 available, run mo update"' _ "$PROJECT_ROOT"
+    [ "$status" -eq 0 ] || return 1
+    [[ "$output" == *"Доступно обновление 9.8.7, выполните mo update"* ]] || return 1
+    [[ "$output" == *"Доступен новый ночной коммит abc1234, выполните mo update --nightly"* ]] || return 1
+    [[ "$output" == *"Update 9.8.7 available, run mo update"* ]] || return 1
+}
+
+@test "external volume refusals are localized and still exit nonzero" {
+    run env HOME="$BATS_TEST_TMPDIR" MOLE_LANG=ru MOLE_TEST_NO_AUTH=1 \
+        "$PROJECT_ROOT/mole" clean --external relative/path
+    [ "$status" -ne 0 ] || return 1
+    [[ "$output" == *"Путь к внешнему тому должен быть абсолютным: relative/path"* ]] || return 1
+
+    run env HOME="$BATS_TEST_TMPDIR" MOLE_LANG=en MOLE_TEST_NO_AUTH=1 \
+        "$PROJECT_ROOT/mole" clean --external relative/path
+    [ "$status" -ne 0 ] || return 1
+    [[ "$output" == *"External volume path must be absolute: relative/path"* ]] || return 1
+}

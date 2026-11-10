@@ -3632,7 +3632,7 @@ _check_large_file_candidates_body() {
             done <<< "$docker_output"
             if [[ -n "$docker_detail" ]]; then
                 stop_section_spinner
-                mole_review_row "Docker storage" "" "" "$docker_detail"
+                mole_review_row "$(mole_display_text "Docker storage")" "" "" "$docker_detail"
                 found_any=true
                 docker_reported=true
                 start_section_spinner "Scanning large files..."
