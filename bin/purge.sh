@@ -48,7 +48,7 @@ start_section() {
     local section_name="$1"
     CURRENT_SECTION="$section_name"
     printf '\n'
-    echo -e "${BLUE}━━━ ${section_name} ━━━${NC}"
+    echo -e "${BLUE}━━━ $(mole_display_text "$section_name") ━━━${NC}"
 }
 
 end_section() {
@@ -231,7 +231,7 @@ perform_purge() {
         ) &
         monitor_pid=$!
     else
-        echo -e "${PURPLE_BOLD}Purge Project Artifacts${NC}"
+        echo -e "${PURPLE_BOLD}$(mole_display_text "Purge Project Artifacts")${NC}"
     fi
 
     clean_project_artifacts
@@ -309,19 +309,19 @@ perform_purge() {
 
 # Show help message
 show_help() {
-    echo -e "${PURPLE_BOLD}Mole Purge${NC}, Clean old project build artifacts"
+    echo -e "${PURPLE_BOLD}$(mole_t help_purge_title)${NC}, $(mole_t help_purge_description)"
     echo ""
-    echo -e "${YELLOW}Usage:${NC} mo purge [options]"
+    echo -e "${YELLOW}$(mole_t help_usage_label)${NC} mo purge [options]"
     echo ""
-    echo -e "${YELLOW}Options:${NC}"
-    echo "  --paths         Edit custom scan directories"
-    echo "  --dry-run       Preview purge actions without making changes"
-    echo "  --include-empty Show zero-size project artifact directories"
-    echo "  --yes           Confirm unattended cleanup of eligible artifacts"
-    echo "  --debug         Enable debug logging"
-    echo "  -h, --help      Show this help message"
+    echo -e "${YELLOW}$(mole_t help_options)${NC}"
+    echo "  --paths         $(mole_t help_purge_paths)"
+    echo "  --dry-run       $(mole_t help_purge_dry_run)"
+    echo "  --include-empty $(mole_t help_purge_include_empty)"
+    echo "  --yes           $(mole_t help_purge_yes)"
+    echo "  --debug         $(mole_t help_option_debug)"
+    echo "  -h, --help      $(mole_t help_option_help)"
     echo ""
-    echo -e "${YELLOW}Default Paths:${NC}"
+    echo -e "${YELLOW}$(mole_t help_purge_default_paths)${NC}"
     for path in "${DEFAULT_PURGE_SEARCH_PATHS[@]}"; do
         echo "  * $path"
     done
@@ -354,8 +354,7 @@ main() {
                 export MOLE_PURGE_INCLUDE_EMPTY=1
                 ;;
             *)
-                echo "Unknown option: $arg" >&2
-                echo "Use 'mo purge --help' for usage information" >&2
+                printf '%s\n' "$(mole_t cli_unknown_option "$arg")" "$(mole_t purge_usage_hint)" >&2
                 exit 1
                 ;;
         esac
@@ -363,7 +362,7 @@ main() {
 
     start_purge
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        echo -e "${YELLOW}${ICON_DRY_RUN} DRY RUN MODE${NC}, No project artifacts will be removed"
+        echo -e "${YELLOW}${ICON_DRY_RUN} $(mole_t ui_dry_run_purge_banner)${NC}"
         printf '\n'
     fi
     hide_cursor

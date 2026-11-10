@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/tw93/mole/internal/i18n"
 	"github.com/tw93/mole/internal/units"
 )
 
@@ -266,11 +267,11 @@ func formatUnusedTime(lastAccess time.Time) string {
 	years := days / 365
 
 	if years >= 2 {
-		return fmt.Sprintf(">%dyr", years)
+		return i18n.T("analyze_time_years", years)
 	} else if years >= 1 {
-		return ">1yr"
+		return i18n.T("analyze_time_one_year")
 	} else if months >= 3 {
-		return fmt.Sprintf(">%dmo", months)
+		return i18n.T("analyze_time_months", months)
 	}
 
 	return ""
@@ -279,11 +280,11 @@ func formatUnusedTime(lastAccess time.Time) string {
 func measurementErrorReason(err error) string {
 	switch {
 	case errors.Is(err, context.DeadlineExceeded):
-		return "timed out"
+		return i18n.T("analyze_measure_timeout")
 	case errors.Is(err, context.Canceled):
-		return "cancelled"
+		return i18n.T("analyze_measure_cancelled")
 	case isPermissionFailure(err):
-		return "access denied"
+		return i18n.T("analyze_measure_denied")
 	}
 	var duFailure *duError
 	if errors.As(err, &duFailure) && duFailure.reason != "" {
@@ -292,14 +293,14 @@ func measurementErrorReason(err error) string {
 	if pathFailure, ok := errors.AsType[*os.PathError](err); ok {
 		return pathFailure.Err.Error()
 	}
-	return "read error"
+	return i18n.T("analyze_error_read")
 }
 
 // Partial sizes are measured bytes, so '+' marks that additional bytes may be
 // missing. An unavailable measurement must never look like a measured zero.
 func measuredSizeLabel(size int64, state scanState) string {
 	if state == scanUnavailable || (state == scanPartial && size == 0) {
-		return "unknown"
+		return i18n.T("analyze_unknown_size")
 	}
 	label := humanizeBytes(size)
 	if state == scanPartial {
@@ -319,7 +320,7 @@ func sizeColumn(label string) string {
 
 func scanSummary(size int64, state scanState) string {
 	if state != scanComplete {
-		return "Partial scan · " + measuredSizeLabel(size, state)
+		return i18n.T("analyze_partial_scan", measuredSizeLabel(size, state))
 	}
-	return "Scanned " + humanizeBytes(size)
+	return i18n.T("analyze_scanned", humanizeBytes(size))
 }

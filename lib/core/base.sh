@@ -386,20 +386,20 @@ mole_report_unreadable_whitelist() {
     local file="$1" label="${2:-whitelist}" reason="${3:-file}"
     case "$reason" in
         directory)
-            printf 'Cannot access your %s directory: %s\n' "$label" "${file//[[:cntrl:]]/?}" >&2
-            printf '  Mole stops so nothing you protected is cleaned by mistake. Run: chmod u+rx %q\n' "$file" >&2
+            printf '%s\n' "$(mole_t whitelist_error_directory "$label" "${file//[[:cntrl:]]/?}")" >&2
+            printf '  %s\n' "$(mole_t whitelist_repair_directory "$file")" >&2
             ;;
         invalid)
-            printf 'Cannot read your %s: invalid path or broken link: %s\n' "$label" "${file//[[:cntrl:]]/?}" >&2
-            printf '  Mole stops so nothing you protected is cleaned by mistake. Restore this path or its link target before retrying.\n' >&2
+            printf '%s\n' "$(mole_t whitelist_error_invalid "$label" "${file//[[:cntrl:]]/?}")" >&2
+            printf '  %s\n' "$(mole_t whitelist_repair_invalid)" >&2
             ;;
         unknown)
-            printf 'Cannot inspect your %s path: %s\n' "$label" "${file//[[:cntrl:]]/?}" >&2
-            printf '  Mole stops because absence could not be verified. Check access to this path before retrying.\n' >&2
+            printf '%s\n' "$(mole_t whitelist_error_unknown "$label" "${file//[[:cntrl:]]/?}")" >&2
+            printf '  %s\n' "$(mole_t whitelist_repair_unknown)" >&2
             ;;
         *)
-            printf 'Cannot read your %s: %s\n' "$label" "${file//[[:cntrl:]]/?}" >&2
-            printf '  Mole stops so nothing you protected is cleaned by mistake. Run: chmod u+r %q\n' "$file" >&2
+            printf '%s\n' "$(mole_t whitelist_error_read "$label" "${file//[[:cntrl:]]/?}")" >&2
+            printf '  %s\n' "$(mole_t whitelist_repair_read "$file")" >&2
             ;;
     esac
 }
@@ -412,8 +412,8 @@ mole_report_unreadable_whitelist() {
 mole_whitelist_file_state() {
     local file="$1" label="${2:-whitelist}" problem="" probe_rc=0
     if [[ ! -x /usr/bin/perl ]]; then
-        printf 'Cannot inspect your %s: the system Perl runtime is unavailable.\n' "$label" >&2
-        printf '  Mole stops so nothing you protected is cleaned by mistake. Restore /usr/bin/perl before retrying.\n' >&2
+        printf '%s\n' "$(mole_t whitelist_perl_unavailable "$label")" >&2
+        printf '  %s\n' "$(mole_t whitelist_perl_repair)" >&2
         return 2
     fi
     problem=$(/usr/bin/perl -e '
@@ -1248,7 +1248,7 @@ mole_join_names() {
     local count=$#
     [[ $count -gt 0 ]] || return 0
     if [[ $count -gt 4 ]]; then
-        printf '%s, %s, %s and %s more' "$1" "$2" "$3" "$((count - 3))"
+        printf '%s, %s, %s %s' "$1" "$2" "$3" "$(mole_t ui_and_more "$((count - 3))")"
         return 0
     fi
     local out="$1"
@@ -1684,20 +1684,30 @@ SECTION_ACTIVITY=0
 # and purge entry points. Do not unify the three blindly; the wording and
 # export semantics are user-visible.
 
+# Translate display text when the shared localization helper has been loaded.
+# Core-only consumers of base.sh retain the English fallback.
+mole_display_text() {
+    if declare -F mole_t > /dev/null 2>&1; then
+        mole_t "$1"
+    else
+        printf '%s' "$1"
+    fi
+}
+
 # Start a new section
 # Args: $1 - section title
 start_section() {
     TRACK_SECTION=1
     SECTION_ACTIVITY=0
     echo ""
-    echo -e "${PURPLE_BOLD}${ICON_ARROW} $1${NC}"
+    echo -e "${PURPLE_BOLD}${ICON_ARROW} $(mole_display_text "$1")${NC}"
 }
 
 # End a section
 # Shows "Nothing to tidy" if no activity was recorded
 end_section() {
     if [[ "${TRACK_SECTION:-0}" == "1" && "${SECTION_ACTIVITY:-0}" == "0" ]]; then
-        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Nothing to tidy"
+        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_display_text "Nothing to tidy")"
     fi
     TRACK_SECTION=0
 }
@@ -1972,7 +1982,7 @@ _dev_report_process_guard_stop() {
     local reason="$3"
 
     if [[ "$reason" == "process state unknown" || "$reason" == "process or cache path state unknown" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${reason})"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$reason")")"
         note_activity
     else
         mole_defer_cleanup_family "$family"
@@ -2039,7 +2049,7 @@ mole_report_guard_stop() {
     local display_name="$1"
     shift
     if [[ "$_MOLE_CLEAN_GUARD_REASON" == "process state unknown" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
         note_activity
     else
         "$@"

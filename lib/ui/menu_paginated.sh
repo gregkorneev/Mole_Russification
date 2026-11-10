@@ -3,6 +3,14 @@
 
 set -euo pipefail
 
+_pm_display_text() {
+    if declare -F mole_display_text > /dev/null 2>&1; then
+        mole_display_text "$1"
+    else
+        printf '%s' "$1"
+    fi
+}
+
 # Terminal control functions
 enter_alt_screen() {
     if command -v tput > /dev/null 2>&1 && [[ -t 1 ]]; then
@@ -83,7 +91,7 @@ paginated_multi_select() {
 
     # Validation
     if [[ ${#items[@]} -eq 0 ]]; then
-        echo "No items provided" >&2
+        printf '%s\n' "$(_pm_display_text "No items provided")" >&2
         return 1
     fi
 
@@ -496,6 +504,7 @@ paginated_multi_select() {
             local marker=""
             [[ -n "${MOLE_READ_KEY_FORCE_CHAR:-}" ]] && marker="_"
             local counts="(${#view_indices[@]}/$total_items; $selected_count selected)"
+            counts=$(_pm_display_text "$counts")
             local cols="${COLUMNS:-$(tput cols 2> /dev/null || echo 80)}"
             [[ "$cols" =~ ^[0-9]+$ ]] || cols=80
             local query_width=$((cols - ${#counts} - ${#marker} - 12))
@@ -510,11 +519,16 @@ paginated_multi_select() {
                 done
                 query_display="...$query_display"
             fi
-            printf "\r\033[2K${YELLOW}/ Search: %s%s${NC}  ${GRAY}%s${NC}\n" "$query_display" "$marker" "$counts" >&2
+            local search_label
+            search_label=$(_pm_display_text "Search: $query_display$marker")
+            printf "\r\033[2K${YELLOW}/ %s${NC}  ${GRAY}%s${NC}\n" "$search_label" "$counts" >&2
         elif [[ -n "${MOLE_READ_KEY_FORCE_CHAR:-}" ]]; then
-            printf '%b' "\r\033[2K${YELLOW}/ Search: _ ${NC}${GRAY}(type to search)${NC}\n" >&2
+            printf '%b' "\r\033[2K${YELLOW}/ $(_pm_display_text "Search: _") ${NC}${GRAY}$(_pm_display_text "(type to search)")${NC}\n" >&2
         else
-            printf "\r\033[2K${PURPLE_BOLD}%s${NC}  ${GRAY}%d/%d selected${NC}\n" "${title}" "$selected_count" "$total_items" >&2
+            local display_title selected_label
+            display_title=$(_pm_display_text "$title")
+            selected_label=$(_pm_display_text "$selected_count/$total_items selected")
+            printf "\r\033[2K${PURPLE_BOLD}%s${NC}  ${GRAY}%s${NC}\n" "$display_title" "$selected_label" >&2
         fi
     }
 
@@ -553,11 +567,11 @@ paginated_multi_select() {
 
         # Common menu items
         local nav="${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN}${NC}"
-        local page_ctrl="${GRAY}h/l Page${NC}"
-        local space_select="${GRAY}Space Select${NC}"
-        local select_all="${GRAY}A All${NC}"
-        local enter="${GRAY}Enter Save${NC}"
-        local cancel_label="${GRAY}Q Cancel${NC}"
+        local page_ctrl="${GRAY}$(_pm_display_text "h/l Page")${NC}"
+        local space_select="${GRAY}$(_pm_display_text "Space Select")${NC}"
+        local select_all="${GRAY}$(_pm_display_text "A All")${NC}"
+        local enter="${GRAY}$(_pm_display_text "Enter Save")${NC}"
+        local cancel_label="${GRAY}$(_pm_display_text "Q Cancel")${NC}"
 
         local reverse_arrow="↑"
         [[ "$sort_reverse" == "true" ]] && reverse_arrow="↓"
@@ -566,16 +580,17 @@ paginated_multi_select() {
             [[ "$sort_reverse" == "true" ]] && reverse_arrow="Z-A"
         fi
 
+        sort_status=$(_pm_display_text "$sort_status")
         local sort_ctrl="${GRAY}S ${sort_status}${NC}"
         local order_ctrl="${GRAY}O ${reverse_arrow}${NC}"
-        local filter_ctrl="${GRAY}/ Search${NC}"
+        local filter_ctrl="${GRAY}/ $(_pm_display_text "Search")${NC}"
 
         local term_width="${COLUMNS:-}"
         [[ -z "$term_width" ]] && term_width=$(tput cols 2> /dev/null || echo 80)
         [[ "$term_width" =~ ^[0-9]+$ ]] || term_width=80
         local -a controls=() optional_controls=()
         if [[ -n "${MOLE_READ_KEY_FORCE_CHAR:-}" ]]; then
-            local -a _segs_filter=("${GRAY}Enter Apply${NC}" "${GRAY}Backspace${NC}" "${GRAY}Ctrl+U Clear${NC}" "${GRAY}Esc Clear${NC}")
+            local -a _segs_filter=("${GRAY}$(_pm_display_text "Enter Apply")${NC}" "${GRAY}Backspace${NC}" "${GRAY}$(_pm_display_text "Ctrl+U Clear")${NC}" "${GRAY}$(_pm_display_text "Esc Clear")${NC}")
             controls=("${_segs_filter[@]}")
             optional_controls=("${GRAY}Ctrl+U Clear${NC}" "${GRAY}Backspace${NC}")
         else
@@ -588,7 +603,7 @@ paginated_multi_select() {
             if [[ "$has_sort_controls" == true ]]; then
                 _segs_browse=("$sort_ctrl" "$order_ctrl" "$filter_ctrl")
             fi
-            [[ -n "$filter_text" ]] && _segs_browse+=("${GRAY}Esc Clear${NC}")
+            [[ -n "$filter_text" ]] && _segs_browse+=("${GRAY}$(_pm_display_text "Esc Clear")${NC}")
             _segs_browse+=("$page_ctrl")
             controls=("${_segs[@]}" "${_segs_browse[@]}")
             optional_controls=("$page_ctrl" "$nav" "$order_ctrl" "$select_all" "$sort_ctrl" "$filter_ctrl")
@@ -654,7 +669,7 @@ paginated_multi_select() {
         local items_shown=$((end_idx - start_idx + 1))
         [[ $items_shown -lt 0 ]] && items_shown=0
         if [[ $visible_total -eq 0 ]]; then
-            printf '%b' "${clear_line}No matches\n" >&2
+            printf '%b' "${clear_line}$(_pm_display_text "No matches")\n" >&2
             items_shown=1
         fi
         for ((i = items_shown; i < items_per_page; i++)); do

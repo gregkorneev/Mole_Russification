@@ -55,18 +55,18 @@ SLIM_FAILED_NAMES=()
 SLIM_FAILED_REASONS=()
 
 show_slim_help() {
-    echo "Usage: mo slim [OPTIONS]"
-    echo ""
-    echo "Remove the Intel code from universal apps on Apple Silicon."
-    echo "Each app is slimmed on a copy that must pass code signing and Gatekeeper"
-    echo "checks before it replaces the original, which moves to the Trash."
-    echo "App updates bring the Intel code back."
-    echo "Apps protected by ~/.config/mole/whitelist are skipped."
-    echo ""
-    echo "Options:"
-    echo "  --dry-run, -n     List apps and reclaimable space without changes"
-    echo "  --debug           Show why apps were skipped"
-    echo "  -h, --help        Show this help message"
+    printf '%s\n\n' "$(mole_t help_slim_usage)"
+    printf '%s\n' \
+        "$(mole_t help_slim_description)" \
+        "$(mole_t help_slim_copy)" \
+        "$(mole_t help_slim_trash)" \
+        "$(mole_t help_slim_updates)" \
+        "$(mole_t help_slim_whitelist)"
+    printf '\n%s\n' "$(mole_t help_options)"
+    printf '%s\n' \
+        "  --dry-run, -n     $(mole_t help_slim_dry_run)" \
+        "  --debug           $(mole_t help_slim_debug)" \
+        "  -h, --help        $(mole_t help_option_help)"
 }
 
 slim_app_roots() {
@@ -743,11 +743,11 @@ select_slim_apps() {
 confirm_slim_selection() {
     local -a indices=("$@")
     local idx total=0 running=false tag
-    echo -e "\n${PURPLE_BOLD}Apps to slim:${NC}"
+    echo -e "\n${PURPLE_BOLD}$(mole_display_text "Apps to slim:")${NC}"
     for idx in "${indices[@]}"; do
         tag=""
         if slim_app_is_running "${SLIM_APP_PATHS[idx]}"; then
-            tag=" ${YELLOW}[Running]${NC}"
+            tag=" ${YELLOW}$(mole_display_text "[Running]")${NC}"
             running=true
         fi
         printf '%b%s%b\n' "${BLUE}${ICON_CONFIRM}${NC} " "$(mole_terminal_safe_text "${SLIM_APP_NAMES[idx]}")" \
@@ -755,11 +755,11 @@ confirm_slim_selection() {
         total=$((total + SLIM_APP_BYTES[idx]))
     done
     echo ""
-    echo -e "${GRAY}Originals move to the Trash. App updates bring the Intel code back.${NC}"
-    [[ "$running" == false ]] || echo -e "${GRAY}Running apps are skipped, quit them before you confirm.${NC}"
+    echo -e "${GRAY}$(mole_display_text "Originals move to the Trash. App updates bring the Intel code back.")${NC}"
+    [[ "$running" == false ]] || echo -e "${GRAY}$(mole_display_text "Running apps are skipped, quit them before you confirm.")${NC}"
     local app_text="apps"
     [[ ${#indices[@]} -gt 1 ]] || app_text="app"
-    echo -ne "${PURPLE}${ICON_ARROW}${NC} Slim ${#indices[@]} ${app_text}, $(bytes_to_human "$total")  ${GREEN}Enter${NC} confirm, ${GRAY}ESC${NC} cancel: "
+    echo -ne "${PURPLE}${ICON_ARROW}${NC} $(mole_display_text "Slim ${#indices[@]} ${app_text}, $(bytes_to_human "$total")")  ${GREEN}Enter${NC} $(mole_display_text "confirm") ${GRAY}ESC${NC} $(mole_display_text "cancel"): "
 
     local confirm
     if ! IFS= read -r -s -n1 confirm; then
@@ -813,13 +813,13 @@ show_slim_summary() {
             names+="${SLIM_FAILED_NAMES[i]}"
         done
         names=$(mole_terminal_safe_text "$names")
-        label=$(mole_terminal_safe_text "$reason")
+        label=$(mole_terminal_safe_text "$(mole_display_text "$reason")")
         label="$(printf '%s' "${label:0:1}" | /usr/bin/tr '[:lower:]' '[:upper:]')${label:1}"
         details+=("${ICON_LIST} ${label//\\/\\\\}: ${YELLOW}${names//\\/\\\\}${NC}")
         if [[ "$reason" == "still running" ]]; then
             local them="them"
             [[ "$names" == *", "* ]] || them="it"
-            details+=("${GRAY}${ICON_REVIEW} Quit ${them}, then run mo slim again${NC}")
+            details+=("${GRAY}${ICON_REVIEW} $(mole_display_text "Quit ${them}, then run mo slim again")${NC}")
         fi
     done
 
@@ -833,7 +833,7 @@ show_slim_summary() {
 
 slim_preflight() {
     if ! slim_host_is_apple_silicon; then
-        printf 'mo slim needs an Apple Silicon Mac; on an Intel Mac the Intel code is the code that runs.\n' >&2
+        printf '%s\n' "$(mole_t slim_requires_apple_silicon)" >&2
         return "$SLIM_EXIT_UNSUPPORTED"
     fi
     load_mole_whitelist "$HOME" || return 1
@@ -852,8 +852,7 @@ main() {
             "--debug") export MO_DEBUG=1 ;;
             "--dry-run" | "-n") export MOLE_DRY_RUN=1 ;;
             *)
-                echo "Unknown option: $arg" >&2
-                echo "Use 'mo slim --help' for supported options." >&2
+                printf '%s\n' "$(mole_t cli_unknown_option "$arg")" "$(mole_t slim_usage_hint)" >&2
                 exit 1
                 ;;
         esac
@@ -864,7 +863,7 @@ main() {
     [[ $rc -eq 0 ]] || return 1
 
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        echo -e "${YELLOW}${ICON_DRY_RUN} DRY RUN MODE${NC}, No apps will be changed"
+        echo -e "${YELLOW}${ICON_DRY_RUN} $(mole_t ui_dry_run_slim_banner)${NC}"
         printf '\n'
     fi
 
@@ -874,7 +873,7 @@ main() {
     [[ -t 1 ]] && stop_inline_spinner
 
     if [[ $collect_rc -ne 0 ]]; then
-        echo -e "${GREEN}${ICON_SUCCESS}${NC} No apps with Intel code to remove"
+        echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t slim_no_intel_apps)"
         return 0
     fi
 
@@ -882,7 +881,7 @@ main() {
     if [[ "${MOLE_DRY_RUN:-0}" == "1" || ! -t 0 || ! -t 1 ]]; then
         print_slim_list
         if [[ "${MOLE_DRY_RUN:-0}" != "1" ]]; then
-            printf 'Run mo slim in a terminal to choose apps.\n'
+            printf '%s\n' "$(mole_t slim_terminal_required)"
         fi
         return 0
     fi

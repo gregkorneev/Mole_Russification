@@ -135,14 +135,12 @@ truncate_by_display_width() {
         # Check against ASCII range?
         # Fast ASCII check: if [[ "$char" < $'\x7f' ]]; then ...
 
+        # ASCII is always one column, so skip the subshell for it; any other
+        # character (Cyrillic, CJK, emoji) takes the shared width heuristic.
         if [[ "$char" =~ [[:ascii:]] ]]; then
             char_width=1
         else
-            # Assume wide for non-ascii in this context (simplified)
-            # Or use LC_ALL=C inside? No.
-            # Most non-ASCII in filenames are either CJK (width 2) or heavy symbols.
-            # Let's assume 2 for simplicity in this fast loop as we know we are usually dealing with CJK.
-            char_width=2
+            char_width=$(get_display_width "$char")
         fi
 
         if ((width + char_width + 3 > max_width)); then
@@ -329,9 +327,9 @@ show_menu_option() {
     local selected="$3"
 
     if [[ "$selected" == "true" ]]; then
-        echo -e "${CYAN}${ICON_ARROW} $number. $text${NC}"
+        echo -e "${CYAN}${ICON_ARROW} $number. $(mole_display_text "$text")${NC}"
     else
-        echo "  $number. $text"
+        echo "  $number. $(mole_display_text "$text")"
     fi
 }
 
@@ -354,6 +352,7 @@ create_inline_spinner_control_dir() {
 # Keep spinner message on one line and avoid wrapping/noisy output on narrow terminals.
 format_spinner_message() {
     local message="$1"
+    message=$(mole_display_text "$message")
     message="${message//$'\r'/ }"
     message="${message//$'\n'/ }"
 
@@ -369,12 +368,12 @@ format_spinner_message() {
         available=20
     fi
 
-    if [[ ${#message} -gt $available ]]; then
-        if [[ $available -gt 3 ]]; then
-            message="${message:0:$((available - 3))}..."
-        else
-            message="${message:0:$available}"
-        fi
+    local message_width
+    message_width=$(get_display_width "$message")
+    if [[ "$message_width" -gt "$available" ]]; then
+        local truncated_message
+        truncated_message=$(truncate_by_display_width "$message" "$available")
+        message="${truncated_message%$'\n'}"
     fi
 
     printf "%s" "$message"

@@ -27,7 +27,7 @@ ensure_config_template() {
 # ~/Work/ClientA
 # ~/Work/ClientB
 "; then
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Could not initialize ${PURGE_PATHS_CONFIG/#$HOME/~}" >&2
+            echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_paths_init_failed "${PURGE_PATHS_CONFIG/#$HOME/~}")" >&2
         fi
     fi
 }
@@ -43,11 +43,11 @@ manage_purge_paths() {
         printf '\033[2J\033[H'
     fi
 
-    echo -e "${PURPLE_BOLD}Purge Paths Configuration${NC}"
+    echo -e "${PURPLE_BOLD}$(mole_display_text "Purge Paths Configuration")${NC}"
     echo ""
 
     # Show current status
-    echo -e "${YELLOW}Current Scan Paths:${NC}"
+    echo -e "${YELLOW}$(mole_t purge_paths_current_scan)${NC}"
 
     # Reload config
     load_purge_config
@@ -58,7 +58,7 @@ manage_purge_paths() {
             if [[ -d "$path" ]]; then
                 echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $display_path"
             else
-                echo -e "  ${GRAY}${ICON_EMPTY}${NC} $display_path${GRAY}, not found${NC}"
+                echo -e "  ${GRAY}${ICON_EMPTY}${NC} $display_path${GRAY}$(mole_t purge_paths_not_found)${NC}"
             fi
         done
     fi
@@ -76,25 +76,25 @@ manage_purge_paths() {
 
     echo ""
     if [[ $custom_count -gt 0 ]]; then
-        echo -e "${GRAY}Using custom config with $custom_count paths${NC}"
+        echo -e "${GRAY}$(mole_t purge_paths_using_custom "$custom_count")${NC}"
     else
-        echo -e "${GRAY}Using ${#DEFAULT_PURGE_SEARCH_PATHS[@]} default paths${NC}"
+        echo -e "${GRAY}$(mole_t purge_paths_using_default "${#DEFAULT_PURGE_SEARCH_PATHS[@]}")${NC}"
     fi
 
     echo ""
-    echo -e "${YELLOW}Default Paths:${NC}"
+    echo -e "${YELLOW}$(mole_t purge_paths_default_title)${NC}"
     for path in "${DEFAULT_PURGE_SEARCH_PATHS[@]}"; do
         echo -e "  ${GRAY}-${NC} ${path/#$HOME/~}"
     done
 
     echo ""
-    echo -e "${YELLOW}Config File:${NC} $display_config"
+    echo -e "${YELLOW}$(mole_display_text "Config File:")${NC} $display_config"
     echo ""
 
     # Open in editor
     local editor="${EDITOR:-${VISUAL:-vim}}"
-    echo -e "Opening in ${CYAN}$editor${NC}..."
-    echo -e "${GRAY}Save and exit to apply changes. Leave empty to use defaults.${NC}"
+    echo -e "$(mole_t purge_paths_opening "$editor")"
+    echo -e "${GRAY}$(mole_display_text "Save and exit to apply changes. Leave empty to use defaults.")${NC}"
     echo ""
 
     # Wait for user to read
@@ -107,8 +107,8 @@ manage_purge_paths() {
     load_purge_config
 
     echo ""
-    echo -e "${GREEN}${ICON_SUCCESS}${NC} Configuration updated"
-    echo -e "${GRAY}Run 'mo purge' to clean with new paths${NC}"
+    echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_display_text "Configuration updated")"
+    echo -e "${GRAY}$(mole_t purge_paths_apply_hint)${NC}"
     echo ""
 }
 

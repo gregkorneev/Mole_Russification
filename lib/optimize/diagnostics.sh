@@ -108,19 +108,19 @@ opt_diag_family_label() {
 opt_diag_family_note() {
     case "$1" in
         cloudshell)
-            printf '%s\n' "External enterprise agent pressure detected. Mole will not terminate enterprise security processes; restart or policy checks must happen outside Mole."
+            printf '%s\n' "$(mole_t opt_diag_enterprise_agent_pressure)"
             ;;
         syspolicyd)
-            printf '%s\n' "Gatekeeper and code-signature assessment activity is elevated."
+            printf '%s\n' "$(mole_t opt_diag_gatekeeper_pressure)"
             ;;
         windowserver)
-            printf '%s\n' "Desktop composition is busy. When another family is higher, treat this as a likely symptom rather than the root cause."
+            printf '%s\n' "$(mole_t opt_diag_windowserver_pressure)"
             ;;
         spotlight)
-            printf '%s\n' "Metadata indexing or import work is consuming CPU."
+            printf '%s\n' "$(mole_t opt_diag_spotlight_pressure)"
             ;;
         coresim_disk_images)
-            printf '%s\n' "Simulator runtime disk-image services are active."
+            printf '%s\n' "$(mole_t opt_diag_simulator_images_active)"
             ;;
         *)
             printf '%s\n' ""
@@ -275,18 +275,18 @@ opt_diag_detach_candidates() {
         safe_mount_path=$(mole_terminal_safe_text "$mount_path")
         if run_with_timeout 15 hdiutil detach "$mount_path" > /dev/null 2>&1; then # 15s: hdiutil detach, see lib/core/timeouts.sh
             detached=$((detached + 1))
-            printf '  %b Detached %s\n' "${GREEN}${ICON_SUCCESS}${NC}" "$safe_mount_path"
+            printf '  %b %s\n' "${GREEN}${ICON_SUCCESS}${NC}" "$(mole_t opt_diag_image_detached "$safe_mount_path")"
         else
             failed=$((failed + 1))
-            printf '  %b Failed to detach %s\n' "${YELLOW}${ICON_WARNING}${NC}" "$safe_mount_path"
+            printf '  %b %s\n' "${YELLOW}${ICON_WARNING}${NC}" "$(mole_t opt_diag_image_detach_failed "$safe_mount_path")"
         fi
     done <<< "$candidates"
 
     if [[ $detached -gt 1 ]]; then
-        echo -e "  ${GRAY}${ICON_REVIEW}${NC} Detached ${detached} mounted images"
+        echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t opt_diag_images_detached "$detached")"
     fi
     if [[ $failed -gt 1 ]]; then
-        echo -e "  ${GRAY}${ICON_REVIEW}${NC} ${failed} mounted images still need manual review"
+        echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t opt_diag_images_manual_review "$failed")"
     fi
 }
 
@@ -302,9 +302,9 @@ opt_diag_offer_detach_candidates() {
     done <<< "$candidates"
 
     if [[ "$count" -eq 1 ]]; then
-        echo -e "  ${GRAY}${ICON_LIST}${NC} Mounted image adds assessment overhead:"
+        echo -e "  ${GRAY}${ICON_LIST}${NC} $(mole_t opt_diag_mounted_image_overhead_one)"
     else
-        echo -e "  ${GRAY}${ICON_LIST}${NC} Mounted images add assessment overhead:"
+        echo -e "  ${GRAY}${ICON_LIST}${NC} $(mole_t opt_diag_mounted_image_overhead_many)"
     fi
     while IFS=$'\t' read -r image_path mount_path; do
         [[ -z "$mount_path" ]] && continue
@@ -315,19 +315,19 @@ opt_diag_offer_detach_candidates() {
     done <<< "$candidates"
 
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Would offer detach for ${count} mounted image(s)"
+        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t opt_diag_detach_preview "$count")"
         return 0
     fi
 
     if [[ ! -t 1 ]]; then
-        echo -e "  ${GRAY}${ICON_REVIEW}${NC} Review these mounted images and detach any you no longer need"
+        echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t opt_diag_detach_review_hint)"
         return 0
     fi
 
-    echo -ne "  ${GRAY}${ICON_REVIEW}${NC} ${YELLOW}Detach now?${NC} ${GRAY}Enter confirm / Space cancel${NC}: "
+    echo -ne "  ${GRAY}${ICON_REVIEW}${NC} ${YELLOW}$(mole_t opt_diag_detach_prompt)${NC} ${GRAY}$(mole_t opt_diag_detach_keys)${NC}: "
     local key=""
     if ! key=$(read_key); then
-        echo -e "\n  ${GRAY}${ICON_WARNING}${NC} Kept mounted, whitelist via ${NC}mo optimize --whitelist${GRAY}${NC}"
+        echo -e "\n  ${GRAY}${ICON_WARNING}${NC} $(mole_t opt_diag_kept_mounted) ${NC}mo optimize --whitelist${GRAY}${NC}"
         return 0
     fi
 
@@ -335,7 +335,7 @@ opt_diag_offer_detach_candidates() {
         echo ""
         opt_diag_detach_candidates "$candidates"
     else
-        echo -e "\n  ${GRAY}${ICON_WARNING}${NC} Kept mounted, whitelist via ${NC}mo optimize --whitelist${GRAY}${NC}"
+        echo -e "\n  ${GRAY}${ICON_WARNING}${NC} $(mole_t opt_diag_kept_mounted) ${NC}mo optimize --whitelist${GRAY}${NC}"
     fi
 }
 
@@ -352,7 +352,7 @@ run_optimize_diagnostics() {
     threshold=$MOLE_OPTIMIZE_DIAG_CPU_THRESHOLD_DEFAULT
 
     echo ""
-    echo -e "${BLUE}Performance diagnosis${NC}"
+    echo -e "${BLUE}$(mole_t opt_diag_performance_title)${NC}"
 
     local families="cloudshell syspolicyd windowserver spotlight coresim_disk_images"
     local sustained_count=0
@@ -387,16 +387,16 @@ run_optimize_diagnostics() {
     [[ -n "$mem_out" || -n "$vm_out" || -n "$runaway_out" ]] && extra_findings=1
 
     if [[ -z "$primary_family" && "$extra_findings" -eq 0 ]]; then
-        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} No sustained high-CPU bottleneck detected"
+        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t opt_diag_no_cpu_bottleneck)"
     elif [[ -z "$primary_family" ]]; then
         : # extra findings print below; no CPU-family bottleneck to headline
     else
         label=$(opt_diag_family_label "$primary_family")
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} Likely bottleneck: ${label} (~${primary_avg}% CPU sustained)"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_diag_likely_bottleneck "$label" "$primary_avg")"
         echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(opt_diag_family_note "$primary_family")"
 
         if [[ $sustained_count -gt 1 ]]; then
-            echo -e "  ${GRAY}${ICON_LIST}${NC} Additional sustained pressure:"
+            echo -e "  ${GRAY}${ICON_LIST}${NC} $(mole_t opt_diag_additional_pressure)"
             while IFS=$'\t' read -r family avg label; do
                 [[ -z "$family" || "$family" == "$primary_family" ]] && continue
                 echo -e "    ${GRAY}${label}${NC} ~${avg}%"
@@ -423,10 +423,10 @@ run_optimize_diagnostics() {
         detach_count=$(printf '%s\n' "$detach_candidates" | awk 'NF { count++ } END { print count + 0 }')
 
         if [[ -n "$spctl_status" ]]; then
-            echo -e "  ${GRAY}${ICON_LIST}${NC} Gatekeeper status: ${spctl_status}"
+            echo -e "  ${GRAY}${ICON_LIST}${NC} $(mole_t opt_diag_gatekeeper_status "$spctl_status")"
         fi
         if [[ "$managed_count" -gt 0 && "$managed_count" == "$coresim_count" && "$detach_count" -eq 0 ]]; then
-            echo -e "  ${GRAY}${ICON_ADMIN}${NC} Only system-managed CoreSimulator images are mounted, informational only, not a detach target"
+            echo -e "  ${GRAY}${ICON_ADMIN}${NC} $(mole_t opt_diag_system_simulator_images_only)"
         fi
 
         opt_diag_offer_detach_candidates "$detach_candidates"
@@ -539,7 +539,7 @@ opt_diag_memory_pressure() {
 
     # bytes_to_human, not integer GB: sysctl reports megabytes, so "used / 1024"
     # printed "swap 0GB of 1GB used (88%)" on a machine with a small swap file.
-    echo -e "  ${YELLOW}${ICON_WARNING}${NC} Memory pressure: swap $(bytes_to_human_kb "$((swap_used * 1024))") of $(bytes_to_human_kb "$((swap_total * 1024))") used (${swap_pct}%), ${free_pct}% free"
+    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_diag_memory_pressure "$(bytes_to_human_kb "$((swap_used * 1024))")" "$(bytes_to_human_kb "$((swap_total * 1024))")" "$swap_pct" "$free_pct")"
 
     # Name the actual holders. Simulator runtimes ship duplicate daemons whose
     # rows would otherwise crowd out the real offenders.
@@ -584,7 +584,7 @@ opt_diag_memory_pressure() {
                 printf "%s\t%s%s%*s\n", kb, prefix, name, pad, ""
              }' |
         head -4)
-    [[ "$shown" -gt 0 ]] || echo -e "    ${GRAY}pressure is spread across many small processes${NC}"
+    [[ "$shown" -gt 0 ]] || echo -e "    ${GRAY}$(mole_t opt_diag_pressure_many_processes)${NC}"
     return 0
 }
 
@@ -616,14 +616,18 @@ opt_diag_idle_vm() {
 
     if [[ "$running" == "0" ]]; then
         if command -v docker > /dev/null 2>&1; then
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} Virtual machine holding ${vm_gb} with no running containers (likely Docker Desktop)"
-            echo -e "  ${GRAY}${ICON_REVIEW}${NC} If this is Docker Desktop, quitting it reclaims all of it; it reserves memory even when idle"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_diag_vm_without_containers "$vm_gb")"
+            echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t opt_diag_vm_quit_hint)"
         else
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} Virtual machine holding ${vm_gb}"
-            echo -e "  ${GRAY}${ICON_REVIEW}${NC} Check Docker Desktop, UTM, or other virtualization tools for reclaimable memory"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_diag_vm_holding_memory "$vm_gb")"
+            echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t opt_diag_vm_memory_hint)"
         fi
     else
-        echo -e "  ${GRAY}${ICON_LIST}${NC} Virtual machine using ${vm_gb}${running:+ (${running} containers running)}"
+        if [[ -n "$running" ]]; then
+            echo -e "  ${GRAY}${ICON_LIST}${NC} $(mole_t opt_diag_vm_using_memory "$vm_gb" "$(mole_t opt_diag_containers_running "$running")")"
+        else
+            echo -e "  ${GRAY}${ICON_LIST}${NC} $(mole_t opt_diag_vm_using_memory_without_count "$vm_gb")"
+        fi
     fi
     return 0
 }
@@ -643,8 +647,8 @@ opt_diag_runaway_process() {
     local found=1 pid comm cpu_hours run_hours pct
     while IFS=$'\t' read -r pid comm cpu_hours run_hours pct; do
         [[ -n "$pid" ]] || continue
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} ${comm} has burned ${cpu_hours}h CPU over ${run_hours}h of runtime (~${pct}% sustained)"
-        echo -e "  ${GRAY}${ICON_REVIEW}${NC} Sustained for its whole lifetime; if it is not doing real work: ${NC}kill -TERM ${pid}${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_diag_runaway_process "$comm" "$cpu_hours" "$run_hours" "$pct")"
+        echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t opt_diag_runaway_hint) ${NC}kill -TERM ${pid}${NC}"
         found=0
     done < <(opt_diag_get_proctime_sample | head -400 |
         awk -v floor="$pct_floor" -v minh="$min_hours" "$MOLE_OPT_DIAG_TIME_AWK"'

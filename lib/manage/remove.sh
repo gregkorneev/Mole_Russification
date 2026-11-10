@@ -152,7 +152,7 @@ remove_mole() {
     if declare -f is_nix_install > /dev/null 2>&1 && is_nix_install; then
         local review_icon="${ICON_REVIEW:-⊙}"
         log_error "Mole was installed via Nix. Self-removal is disabled."
-        printf '%s To remove Mole: nix profile remove mole or remove from your Nix configuration\n' "$review_icon"
+        printf '%s %s\n' "$review_icon" "$(mole_t ui_remove_nix_instruction)"
         exit 1
     fi
 
@@ -165,7 +165,7 @@ remove_mole() {
     if [[ -t 1 ]]; then
         start_inline_spinner "Detecting Mole installations..."
     else
-        echo "Detecting installations..."
+        printf '%s\n' "$(mole_t remove_detecting_installations)"
     fi
 
     local is_homebrew=false
@@ -265,55 +265,55 @@ remove_mole() {
     local manual_count=${#manual_installs[@]}
     local alias_count=${#alias_installs[@]}
     if [[ "$is_homebrew" == "false" && ${manual_count:-0} -eq 0 && ${alias_count:-0} -eq 0 ]]; then
-        printf '%s\n\n' "${YELLOW}No Mole installation detected${NC}"
+        printf '%s\n\n' "${YELLOW}$(mole_display_text "No Mole installation detected")${NC}"
         exit 0
     fi
 
     # Dry-run mode: show preview and exit without confirmation
     if [[ "$dry_run_mode" == "true" ]]; then
-        echo -e "${YELLOW}${ICON_DRY_RUN} DRY RUN MODE${NC}, no files will be removed"
+        echo -e "${YELLOW}${ICON_DRY_RUN} $(mole_t ui_dry_run_remove_banner)${NC}"
         echo ""
-        echo -e "${YELLOW}Remove Mole${NC}, would delete the following:"
+        echo -e "${YELLOW}$(mole_display_text "Remove Mole")${NC}, $(mole_display_text "would delete the following:")"
         if [[ "$is_homebrew" == "true" ]]; then
-            echo -e "  ${GRAY}${ICON_LIST} Would run: brew uninstall --force mole${NC}"
+            echo -e "  ${GRAY}${ICON_LIST} $(mole_display_text "Would run: brew uninstall --force mole")${NC}"
         fi
         if [[ ${manual_count:-0} -gt 0 ]]; then
             for install in "${manual_installs[@]}"; do
-                [[ -f "$install" ]] && echo -e "  ${GRAY}${ICON_LIST} Would remove: ${install}${NC}"
+                [[ -f "$install" ]] && echo -e "  ${GRAY}${ICON_LIST} $(mole_display_text "Would remove: ${install}")${NC}"
             done
         fi
         if [[ ${alias_count:-0} -gt 0 ]]; then
             for alias in "${alias_installs[@]}"; do
-                [[ -f "$alias" ]] && echo -e "  ${GRAY}${ICON_LIST} Would remove: ${alias}${NC}"
+                [[ -f "$alias" ]] && echo -e "  ${GRAY}${ICON_LIST} $(mole_display_text "Would remove: ${alias}")${NC}"
             done
         fi
         local completion_rc
         while IFS= read -r completion_rc; do
             [[ -n "$completion_rc" ]] || continue
-            echo -e "  ${GRAY}${ICON_LIST} Would remove: Mole shell completion from $completion_rc${NC}"
+            echo -e "  ${GRAY}${ICON_LIST} $(mole_display_text "Would remove: Mole shell completion from $completion_rc")${NC}"
         done < <(_remove_completion_rc_files)
         local completion_fish
         while IFS= read -r completion_fish; do
             [[ -n "$completion_fish" ]] || continue
-            echo -e "  ${GRAY}${ICON_LIST} Would remove: $completion_fish${NC}"
+            echo -e "  ${GRAY}${ICON_LIST} $(mole_display_text "Would remove: $completion_fish")${NC}"
         done < <(_remove_completion_fish_files)
-        [[ -d "$HOME/.cache/mole" ]] && echo -e "  ${GRAY}${ICON_LIST} Would remove: $HOME/.cache/mole${NC}"
+        [[ -d "$HOME/.cache/mole" ]] && echo -e "  ${GRAY}${ICON_LIST} $(mole_display_text "Would remove: $HOME/.cache/mole")${NC}"
         if [[ -d "$remove_config_dir" ]]; then
             if [[ "$remove_config_dir" == "${HOME%/}/.config/mole" ]]; then
-                echo -e "  ${GRAY}${ICON_LIST} Would move to Trash: $remove_config_dir${NC}"
+                echo -e "  ${GRAY}${ICON_LIST} $(mole_display_text "Would move to Trash: $remove_config_dir")${NC}"
             else
-                echo "  ${ICON_LIST} $remove_config_dir (kept for manual review)"
+                echo "  ${ICON_LIST} $(mole_display_text "$remove_config_dir (kept for manual review)")"
             fi
         fi
-        [[ -d "$HOME/Library/Logs/mole" ]] && echo "  ${ICON_LIST} $HOME/Library/Logs/mole (kept, operation history)"
+        [[ -d "$HOME/Library/Logs/mole" ]] && echo "  ${ICON_LIST} $(mole_display_text "$HOME/Library/Logs/mole (kept, operation history)")"
 
-        printf '\n%s\n\n' "${GREEN}${ICON_SUCCESS}${NC} Dry run complete, no changes made"
+        printf '\n%s\n\n' "${GREEN}${ICON_SUCCESS}${NC} $(mole_t completion_dry_run_complete)"
         exit 0
     fi
 
-    echo -e "${YELLOW}Remove Mole${NC}, will delete the following:"
+    echo -e "${YELLOW}$(mole_display_text "Remove Mole")${NC}, $(mole_display_text "will delete the following:")"
     if [[ "$is_homebrew" == "true" ]]; then
-        echo "  ${ICON_LIST} Mole via Homebrew"
+        echo "  ${ICON_LIST} $(mole_display_text "Mole via Homebrew")"
     fi
     for install in ${manual_installs[@]+"${manual_installs[@]}"} ${alias_installs[@]+"${alias_installs[@]}"}; do
         echo "  ${ICON_LIST} $install"
@@ -321,7 +321,7 @@ remove_mole() {
     local completion_rc
     while IFS= read -r completion_rc; do
         [[ -n "$completion_rc" ]] || continue
-        echo "  ${ICON_LIST} Mole shell completion in $completion_rc"
+        echo "  ${ICON_LIST} $(mole_display_text "Mole shell completion in $completion_rc")"
     done < <(_remove_completion_rc_files)
     local completion_fish
     while IFS= read -r completion_fish; do
@@ -329,12 +329,14 @@ remove_mole() {
         echo "  ${ICON_LIST} $completion_fish"
     done < <(_remove_completion_fish_files)
     if [[ "$remove_config_dir" == "${HOME%/}/.config/mole" ]]; then
-        echo "  ${ICON_LIST} ~/.config/mole (to Trash)"
+        # shellcheck disable=SC2088 # Show the conventional home-relative path literally.
+        echo "  ${ICON_LIST} $(mole_display_text "~/.config/mole (to Trash)")"
     elif [[ -d "$remove_config_dir" ]]; then
-        echo "  ${ICON_LIST} $remove_config_dir (kept for manual review)"
+        echo "  ${ICON_LIST} $(mole_display_text "$remove_config_dir (kept for manual review)")"
     fi
     echo "  ${ICON_LIST} ~/.cache/mole"
-    [[ -d "$HOME/Library/Logs/mole" ]] && echo "  ${ICON_LIST} ~/Library/Logs/mole (kept, operation history)"
+    # shellcheck disable=SC2088 # Show the conventional home-relative path literally.
+    [[ -d "$HOME/Library/Logs/mole" ]] && echo "  ${ICON_LIST} $(mole_display_text "~/Library/Logs/mole (kept, operation history)")"
     # A read from a non-terminal fails and becomes an empty key, which the
     # case below treats as Enter: a script or background runner could confirm
     # removal without user consent. Only a real terminal may answer; tests
@@ -346,7 +348,7 @@ remove_mole() {
         exit 1
     fi
 
-    echo -ne "${PURPLE}${ICON_ARROW}${NC} Press ${GREEN}Enter${NC} to confirm, ${GRAY}ESC${NC} to cancel: "
+    echo -ne "${PURPLE}${ICON_ARROW}${NC} $(mole_display_text "Press") ${GREEN}Enter${NC} $(mole_display_text "to confirm") ${GRAY}ESC${NC} $(mole_display_text "to cancel"): "
 
     drain_pending_input # Clean up any pending input before confirmation
     local key="" key_rc=0
@@ -391,7 +393,7 @@ remove_mole() {
             has_error=true
             log_error "Homebrew uninstallation failed:"
             printf "%s\n" "$brew_uninstall_output" | sed "s/^/${RED}  | ${NC}/" >&2
-            log_warning "Manual step: ${YELLOW}brew uninstall --force mole${NC}"
+            log_warning "Manual step: brew uninstall --force mole"
             echo "" # Add a blank line for readability
         else
             log_success "Mole uninstalled via Homebrew."

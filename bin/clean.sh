@@ -557,7 +557,7 @@ read_clean_sudo_password_remainder() {
 prompt_for_system_clean() {
     local prompt_attempt=0
     while true; do
-        echo -ne "${PURPLE}${ICON_ARROW}${NC} System caches need sudo. ${GREEN}Enter${NC} continue, ${GRAY}Space${NC} skip: "
+        echo -ne "${PURPLE}${ICON_ARROW}${NC} $(mole_t clean_sudo_required) ${GREEN}Enter${NC} $(mole_t clean_continue), ${GRAY}Space${NC} $(mole_t clean_skip): "
 
         local choice
         choice=$(read_clean_sudo_choice)
@@ -565,12 +565,12 @@ prompt_for_system_clean() {
         # ESC aborts, Space skips, Enter (or any typed key, e.g. someone who
         # starts typing their password) proceeds to authentication.
         if [[ "$choice" == "QUIT" ]]; then
-            echo -e " ${GRAY}Canceled${NC}"
+            echo -e " ${GRAY}$(mole_t clean_cancelled)${NC}"
             exit 0
         fi
 
         if [[ "$choice" == "SPACE" ]]; then
-            echo -e " ${GRAY}Skipped${NC}"
+            echo -e " ${GRAY}$(mole_t clean_skipped)${NC}"
             echo ""
             SYSTEM_CLEAN=false
             break
@@ -578,12 +578,12 @@ prompt_for_system_clean() {
             printf "\r\033[K" # Clear the prompt line
             if ensure_sudo_session "System cleanup requires admin access"; then
                 SYSTEM_CLEAN=true
-                echo -e "${GREEN}${ICON_SUCCESS}${NC} Admin access granted"
+                echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_admin_granted)"
                 echo ""
             else
                 SYSTEM_CLEAN=false
                 echo ""
-                echo -e "${YELLOW}Authentication failed${NC}, continuing with user-level cleanup"
+                echo -e "${YELLOW}$(mole_t clean_auth_failed)${NC}, $(mole_t clean_continue_user)"
             fi
             break
         elif [[ "$choice" == CHAR:* ]]; then
@@ -595,12 +595,12 @@ prompt_for_system_clean() {
             printf "\r\033[K" # Clear the prompt line
             if ensure_sudo_session_with_password "$typed_password" "System cleanup requires admin access"; then
                 SYSTEM_CLEAN=true
-                echo -e "${GREEN}${ICON_SUCCESS}${NC} Admin access granted"
+                echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_admin_granted)"
                 echo ""
             else
                 SYSTEM_CLEAN=false
                 echo ""
-                echo -e "${YELLOW}Authentication failed${NC}, continuing with user-level cleanup"
+                echo -e "${YELLOW}$(mole_t clean_auth_failed)${NC}, $(mole_t clean_continue_user)"
             fi
             unset typed_password password_remainder
             break
@@ -609,12 +609,12 @@ prompt_for_system_clean() {
             drain_pending_input 0.05
             if [[ $prompt_attempt -ge 2 ]]; then
                 SYSTEM_CLEAN=false
-                echo -e " ${GRAY}Skipped${NC}"
+                echo -e " ${GRAY}$(mole_t clean_skipped)${NC}"
                 echo ""
                 break
             fi
             printf "\r\033[K"
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Press Enter to continue, or Space to skip"
+            echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_display_text "Press Enter to continue, or Space to skip")"
         fi
     done
 }
@@ -676,10 +676,10 @@ start_section() {
         # Overwrite the previous idle section's header line in place (the
         # pending flag is only ever set on an interactive ANSI terminal).
         IDLE_SECTION_PENDING=0
-        printf '\033[1A\r\033[2K%b\n' "${PURPLE_BOLD}${ICON_ARROW} $1${NC}"
+        printf '\033[1A\r\033[2K%b\n' "${PURPLE_BOLD}${ICON_ARROW} $(mole_display_text "$1")${NC}"
     else
         echo ""
-        echo -e "${PURPLE_BOLD}${ICON_ARROW} $1${NC}"
+        echo -e "${PURPLE_BOLD}${ICON_ARROW} $(mole_display_text "$1")${NC}"
     fi
 
     if [[ "$DRY_RUN" == "true" && -z "${CLEAN_PREVIEW_LEDGER_FILE:-}" ]]; then
@@ -701,7 +701,7 @@ end_section() {
         if [[ -t 1 && "${MO_DEBUG:-}" != "1" ]] && is_ansi_supported 2> /dev/null; then
             IDLE_SECTION_PENDING=1
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Nothing to clean"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_display_text "Nothing to clean")"
         fi
     else
         IDLE_SECTION_PENDING=0
@@ -1464,17 +1464,17 @@ _safe_clean_impl() {
         # missing, and deduplicated targets have been dropped.
         local count_note=""
         if [[ $total_count -gt 1 ]]; then
-            count_note="$total_count items, "
+            count_note="$(mole_t clean_items_many "$total_count"), "
         fi
 
         if [[ "$DRY_RUN" == "true" ]]; then
             local size_display
             size_display=$(colorize_human_size "$size_human")
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $description${NC} · ${count_note}${size_display} ${YELLOW}dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_display_text "$description")${NC} · ${count_note}${size_display} ${YELLOW}$(mole_t clean_dry_label)${NC}"
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$total_size_kb")
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $description${NC} · ${count_note}$(colorize_human_size "${size_human}")"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_display_text "$description")${NC} · ${count_note}$(colorize_human_size "${size_human}")"
         fi
         mole_add_cleaned_row "$total_count" "$total_size_kb"
         note_activity
@@ -1527,43 +1527,43 @@ start_cleanup() {
     # Both system and external-volume previews publish the same candidate ledger.
     if [[ "$DRY_RUN" == "true" ]]; then
         prepare_clean_preview_file || {
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Unable to create a safe cleanup preview file" >&2
+            echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_preview_file_failed)" >&2
             return 1
         }
         write_clean_preview_header
     fi
     if [[ -n "$EXTERNAL_VOLUME_TARGET" ]]; then
-        echo -e "${PURPLE_BOLD}Clean External Volume${NC}"
+        echo -e "${PURPLE_BOLD}$(mole_display_text "Clean External Volume")${NC}"
         echo -e "${GRAY}${EXTERNAL_VOLUME_TARGET}${NC}"
         echo ""
 
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "${YELLOW}Dry Run Mode${NC}, Preview only, no deletions"
+            echo -e "${YELLOW}$(mole_t clean_dry_run_mode)${NC}, $(mole_t clean_preview_only)"
             echo ""
         fi
         SYSTEM_CLEAN=false
         return 0
     fi
 
-    echo -e "${PURPLE_BOLD}Clean Your Mac${NC}"
+    echo -e "${PURPLE_BOLD}$(mole_display_text "Clean Your Mac")${NC}"
     echo ""
 
     if [[ "$DRY_RUN" != "true" && -t 0 ]]; then
-        echo -e "${GRAY}${ICON_WARNING} Use --dry-run to preview, --whitelist to manage protected paths${NC}"
+        echo -e "${GRAY}${ICON_WARNING} $(mole_t clean_flags_hint)${NC}"
     fi
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        echo -e "${YELLOW}Dry Run Mode${NC}, Preview only, no deletions"
+        echo -e "${YELLOW}$(mole_t clean_dry_run_mode)${NC}, $(mole_t clean_preview_only)"
         echo ""
 
         # Preview system section when sudo is already cached (no password prompt).
         if adopt_sudo_session; then
             SYSTEM_CLEAN=true
-            echo -e "${GREEN}${ICON_SUCCESS}${NC} Admin access available, system preview included"
+            echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_admin_preview)"
             echo ""
         else
             SYSTEM_CLEAN=false
-            echo -e "${GRAY}${ICON_WARNING} System caches need sudo, run ${NC}sudo -v && mo clean --dry-run${GRAY} for full preview${NC}"
+            echo -e "${GRAY}${ICON_WARNING} $(mole_t clean_sudo_preview_prefix) ${NC}sudo -v && mo clean --dry-run${GRAY} $(mole_t clean_sudo_preview_suffix)${NC}"
             echo ""
         fi
         return
@@ -1572,22 +1572,22 @@ start_cleanup() {
     if [[ -t 0 ]]; then
         if adopt_sudo_session; then
             SYSTEM_CLEAN=true
-            echo -e "${GREEN}${ICON_SUCCESS}${NC} Admin access already available"
+            echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_admin_available)"
             echo ""
         else
             prompt_for_system_clean
         fi
     else
         echo ""
-        echo "Running in non-interactive mode"
+        printf '%s\n' "$(mole_t clean_noninteractive)"
         if adopt_sudo_session; then
             SYSTEM_CLEAN=true
-            echo "  ${ICON_LIST} System-level cleanup enabled, sudo session active"
+            echo "  ${ICON_LIST} $(mole_t clean_system_enabled)"
         else
             SYSTEM_CLEAN=false
-            echo "  ${ICON_LIST} System-level cleanup skipped, requires sudo"
+            echo "  ${ICON_LIST} $(mole_t clean_system_skipped)"
         fi
-        echo "  ${ICON_LIST} User-level cleanup will proceed automatically"
+        echo "  ${ICON_LIST} $(mole_t clean_user_automatic)"
         echo ""
     fi
 }
@@ -1614,10 +1614,10 @@ perform_cleanup() {
     if [[ -z "$EXTERNAL_VOLUME_TARGET" && "${MOLE_TEST_MODE:-0}" == "1" ]]; then
         test_mode_enabled=true
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "${YELLOW}Dry Run Mode${NC}, Preview only, no deletions"
+            echo -e "${YELLOW}$(mole_t clean_dry_run_mode)${NC}, $(mole_t clean_preview_only)"
             echo ""
         fi
-        echo -e "${GREEN}${ICON_LIST}${NC} User app cache"
+        echo -e "${GREEN}${ICON_LIST}${NC} $(mole_t clean_user_app_cache)"
         if [[ ${#WHITELIST_PATTERNS[@]} -gt 0 ]]; then
             local -a expanded_defaults
             expanded_defaults=()
@@ -1634,11 +1634,11 @@ perform_cleanup() {
                 done
                 [[ "$is_default" == "false" ]] && has_custom=true && break
             done
-            [[ "$has_custom" == "true" ]] && echo -e "${GREEN}${ICON_SUCCESS}${NC} Protected items found"
+            [[ "$has_custom" == "true" ]] && echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_protected_items_found)"
         fi
         if [[ "$DRY_RUN" == "true" ]]; then
             echo ""
-            echo -e "Potential space: $(colorize_human_size "0.00GB")"
+            echo -e "$(mole_t ui_summary_potential_space "$(colorize_human_size "0.00GB")")"
         fi
         total_items=1
         files_cleaned=0
@@ -1650,7 +1650,7 @@ perform_cleanup() {
             initial_free_space_kb=""
         fi
         initial_free_space_display=$(format_free_space_kb "$initial_free_space_kb")
-        echo -e "${BLUE}${ICON_ADMIN}${NC} $(detect_architecture) | Free space: $initial_free_space_display"
+        echo -e "${BLUE}${ICON_ADMIN}${NC} $(detect_architecture) | $(mole_t ui_summary_free_space "$initial_free_space_display" "")"
     fi
 
     if [[ "$test_mode_enabled" == "true" ]]; then
@@ -1695,14 +1695,14 @@ perform_cleanup() {
 
         if [[ $custom_count -gt 0 || $predefined_count -gt 0 ]]; then
             local summary=""
-            [[ $predefined_count -gt 0 ]] && summary+="$predefined_count core"
+            [[ $predefined_count -gt 0 ]] && summary+="$(mole_t clean_whitelist_core "$predefined_count")"
             [[ $custom_count -gt 0 && $predefined_count -gt 0 ]] && summary+=" + "
-            [[ $custom_count -gt 0 ]] && summary+="$custom_count custom"
-            summary+=" patterns active"
+            [[ $custom_count -gt 0 ]] && summary+="$(mole_t clean_whitelist_custom "$custom_count")"
+            summary+=" $(mole_t clean_whitelist_active)"
 
             # One line: listing every pattern on each preview pushed the
             # cleanup rows a screen down. mo clean --whitelist shows them.
-            echo -e "${BLUE}${ICON_ADMIN}${NC} Whitelist: $summary"
+            echo -e "${BLUE}${ICON_ADMIN}${NC} $(mole_t clean_whitelist_label): $summary"
         fi
     fi
 
@@ -1711,7 +1711,7 @@ perform_cleanup() {
         has_full_disk_access || fda_status=$?
         if [[ $fda_status -eq 1 ]]; then
             echo ""
-            echo -e "${GRAY}${ICON_REVIEW}${NC} ${GRAY}Grant Full Disk Access to your terminal in System Settings for best results${NC}"
+            echo -e "${GRAY}${ICON_REVIEW}${NC} ${GRAY}$(mole_t clean_full_disk_access_hint)${NC}"
         fi
     fi
 
@@ -1784,7 +1784,7 @@ perform_cleanup() {
                 flush_idle_section_slot
                 echo ""
                 for warning in "${WHITELIST_WARNINGS[@]}"; do
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Whitelist: $warning"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_whitelist_label): $warning"
                 done
             fi
 
@@ -1945,7 +1945,7 @@ perform_cleanup() {
         else
             cancel_reason="A required cleanup step failed (exit $cleanup_cancel_rc)."
         fi
-        summary_details+=("${GRAY}${ICON_WARNING}${NC} $cancel_reason Remaining cleanup was skipped.")
+        summary_details+=("${GRAY}${ICON_WARNING}${NC} $(mole_display_text "$cancel_reason") $(mole_display_text "Remaining cleanup was skipped.")")
         log_warning_to_file "$cancel_reason Section: ${CURRENT_SECTION:-unknown}."
     fi
 
@@ -1959,7 +1959,7 @@ perform_cleanup() {
         # Refuse it (or a replacement volume) instead of reporting that disk.
         if [[ -n "$target" ]] && ! _mole_path_matches_identity \
             "$target" "$free_space_parent" "$free_space_parent_id" "$free_space_volume_id"; then
-            printf 'Free space: Unknown\n'
+            printf '%s\n' "$(mole_t ui_summary_free_space "$(mole_t clean_space_unknown)" "")"
             return 0
         fi
 
@@ -1975,7 +1975,7 @@ perform_cleanup() {
         if [[ "$DRY_RUN" != "true" && "$initial_kb" =~ ^[0-9]+$ && "$final_kb" =~ ^[0-9]+$ && "$initial_kb" -ne "$final_kb" ]]; then
             delta_note=" ($(format_free_space_delta_kb "$((final_kb - initial_kb))"))"
         fi
-        printf 'Free space: %s%s\n' "$(format_free_space_kb "$final_kb")" "$delta_note"
+        printf '%s\n' "$(mole_t ui_summary_free_space "$(format_free_space_kb "$final_kb")" "$delta_note")"
     }
 
     if [[ $total_size_cleaned -gt 0 || $files_cleaned -gt 0 ||
@@ -1990,8 +1990,11 @@ perform_cleanup() {
             else
                 potential_label="$freed_size_human"
             fi
-            local stats="Potential space: $(colorize_human_size "$potential_label")"
-            [[ $files_cleaned -gt 0 ]] && stats+=" · $(mole_count_label "$files_cleaned" item)"
+            local stats
+            stats="$(mole_t ui_summary_potential_space "$(colorize_human_size "$potential_label")")"
+            if [[ $files_cleaned -gt 0 ]]; then
+                stats+=" · $(mole_t_items "$files_cleaned")"
+            fi
             summary_details+=("$stats")
 
             {
@@ -2014,10 +2017,11 @@ perform_cleanup() {
             fi
             # The free-space line below carries the measured disk change, so
             # this line stays the bytes Mole itself removed (#1023).
-            local summary_line="Removed: $(colorize_human_size "$freed_size_human")"
+            local summary_line
+            summary_line="$(mole_t ui_summary_removed_size "$(colorize_human_size "$freed_size_human")")"
 
             if [[ $files_cleaned -gt 0 ]]; then
-                summary_line+=" · $(mole_count_label "$files_cleaned" item)"
+                summary_line+=" · $(mole_t_items "$files_cleaned")"
             fi
 
             summary_details+=("$summary_line")
@@ -2144,7 +2148,7 @@ run_cloud_and_office_cleanup() {
     fi
 
     if _mole_clean_section_budget_spent; then
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} Cloud & Office · ${GRAY}time limit reached, skipped remaining items${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_cloud_office_timeout)"
         note_activity
     fi
 
@@ -2169,7 +2173,7 @@ main() {
             "--external")
                 shift
                 if [[ $# -eq 0 ]]; then
-                    echo "Missing path for --external" >&2
+                    printf '%s\n' "$(mole_t clean_missing_external_path)" >&2
                     exit 1
                 fi
                 EXTERNAL_VOLUME_TARGET=$(validate_external_volume_target "$1") || exit 1
@@ -2180,18 +2184,15 @@ main() {
                 exit 0
                 ;;
             "--select" | "--categories" | "--exclude")
-                echo "mo clean $1 was removed in this release." >&2
-                echo "Use 'mo clean --dry-run' to preview cleanup and 'mo clean --whitelist' to protect paths." >&2
+                printf '%s\n' "$(mole_t clean_removed_option "$1")" "$(mole_t clean_removed_option_help)" >&2
                 exit 1
                 ;;
             -*)
-                echo "Unknown option for mo clean: $1" >&2
-                echo "Run 'mo clean --help' for usage." >&2
+                printf '%s\n' "$(mole_t clean_unknown_option "$1")" "$(mole_t clean_usage_hint)" >&2
                 exit 1
                 ;;
             *)
-                echo "Unexpected argument for mo clean: $1" >&2
-                echo "Run 'mo clean --help' for usage." >&2
+                printf '%s\n' "$(mole_t clean_unexpected_argument "$1")" "$(mole_t clean_usage_hint)" >&2
                 exit 1
                 ;;
         esac

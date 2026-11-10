@@ -1272,6 +1272,12 @@ EOF
     [ "$output" = $'-n\n-e' ]
 }
 
+@test "truncate_by_display_width counts Cyrillic, CJK, and emoji columns" {
+    run /bin/bash -c "export MOLE_BASE_LOADED=1; source '$PROJECT_ROOT/lib/core/ui.sh'; truncate_by_display_width 'Очистка каталогов' 10; truncate_by_display_width 'A😀Bxxxxx' 7"
+    [ "$status" -eq 0 ]
+    [ "$output" = $'Очистка...\nA😀B...' ]
+}
+
 @test "read_key respects MOLE_READ_KEY_FORCE_CHAR" {
     run /bin/bash -c "export MOLE_BASE_LOADED=1; export MOLE_READ_KEY_FORCE_CHAR=1; source '$PROJECT_ROOT/lib/core/ui.sh'; echo -n 'j' | read_key"
     [ "$output" = "CHAR:j" ]

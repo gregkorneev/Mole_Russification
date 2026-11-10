@@ -101,11 +101,11 @@ clean_ds_store_tree() {
         size_human=$(bytes_to_human "$total_bytes")
         local size_kb=$(((total_bytes + 1023) / 1024))
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $label${NC} · ${YELLOW}$file_count files, $size_human dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_display_text "$label") · $(mole_t clean_counted_files "$file_count" "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$size_kb")
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $label${NC} · ${line_color}$file_count files, $(colorize_human_size "${size_human}")"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_display_text "$label") · $(mole_t clean_counted_files "$file_count" "$(colorize_human_size "${size_human}")")"
         fi
         mole_add_cleaned_row "$file_count" "$size_kb"
         note_activity
@@ -664,7 +664,7 @@ orphan_cleanup_candidate_still_eligible() {
 clean_orphaned_app_data() {
     if ! ls "$HOME/Library/Caches" > /dev/null 2>&1; then
         stop_section_spinner
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Skipped: No permission to access Library folders"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_apps_no_library_permission)"
         note_activity
         return 0
     fi
@@ -686,10 +686,10 @@ clean_orphaned_app_data() {
         stop_section_spinner
         local scan_detail="${MOLE_APP_SCAN_FAILURE_DETAIL:-}"
         if [[ -n "$scan_detail" ]]; then
-            printf '  %b Skipped: Unable to scan installed applications (%s)\n' \
-                "${GRAY}${ICON_WARNING}${NC}" "$scan_detail"
+            printf '  %b %s (%s)\n' \
+                "${GRAY}${ICON_WARNING}${NC}" "$(mole_t clean_apps_scan_failed)" "$scan_detail"
         else
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Skipped: Unable to scan installed applications"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_apps_scan_failed)"
         fi
         note_activity
         return 0
@@ -896,9 +896,9 @@ clean_orphaned_app_data() {
     if [[ $orphaned_count -gt 0 ]]; then
         local orphaned_mb=$(echo "$total_orphaned_kb" | awk '{printf "%.1f", $1/1024}')
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Would clean $(mole_count_label "$orphaned_count" item), about ${orphaned_mb}MB"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_orphan_apps_preview "$(mole_count_label "$orphaned_count" item)" "$orphaned_mb")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Cleaned $(mole_count_label "$orphaned_count" item), about ${orphaned_mb}MB"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_orphan_apps_done "$(mole_count_label "$orphaned_count" item)" "$orphaned_mb")"
         fi
         note_activity
     fi
@@ -1006,7 +1006,7 @@ clean_orphaned_system_services() {
             -n true < /dev/null 2> /dev/null || service_auth_rc=$?
     fi
     if mole_rc_timeout "$service_auth_rc"; then
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} Orphaned system services · ${GRAY}authorization check timed out, skipped cleanup${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_orphan_system_services) · ${GRAY}$(mole_t clean_orphan_services_auth_timeout)${NC}"
         note_activity
         return 0
     elif [[ $service_auth_rc -ge 128 ]]; then
@@ -1785,7 +1785,7 @@ clean_orphaned_system_services() {
         if [[ $service_scan_status -ge 128 ]]; then
             return "$service_scan_status"
         fi
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} Orphaned system services · ${GRAY}scan incomplete, skipped cleanup${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_orphan_system_services) · ${GRAY}$(mole_t clean_orphan_services_scan_incomplete)${NC}"
         note_activity
         return 0
     fi
@@ -1854,7 +1854,7 @@ clean_orphaned_system_services() {
             _orphan_service_candidate_still_eligible "$orphan_file" "$expected_identity" || eligibility_rc=$?
             if mole_rc_timeout "$eligibility_rc"; then
                 stop_section_spinner
-                echo -e "  ${YELLOW}${ICON_WARNING}${NC} Orphaned system services · ${GRAY}time limit reached, stopped cleanup${NC}"
+                echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_orphan_system_services) · ${GRAY}$(mole_t clean_orphan_services_time_limit)${NC}"
                 debug_log "Orphaned services stopped by deadline at stage: eligibility recheck"
                 note_activity
                 return 0
@@ -1888,7 +1888,7 @@ clean_orphaned_system_services() {
                 fi
                 if mole_rc_timeout "$orphan_size_rc"; then
                     stop_section_spinner
-                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} Orphaned system services · ${GRAY}time limit reached, stopped cleanup${NC}"
+                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_orphan_system_services) · ${GRAY}$(mole_t clean_orphan_services_time_limit)${NC}"
                     debug_log "Orphaned services stopped by deadline at stage: dry-run sizing"
                     note_activity
                     return 0
@@ -1916,7 +1916,7 @@ clean_orphaned_system_services() {
                 fi
                 if mole_rc_timeout "$file_size_rc"; then
                     stop_section_spinner
-                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} Orphaned system services · ${GRAY}time limit reached, stopped cleanup${NC}"
+                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_orphan_system_services) · ${GRAY}$(mole_t clean_orphan_services_time_limit)${NC}"
                     debug_log "Orphaned services stopped by deadline at stage: plist removal"
                     note_activity
                     return 0
@@ -1938,7 +1938,7 @@ clean_orphaned_system_services() {
                     "$expected_identity" || final_eligibility_rc=$?
                 if mole_rc_timeout "$final_eligibility_rc"; then
                     stop_section_spinner
-                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} Orphaned system services · ${GRAY}time limit reached, stopped cleanup${NC}"
+                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_orphan_system_services) · ${GRAY}$(mole_t clean_orphan_services_time_limit)${NC}"
                     debug_log "Orphaned services stopped by deadline at stage: helper binary removal"
                     note_activity
                     return 0
@@ -1961,7 +1961,7 @@ clean_orphaned_system_services() {
                     skipped_protected_count=$((skipped_protected_count + 1))
                 elif mole_rc_timeout "$remove_rc"; then
                     stop_section_spinner
-                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} Orphaned system services · ${GRAY}removal timed out, stopped cleanup${NC}"
+                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_orphan_system_services) · ${GRAY}$(mole_t clean_orphan_services_remove_timeout)${NC}"
                     note_activity
                     return 0
                 elif [[ $remove_rc -ge 128 ]]; then
@@ -1976,12 +1976,12 @@ clean_orphaned_system_services() {
         stop_section_spinner
 
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Orphaned services · ${YELLOW}${orphaned_count} found dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_orphan_services_preview "$orphaned_count")"
             note_activity
         elif [[ $removed_count -gt 0 ]]; then
             local orphaned_kb_display
             orphaned_kb_display=$(bytes_to_human "$((removed_kb * 1024))")
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Orphaned services · cleaned ${removed_count}, ${orphaned_kb_display}"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_orphan_services_done "$removed_count" "$orphaned_kb_display")"
             note_activity
         fi
         # Surface protected/failed counts in BOTH dry-run and real-clean so the
@@ -1992,12 +1992,12 @@ clean_orphaned_system_services() {
         if [[ $skipped_protected_count -gt 0 || $failed_count -gt 0 ]]; then
             local issue_note=""
             if [[ $skipped_protected_count -gt 0 ]]; then
-                issue_note="skipped ${skipped_protected_count} protected"
+                issue_note="$(mole_t clean_orphan_services_protected "$skipped_protected_count")"
             fi
             if [[ $failed_count -gt 0 ]]; then
-                issue_note+="${issue_note:+, }${failed_count} failed"
+                issue_note+="${issue_note:+, }$(mole_t clean_orphan_services_failed "$failed_count")"
             fi
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Orphaned services · ${issue_note}"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_orphan_services_issues "$issue_note")"
             note_activity
         fi
     fi
@@ -2209,15 +2209,15 @@ clean_orphaned_container_stubs() {
     stop_section_spinner
     if [[ $removed_count -gt 0 ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Orphaned app container stubs, ${YELLOW}${removed_count} stubs dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_container_stubs_preview "$removed_count")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Orphaned app container stubs, ${GREEN}${removed_count} removed${NC}"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_container_stubs_done "$removed_count")"
             note_activity
         fi
         mole_add_cleaned_row "$removed_count" 0
     fi
     if [[ $failed_count -gt 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Orphaned container stubs: $failed_count could not be removed"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_container_stubs_failed "$failed_count")"
         # Keep the warning visible past the idle-section erase.
         note_activity
     fi

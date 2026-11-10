@@ -1973,8 +1973,10 @@ EOF
 	done
 	[[ -n "$comma_locale" ]] || skip "no comma-decimal locale installed"
 
-	run env LC_ALL="$comma_locale" LANG="$comma_locale" PROJECT_ROOT="$PROJECT_ROOT" /bin/bash --noprofile --norc <<'EOF'
+	run env LC_ALL="$comma_locale" LANG="$comma_locale" MOLE_LANG=en PROJECT_ROOT="$PROJECT_ROOT" /bin/bash --noprofile --norc <<'EOF'
 set -euo pipefail
+source "$PROJECT_ROOT/lib/core/i18n.sh"
+mole_i18n_init
 eval "$(sed -n '/^json_get_value()/,/^}$/p' "$PROJECT_ROOT/bin/optimize.sh")"
 eval "$(sed -n '/^show_system_health()/,/^}$/p' "$PROJECT_ROOT/bin/optimize.sh")"
 ICON_ADMIN="*"

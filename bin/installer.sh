@@ -357,7 +357,7 @@ collect_installers() {
 
     if [[ ${#all_files[@]} -eq 0 ]]; then
         if [[ "${IN_ALT_SCREEN:-0}" != "1" ]]; then
-            echo -e "${GREEN}${ICON_SUCCESS}${NC} No installer files to clean"
+            echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t ui_installer_no_files)"
         fi
         return 1
     fi
@@ -559,7 +559,7 @@ select_installers() {
         done
 
         printf "%s\n" "$clear_line"
-        printf "%s${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN}  |  Space Select  |  Enter Confirm  |  A All  |  I Invert  |  Q Quit${NC}\n" "$clear_line"
+        printf "%s${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN}  |  $(mole_display_text "Space Select")  |  $(mole_display_text "Enter Confirm")  |  $(mole_display_text "A All")  |  $(mole_display_text "I Invert")  |  Q $(mole_display_text "Quit")${NC}\n" "$clear_line"
     }
 
     trap restore_terminal EXIT
@@ -828,7 +828,7 @@ delete_selected_installers() {
     confirm_human=$(bytes_to_human "$confirm_size")
 
     # Show files to be deleted
-    echo -e "${PURPLE_BOLD}Files to be removed:${NC}"
+    echo -e "${PURPLE_BOLD}$(mole_display_text "Files to be removed:")${NC}"
     for ((plan_index = 0; plan_index < ${#INSTALLER_DELETE_PATHS[@]}; plan_index++)); do
         local file_path="${INSTALLER_DELETE_PATHS[$plan_index]}"
         local file_size="${INSTALLER_DELETE_SIZES[$plan_index]}"
@@ -840,7 +840,7 @@ delete_selected_installers() {
 
     # Confirm deletion
     echo ""
-    echo -ne "${PURPLE}${ICON_ARROW}${NC} Delete ${#INSTALLER_DELETE_PATHS[@]} installers, ${confirm_human}  ${GREEN}Enter${NC} confirm, ${GRAY}ESC${NC} cancel: "
+    echo -ne "${PURPLE}${ICON_ARROW}${NC} $(mole_display_text "Delete ${#INSTALLER_DELETE_PATHS[@]} installers, ${confirm_human}")  ${GREEN}Enter${NC} $(mole_display_text "confirm") ${GRAY}ESC${NC} $(mole_display_text "cancel"): "
 
     if ! IFS= read -r -s -n1 confirm; then
         printf '\n'
@@ -906,7 +906,7 @@ perform_installers() {
             printf '\nCheck that the scan locations are readable and responsive, then retry mo installer.\n' >&2
             return "$collect_status"
         fi
-        echo -e "${GREEN}${ICON_SUCCESS}${NC} No installer files to clean"
+        echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t ui_installer_no_files)"
         printf '\n'
         return 2 # Nothing to clean
     fi
@@ -1006,14 +1006,14 @@ main() {
                 export MOLE_DRY_RUN=1
                 ;;
             *)
-                echo "Unknown option: $arg" >&2
+                printf '%s\n' "$(mole_t cli_unknown_option "$arg")" >&2
                 exit 1
                 ;;
         esac
     done
 
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        echo -e "${YELLOW}${ICON_DRY_RUN} DRY RUN MODE${NC}, No installer files will be removed"
+        echo -e "${YELLOW}${ICON_DRY_RUN} $(mole_t ui_dry_run_installer_banner)${NC}"
         printf '\n'
     fi
 
@@ -1049,7 +1049,7 @@ main() {
             if [[ $total_delete_failed -gt 0 ]]; then
                 show_summary
                 if mole_rc_timeout "$exit_code"; then
-                    echo -e "${YELLOW}${ICON_WARNING}${NC} A file check timed out, so later selections were left in place. Retry mo installer."
+                    echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t installer_file_check_timeout)"
                 fi
             fi
             return "$exit_code"

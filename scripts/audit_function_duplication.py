@@ -50,6 +50,10 @@ ALLOWED_GROUPS: dict[tuple[str, ...], str] = {
         "menu_simple and menu_paginated are deliberately independent modules; "
         "sharing a helper would couple the fallback UI to the paginated one"
     ),
+    ("_ms_display_text", "_pm_display_text"): (
+        "menu_simple and menu_paginated are deliberately independent modules; "
+        "each keeps an English fallback when sourced without the shared catalog"
+    ),
     ("show_history_help", "show_installer_help"): (
         "same help frame, different command text; the frame is the shared part and already is"
     ),

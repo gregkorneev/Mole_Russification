@@ -31,7 +31,7 @@ source "$SCRIPT_DIR/lib/manage/whitelist.sh"
 
 print_header() {
     printf '\n'
-    echo -e "${PURPLE_BOLD}Optimize${NC}"
+    echo -e "${PURPLE_BOLD}$(mole_display_text "Optimize")${NC}"
 }
 
 # Extract a simple numeric value from JSON by key without a jq dependency.
@@ -70,11 +70,11 @@ show_optimization_summary() {
     failed=$(optimize_outcome_count "$MOLE_OPTIMIZE_OUTCOME_FAILED")
 
     local -a outcome_parts=()
-    [[ $unchanged -gt 0 ]] && outcome_parts+=("$unchanged unchanged")
-    [[ $skipped -gt 0 ]] && outcome_parts+=("$skipped skipped")
-    [[ $unavailable -gt 0 ]] && outcome_parts+=("$unavailable unavailable")
-    [[ $attention -gt 0 ]] && outcome_parts+=("$attention need attention")
-    [[ $failed -gt 0 ]] && outcome_parts+=("$failed failed")
+    [[ $unchanged -gt 0 ]] && outcome_parts+=("$unchanged $(mole_t ui_outcome_unchanged)")
+    [[ $skipped -gt 0 ]] && outcome_parts+=("$skipped $(mole_t ui_outcome_skipped)")
+    [[ $unavailable -gt 0 ]] && outcome_parts+=("$unavailable $(mole_t ui_outcome_unavailable)")
+    [[ $attention -gt 0 ]] && outcome_parts+=("$attention $(mole_t ui_outcome_attention)")
+    [[ $failed -gt 0 ]] && outcome_parts+=("$failed $(mole_t ui_outcome_failed)")
 
     local outcome_line=""
     if [[ ${#outcome_parts[@]} -gt 0 ]]; then
@@ -86,12 +86,12 @@ show_optimization_summary() {
     fi
 
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        summary_title="Dry Run Complete, No Changes Made"
-        summary_details+=("Would apply ${YELLOW}${applied}${NC} optimizations")
+        summary_title="$(mole_t ui_summary_optimize_dry_run)"
+        summary_details+=("$(mole_t ui_summary_would_apply "${YELLOW}${applied}${NC}")")
         [[ -n "$outcome_line" ]] && summary_details+=("$outcome_line")
-        summary_details+=("Run without ${YELLOW}--dry-run${NC} to apply these changes")
+        summary_details+=("$(mole_t ui_summary_run_without_dry_run "${YELLOW}--dry-run${NC}")")
     else
-        summary_title="Optimization Complete"
+        summary_title="$(mole_t ui_summary_optimize_complete)"
 
         local cache_kb="${OPTIMIZE_CACHE_CLEANED_KB:-0}"
         local db_count="${OPTIMIZE_DATABASES_COUNT:-0}"
@@ -101,24 +101,24 @@ show_optimization_summary() {
         if [[ "$cache_kb" =~ ^[0-9]+$ ]] && [[ "$cache_kb" -gt 0 ]]; then
             local cache_human
             cache_human=$(bytes_to_human "$((cache_kb * 1024))")
-            key_stat="${cache_human} cache cleaned"
+            key_stat="$cache_human $(mole_t ui_cache_cleaned)"
         elif [[ "$db_count" =~ ^[0-9]+$ ]] && [[ "$db_count" -gt 0 ]]; then
-            key_stat="${db_count} databases optimized"
+            key_stat="${db_count} $(mole_t ui_databases_optimized)"
         elif [[ "$config_count" =~ ^[0-9]+$ ]] && [[ "$config_count" -gt 0 ]]; then
-            key_stat="${config_count} configs repaired"
+            key_stat="${config_count} $(mole_t ui_configs_repaired)"
         fi
 
         if [[ -n "$key_stat" ]]; then
-            summary_details+=("Applied ${GREEN}${applied}${NC} optimizations, ${key_stat}")
+            summary_details+=("$(mole_t ui_summary_applied_with_stat "${GREEN}${applied}${NC}" "$key_stat")")
         else
-            summary_details+=("Applied ${GREEN}${applied}${NC} optimizations")
+            summary_details+=("$(mole_t ui_summary_applied "${GREEN}${applied}${NC}")")
         fi
 
         [[ -n "$outcome_line" ]] && summary_details+=("$outcome_line")
         if [[ $attention -gt 0 || $failed -gt 0 ]]; then
-            summary_details+=("Review the warnings above")
+            summary_details+=("$(mole_t ui_summary_review_warnings)")
         else
-            summary_details+=("Optimization pass complete")
+            summary_details+=("$(mole_t ui_summary_optimize_pass_complete)")
         fi
     fi
 
@@ -150,8 +150,7 @@ show_system_health() {
         'BEGIN { printf "%.0f %.0f %.0f %.0f %.0f", mu, mt, du, dt, ut }' 2> /dev/null || echo "0 0 0 0 0")
     read -r mem_used mem_total disk_used disk_total uptime <<< "$rounded"
 
-    printf "${ICON_ADMIN} System  %s/%s GB RAM | %s/%s GB Disk | Uptime %sd\n" \
-        "$mem_used" "$mem_total" "$disk_used" "$disk_total" "$uptime"
+    printf '%s\n' "${ICON_ADMIN} $(mole_t system_health_line "$mem_used" "$mem_total" "$disk_used" "$disk_total" "$uptime")"
 }
 
 announce_action() {
@@ -162,7 +161,7 @@ announce_action() {
     else
         echo ""
     fi
-    echo -e "${BLUE}${ICON_ARROW} ${name}${NC}"
+    echo -e "${BLUE}${ICON_ARROW} $(mole_display_text "$name")${NC}"
 }
 
 cleanup_all() {
@@ -227,8 +226,7 @@ main() {
                 exit 0
                 ;;
             *)
-                echo "Unknown optimize option: $arg" >&2
-                echo "Use 'mo optimize --help' for supported options." >&2
+                printf '%s\n' "$(mole_t optimize_unknown_option "$arg")" "$(mole_t optimize_usage_hint)" >&2
                 exit 1
                 ;;
         esac
@@ -246,12 +244,12 @@ main() {
 
     # Dry-run indicator.
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        echo -e "${YELLOW}${ICON_DRY_RUN} DRY RUN MODE${NC}, No files will be modified\n"
+        echo -e "${YELLOW}${ICON_DRY_RUN} $(mole_t ui_dry_run_optimize_banner)${NC}\n"
     fi
 
     if ! command -v bc > /dev/null 2>&1; then
-        echo -e "${YELLOW}${ICON_ERROR}${NC} Missing dependency: bc"
-        echo -e "${GRAY}Install with: ${GREEN}brew install bc${NC}"
+        echo -e "${YELLOW}${ICON_ERROR}${NC} $(mole_t optimize_missing_dependency_bc)"
+        echo -e "${GRAY}$(mole_t optimize_install_with) ${GREEN}brew install bc${NC}"
         exit 1
     fi
 
@@ -274,7 +272,7 @@ main() {
         fi
         echo ""
         log_error "Invalid system health data format"
-        echo -e "${GRAY}${ICON_REVIEW}${NC} Check if awk, sysctl, and df commands are available"
+        echo -e "${GRAY}${ICON_REVIEW}${NC} $(mole_t optimize_missing_system_commands)"
         exit 1
     fi
 
@@ -290,7 +288,7 @@ main() {
                 IFS=', '
                 echo "${CURRENT_WHITELIST_PATTERNS[*]}"
             )
-            echo -e "${ICON_ADMIN} Active Whitelist: ${patterns_list}"
+            echo -e "${ICON_ADMIN} $(mole_t optimize_active_whitelist) ${patterns_list}"
         fi
     fi
 

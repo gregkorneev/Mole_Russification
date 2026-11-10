@@ -15,6 +15,8 @@ _MOLE_CORE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Load core modules
 source "$_MOLE_CORE_DIR/base.sh"
 prepare_mole_tmpdir > /dev/null
+source "$_MOLE_CORE_DIR/i18n.sh"
+mole_i18n_init
 source "$_MOLE_CORE_DIR/log.sh"
 
 source "$_MOLE_CORE_DIR/timeout.sh"
@@ -116,10 +118,10 @@ _mole_repair_stale_brew_entries() {
         run_with_timeout 120 \
         brew link --overwrite mole > /dev/null 2>&1 || relink_rc=$?
     if [[ $relink_rc -eq 0 ]]; then
-        echo -e "${GREEN}${ICON_SUCCESS}${NC} Repaired stale launcher, now pointing at the current Homebrew install"
+        echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t update_repaired_stale_launcher)"
     else
         log_warning "Launcher still points at a removed Homebrew version"
-        printf 'Run: brew link --overwrite mole\n' >&2
+        printf '%s\n' "$(mole_t update_brew_link_manual)" >&2
     fi
 }
 
@@ -158,7 +160,7 @@ mole_print_release_highlights() {
         /usr/bin/plutil -extract body raw -o - - 2> /dev/null) || return 0
     titles=$(mole_release_highlight_titles "$body" 4)
     [[ -n "$titles" ]] || return 0
-    printf "What's new in %s\n" "$version"
+    printf '%s\n' "$(mole_t update_whats_new "$version")"
     while IFS= read -r title; do
         printf '  %s %s\n' "$ICON_LIST" "$title"
     done <<< "$titles"
@@ -177,9 +179,9 @@ update_via_homebrew() {
 
     # Update Homebrew
     if [[ -t 1 ]]; then
-        start_inline_spinner "Updating Homebrew..."
+        start_inline_spinner "$(mole_t spinner_updating_homebrew)"
     else
-        echo "Updating Homebrew..."
+        printf '%s\n' "$(mole_t spinner_updating_homebrew)"
     fi
 
     local brew_update_timeout=120
@@ -192,9 +194,9 @@ update_via_homebrew() {
 
     # Upgrade Mole
     if [[ -t 1 ]]; then
-        start_inline_spinner "Upgrading Mole..."
+        start_inline_spinner "$(mole_t spinner_upgrading_mole)"
     else
-        echo "Upgrading Mole..."
+        printf '%s\n' "$(mole_t spinner_upgrading_mole)"
     fi
 
     local brew_upgrade_timeout=120
@@ -221,7 +223,7 @@ update_via_homebrew() {
         if [[ -n "$upgrade_output" ]]; then
             printf '%s\n' "$upgrade_output" >&2
         else
-            printf 'brew upgrade mole exited with status %s\n' "$upgrade_status" >&2
+            printf '%s\n' "$(mole_t update_brew_upgrade_failed "$upgrade_status")" >&2
         fi
         return 1
     elif echo "$upgrade_output" | grep -q "already installed"; then
@@ -231,7 +233,7 @@ update_via_homebrew() {
         [[ -z "$installed_version" ]] && installed_version=$(run_with_timeout "$MOLE_TIMEOUT_QUICK_DETECT_SEC" \
             mo --version 2> /dev/null | awk '/Mole version/ {print $3; exit}' || true)
         echo ""
-        echo -e "${GREEN}${ICON_SUCCESS}${NC} Already on latest version, ${installed_version:-$current_version}"
+        echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t ui_update_already_latest "${installed_version:-$current_version}")"
         echo ""
     else
         echo "$upgrade_output" | grep -Ev "^(==>|Updating Homebrew|Warning:)" || true
@@ -241,7 +243,7 @@ update_via_homebrew() {
         [[ -z "$new_version" ]] && new_version=$(run_with_timeout "$MOLE_TIMEOUT_QUICK_DETECT_SEC" \
             mo --version 2> /dev/null | awk '/Mole version/ {print $3; exit}' || true)
         echo ""
-        echo -e "${GREEN}${ICON_SUCCESS}${NC} Updated to latest version, ${new_version:-$current_version}"
+        echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t update_updated_latest "${new_version:-$current_version}")"
         echo ""
         # Record the update before the network highlights fetch, so Ctrl-C
         # during that fetch cannot drop the row for a change already made.

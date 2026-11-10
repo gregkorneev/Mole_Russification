@@ -9,6 +9,10 @@ _test_helper_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 _repo_root="$(cd "${_test_helper_dir}/.." && pwd)"
 _uninstall_script="${_repo_root}/bin/uninstall.sh"
 
+# The extracted function uses the same catalog as the real entrypoint.
+source "${_repo_root}/lib/core/i18n.sh"
+mole_i18n_init
+
 if [[ ! -f "${_uninstall_script}" ]]; then
     echo "Error: unable to find ${_uninstall_script}" >&2
     return 1

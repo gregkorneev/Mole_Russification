@@ -3,6 +3,14 @@
 
 set -euo pipefail
 
+_ms_display_text() {
+    if declare -F mole_display_text > /dev/null 2>&1; then
+        mole_display_text "$1"
+    else
+        printf '%s' "$1"
+    fi
+}
+
 # Terminal control functions
 enter_alt_screen() { tput smcup 2> /dev/null || true; }
 leave_alt_screen() { tput rmcup 2> /dev/null || true; }
@@ -58,7 +66,7 @@ paginated_multi_select() {
 
     # Validation
     if [[ ${#items[@]} -eq 0 ]]; then
-        echo "No items provided" >&2
+        printf '%s\n' "$(_ms_display_text "No items provided")" >&2
         return 1
     fi
 
@@ -229,7 +237,7 @@ paginated_multi_select() {
 
         # Clear any remaining lines at bottom
         printf '%b' "${clear_line}\n" >&2
-        printf '%b' "${clear_line}${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN} | Space | Enter Save | Q Cancel${NC}\n" >&2
+        printf '%b' "${clear_line}${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN} | $(_ms_display_text "Space Select") | $(_ms_display_text "Enter Save") | $(_ms_display_text "Q Cancel")${NC}\n" >&2
 
         # Clear one more line to ensure no artifacts
         printf '%b' "${clear_line}" >&2

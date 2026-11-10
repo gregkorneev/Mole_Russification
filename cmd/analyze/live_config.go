@@ -2,6 +2,8 @@
 
 package main
 
+import "github.com/tw93/mole/internal/i18n"
+
 func nextLiveSortMode(mode liveSortMode) liveSortMode {
 	if mode == liveSortContinuous {
 		return liveSortFreezeOnMove
@@ -11,7 +13,7 @@ func nextLiveSortMode(mode liveSortMode) liveSortMode {
 
 func liveSortModeLabel(mode liveSortMode) string {
 	if mode == liveSortFreezeOnMove {
-		return "freeze-on-move"
+		return i18n.T("analyze_live_sort_freeze")
 	}
-	return "continuous"
+	return i18n.T("analyze_live_sort_continuous")
 }

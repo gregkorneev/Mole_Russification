@@ -13,6 +13,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/tw93/mole/internal/i18n"
 )
 
 const (
@@ -23,14 +24,14 @@ const (
 
 var (
 	// Command-line flags
-	jsonOutput       = flag.Bool("json", false, "output metrics as JSON instead of TUI")
-	procCPUThreshold = flag.Float64("proc-cpu-threshold", 100, "alert when a process stays above this CPU percent")
-	procCPUWindow    = flag.Duration("proc-cpu-window", 5*time.Minute, "continuous duration a process must exceed the CPU threshold")
-	procCPUAlerts    = flag.Bool("proc-cpu-alerts", true, "enable persistent high-CPU process alerts")
+	jsonOutput       = flag.Bool("json", false, i18n.T("status_flag_json"))
+	procCPUThreshold = flag.Float64("proc-cpu-threshold", 100, i18n.T("status_flag_cpu_threshold"))
+	procCPUWindow    = flag.Duration("proc-cpu-window", 5*time.Minute, i18n.T("status_flag_cpu_window"))
+	procCPUAlerts    = flag.Bool("proc-cpu-alerts", true, i18n.T("status_flag_cpu_alerts"))
 
 	// Watch mode: stream NDJSON (one snapshot per line) from a single warm collector.
-	watchMode     = flag.Bool("watch", false, "stream metrics continuously as newline-delimited JSON instead of the one-shot TUI/JSON")
-	watchInterval = flag.String("interval", "", "with --watch, collection interval (e.g. 1s, 2s); defaults to 1s")
+	watchMode     = flag.Bool("watch", false, i18n.T("status_flag_watch"))
+	watchInterval = flag.String("interval", "", i18n.T("status_flag_interval"))
 )
 
 func shouldUseJSONOutput(forceJSON bool, stdout *os.File) bool {
@@ -98,10 +99,10 @@ func processWatchOptionsFromFlags() ProcessWatchOptions {
 
 func validateFlags() error {
 	if *procCPUThreshold < 0 {
-		return fmt.Errorf("--proc-cpu-threshold must be >= 0")
+		return errors.New(i18n.T("status_invalid_cpu_threshold"))
 	}
 	if *procCPUWindow <= 0 {
-		return fmt.Errorf("--proc-cpu-window must be > 0")
+		return errors.New(i18n.T("status_invalid_cpu_window"))
 	}
 	return nil
 }
@@ -162,7 +163,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	if !m.schedule.hasSnapshot {
-		return "Loading..."
+		return i18n.T("status_collecting")
 	}
 
 	termWidth := m.width
@@ -264,11 +265,11 @@ func runJSONMode() {
 // printed and exit 0. A snapshot with no core metrics, or an encoding error, fails.
 func writeJSONSnapshot(stdout, stderr io.Writer, data MetricsSnapshot, err error) int {
 	if err != nil {
-		_, _ = fmt.Fprintf(stderr, "status: collect failed: %v\n", err)
+		_, _ = fmt.Fprintf(stderr, i18n.T("status_collect_error")+"\n", err)
 	}
 	if !hasCoreMetrics(data) {
 		if err == nil {
-			_, _ = fmt.Fprintln(stderr, "status: collect failed: no metrics collected")
+			_, _ = fmt.Fprintln(stderr, i18n.T("status_collection_failed"))
 		}
 		return 1
 	}
@@ -276,7 +277,7 @@ func writeJSONSnapshot(stdout, stderr io.Writer, data MetricsSnapshot, err error
 	encoder := json.NewEncoder(stdout)
 	encoder.SetIndent("", "  ")
 	if err := encoder.Encode(data); err != nil {
-		_, _ = fmt.Fprintf(stderr, "error encoding JSON: %v\n", err)
+		_, _ = fmt.Fprintf(stderr, i18n.T("status_json_error")+"\n", err)
 		return 1
 	}
 	return 0
@@ -300,7 +301,7 @@ func hasCoreMetrics(data MetricsSnapshot) bool {
 func runTUIMode() {
 	p := tea.NewProgram(newModel(), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "system status error: %v\n", err)
+		fmt.Fprintf(os.Stderr, i18n.T("status_system_error"), err)
 		os.Exit(1)
 	}
 }
@@ -312,36 +313,23 @@ func parseWatchInterval(raw string) (time.Duration, error) {
 
 	d, err := time.ParseDuration(raw)
 	if err != nil {
-		return 0, fmt.Errorf("invalid --interval %q (want e.g. 1s, 2s): %w", raw, err)
+		return 0, fmt.Errorf(i18n.T("status_invalid_interval"), raw, err)
 	}
 	if d <= 0 {
-		return 0, fmt.Errorf("invalid --interval %q (must be > 0)", raw)
+		return 0, fmt.Errorf(i18n.T("status_interval_positive"), raw)
 	}
 	return d, nil
 }
 
-// usageText is the help every other Mole subcommand prints by hand. The Go flag
-// package would otherwise render "Usage of /usr/local/bin/status-go:", naming a
-// bundled binary the user never typed, so the text is written out here instead.
-const usageText = `Usage: mo status [OPTIONS]
-
-Monitor system health. Without options it opens the interactive dashboard, and
-switches to a single JSON snapshot when stdout is not a terminal.
-
-Options:
-  --json                          Output one metrics snapshot as JSON
-  --watch                         Stream snapshots as newline-delimited JSON
-  --interval DURATION             With --watch, collection interval (default 1s)
-  --proc-cpu-alerts               Enable high-CPU process alerts (default true)
-  --proc-cpu-threshold PERCENT    Alert above this CPU percent (default 100)
-  --proc-cpu-window DURATION      Time above the threshold before alerting (default 5m)
-  -h, --help                      Show this help message
-
-Examples:
-  mo status                       Interactive dashboard
-  mo status --json                One machine-readable snapshot
-  mo status --watch --interval 2s Continuous NDJSON stream
-`
+// usageText uses the same catalogs as the Bash commands and Analyze TUI.
+func usageText() string {
+	return fmt.Sprintf("%s\n\n%s\n\n%s\n  --json                          %s\n  --watch                         %s\n  --interval DURATION             %s\n  --proc-cpu-alerts               %s\n  --proc-cpu-threshold PERCENT    %s\n  --proc-cpu-window DURATION      %s\n  -h, --help                      %s\n\n%s\n  mo status                       %s\n  mo status --json                %s\n  mo status --watch --interval 2s %s\n",
+		i18n.T("help_usage", "status [OPTIONS]"), i18n.T("status_help_description"), i18n.T("help_options"),
+		i18n.T("status_help_json"), i18n.T("status_help_watch"), i18n.T("status_help_interval"),
+		i18n.T("status_help_cpu_alerts"), i18n.T("status_help_cpu_threshold"), i18n.T("status_help_cpu_window"),
+		i18n.T("help_option_help"), i18n.T("help_examples"), i18n.T("status_example_dashboard"),
+		i18n.T("status_example_snapshot"), i18n.T("status_example_stream"))
+}
 
 // parseArgs applies Mole's CLI conventions to the flag package: help goes to
 // stdout and exits 0, and a bad invocation goes to stderr and exits 1 the way
@@ -357,17 +345,17 @@ func parseArgs(args []string, stdout, stderr io.Writer) (int, bool) {
 	err := flag.CommandLine.Parse(args)
 	switch {
 	case errors.Is(err, flag.ErrHelp):
-		_, _ = fmt.Fprint(stdout, usageText)
+		_, _ = fmt.Fprint(stdout, usageText())
 		return 0, false
 	case err != nil:
-		_, _ = fmt.Fprintln(stderr, err)
-		_, _ = fmt.Fprintln(stderr, "Use 'mo status --help' for usage information")
+		_, _ = fmt.Fprintln(stderr, localizedStatusFlagError(err))
+		_, _ = fmt.Fprintln(stderr, i18n.T("status_error_hint"))
 		return 1, false
 	}
 
 	if err := validateFlags(); err != nil {
 		_, _ = fmt.Fprintln(stderr, err)
-		_, _ = fmt.Fprintln(stderr, "Use 'mo status --help' for usage information")
+		_, _ = fmt.Fprintln(stderr, i18n.T("status_error_hint"))
 		return 1, false
 	}
 	return 0, true
@@ -382,7 +370,7 @@ func main() {
 		interval, err := parseWatchInterval(*watchInterval)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
-			fmt.Fprintln(os.Stderr, "Use 'mo status --help' for usage information")
+			fmt.Fprintln(os.Stderr, i18n.T("status_error_hint"))
 			os.Exit(1)
 		}
 		runWatchMode(interval)
@@ -394,6 +382,14 @@ func main() {
 	} else {
 		runTUIMode()
 	}
+}
+
+func localizedStatusFlagError(err error) string {
+	const unknownFlagPrefix = "flag provided but not defined: "
+	if flag, found := strings.CutPrefix(err.Error(), unknownFlagPrefix); found {
+		return i18n.T("status_unknown_flag", flag)
+	}
+	return err.Error()
 }
 
 func activeAlerts(alerts []ProcessAlert) []ProcessAlert {

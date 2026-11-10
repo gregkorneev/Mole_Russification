@@ -1,0 +1,1536 @@
+# Stable key<TAB>Russian text. Values are single-line printf templates.
+main_tagline	Глубокая очистка и оптимизация Mac.
+main_menu_clean	Очистка      Освободить место на диске
+main_menu_uninstall	Удаление     Удалить приложения
+main_menu_optimize	Оптимизация  Обновить кеши и службы
+main_menu_analyze	Анализ       Изучить использование диска
+main_menu_status	Состояние    Проверить систему
+main_controls_navigation	↑↓  |  Enter  |  M Ещё  |  V Версия
+main_controls_touchid	T Touch ID
+main_controls_update	U Обновить
+main_controls_quit	Q Выход
+main_help_commands	КОМАНДЫ
+main_help_main_menu	Главное меню
+main_help_preview	Предварительный просмотр очистки
+main_help_clean_whitelist	Настроить защищённые кеши
+main_help_optimize_preview	Предварительный просмотр оптимизации
+main_help_optimize_whitelist	Настроить защищённые элементы
+main_help_uninstall_preview	Предварительный просмотр удаления приложения
+main_help_history_json	Экспортировать историю очистки
+main_help_purge_preview	Предварительный просмотр очистки проектов
+main_help_installer_preview	Предварительный просмотр удаления установщиков
+main_help_slim_preview	Предварительный просмотр удаления кода Intel
+main_help_touchid_preview	Предварительный просмотр настройки Touch ID
+main_help_completion_preview	Предварительный просмотр настройки автодополнения
+main_help_purge_paths	Настроить каталоги для сканирования
+main_help_analyze_volumes	Анализировать только внешние диски
+main_help_update_force	Принудительно переустановить последнюю стабильную версию
+main_help_update_nightly	Установить последнюю тестовую сборку из main
+main_help_remove_preview	Предварительный просмотр удаления Mole
+main_help_options	ПАРАМЕТРЫ
+main_help_debug	Показывать подробный журнал операций
+main_version_title	Версия Mole: %s
+main_version_channel	Канал: Nightly%s
+main_version_macos	macOS: %s
+main_version_architecture	Архитектура: %s
+main_version_kernel	Ядро: %s
+main_version_sip	SIP: %s
+main_version_disk_free	Свободно на диске: %s
+main_version_install	Установка: %s
+main_version_shell	Оболочка: %s
+command_clean_desc	Освободить место на диске
+command_uninstall_desc	Удалить приложения целиком
+command_optimize_desc	Обновить кеши и службы
+command_analyze_desc	Изучить использование диска
+command_status_desc	Проверить состояние системы
+command_history_desc	Просмотреть историю операций
+command_purge_desc	Удалить старые артефакты проектов
+command_installer_desc	Найти и удалить файлы установщиков
+command_slim_desc	Удалить код Intel из универсальных приложений
+command_touchid_desc	Настроить Touch ID для sudo
+command_completion_desc	Настроить автодополнение команд
+command_update_desc	Обновить Mole
+command_remove_desc	Удалить Mole из системы
+command_config_desc	Настроить язык интерфейса
+command_help_desc	Показать справку
+command_version_desc	Показать версию
+help_usage	Использование: mo %s
+help_options	Параметры:
+help_examples	Примеры:
+help_commands	Команды:
+help_clean_description	Освободить место на диске: удалить кеши, журналы, временные файлы и остаточные файлы уже удалённых приложений.
+help_installer_description	Найти и удалить файлы установщиков (.dmg, .pkg, .iso, .xip, .zip).
+help_optimize_description	Обновить системные кеши и службы, исправить безопасные неполадки обслуживания.
+help_touchid_description	Настроить Touch ID для ввода пароля sudo.
+help_touchid_enable	Включить Touch ID для sudo
+help_touchid_disable	Выключить Touch ID для sudo
+help_touchid_status	Показать состояние Touch ID
+help_touchid_interactive	Если команду не указать, откроется интерактивное меню.
+help_uninstall_description	Интерактивно удалить приложения и связанные с ними остаточные файлы.
+help_uninstall_names	Можно указать одно или несколько имён приложений для удаления.
+help_uninstall_leftovers	Чтобы найти остаточные файлы уже удалённых приложений, используйте mo clean.
+help_uninstall_slack	Удалить Slack
+help_uninstall_slack_zoom	Удалить Slack и Zoom
+help_uninstall_preview_slack	Предварительный просмотр удаления Slack
+help_uninstall_with_data_slack	Удалить Slack вместе с выбранными данными
+help_uninstall_list_names	Показать установленные приложения и допустимые имена для mo uninstall
+help_uninstall_recover	По умолчанию файлы перемещаются в Корзину macOS, откуда их можно
+help_uninstall_recover_continued	восстановить. Параметр --permanent пропускает Корзину.
+help_option_dry_run	Предварительный просмотр без изменений
+help_option_external	Очистить метаданные ОС на подключённом внешнем диске
+clean_apps_no_library_permission	Пропуск: нет доступа к папкам Library
+clean_apps_scan_failed	Пропуск: не удалось просканировать установленные приложения
+clean_orphan_apps_preview	Будет очищено: %s, около %s МБ
+clean_orphan_apps_done	Очищено: %s, около %s МБ
+clean_orphan_services_auth_timeout	проверка прав доступа превысила лимит времени, очистка пропущена
+clean_orphan_services_scan_incomplete	сканирование не завершено, очистка пропущена
+clean_orphan_services_time_limit	превышен лимит времени, очистка остановлена
+clean_orphan_services_remove_timeout	удаление превысило лимит времени, очистка остановлена
+clean_orphan_services_preview	Остаточные службы · найдено: %s, предварительный просмотр
+clean_orphan_services_done	Остаточные службы · удалено: %s, освобождено %s
+clean_orphan_services_protected	защищённых пропущено: %s
+clean_orphan_services_failed	не удалось удалить: %s
+clean_orphan_services_issues	Остаточные службы · %s
+clean_container_stubs_preview	Остаточные контейнеры приложений · будет удалено заглушек: %s
+clean_container_stubs_done	Остаточные контейнеры приложений · удалено заглушек: %s
+clean_container_stubs_failed	Остаточные контейнеры приложений · не удалось удалить: %s
+clean_tm_config_timeout	Очистка Time Machine · проверка настроек превысила лимит времени, очистка пропущена
+clean_tm_status_unknown	Очистка Time Machine · состояние неизвестно, очистка пропущена
+clean_tm_backup_running	Очистка Time Machine · выполняется резервное копирование, очистка пропущена
+clean_tm_scan_unavailable	сканирование недоступно, очистка пропущена
+clean_tm_incomplete_backup	Незавершённая резервная копия: %s
+clean_tm_backup_tmutil_unavailable	Незавершённая резервная копия: %s · пропущена (tmutil недоступна)
+clean_tm_backup_remove_failed	Не удалось удалить резервную копию %s · удалите её вручную с помощью sudo
+clean_tm_incomplete_apfs_backup	Незавершённая резервная копия APFS в %s: %s
+clean_tm_bundle_remove_failed	Не удалось удалить из контейнера резервную копию %s
+clean_tm_scan_incomplete	сканирование не завершено, оставшаяся очистка пропущена
+clean_tm_snapshot_status_unknown	Снимки APFS · состояние Time Machine неизвестно, проверка пропущена
+clean_tm_snapshot_backup_running	Снимки APFS · выполняется резервное копирование, проверка пропущена
+clean_deno_root_changed	Кеш приложений пользователя · очистка остановлена (каталог Deno изменился во время очистки)
+clean_deno_root_unresolved	Кеш приложений пользователя · очистка остановлена (не удалось определить DENO_DIR)
+clean_old_versions_current_broken	Старые версии %s · пропущены (ссылка Current повреждена)
+clean_old_versions_process_unknown	Старые версии %s · пропущены (состояние процесса неизвестно)
+clean_old_versions_stopped	Старые версии %s · очистка остановлена (%s)
+clean_edge_updater_process_unknown	Старые версии Edge updater · пропущены (состояние процесса неизвестно)
+clean_sandboxed_caches	Кеши приложений в контейнерах
+clean_done_label	очищено
+clean_handoff_clipboard_cache	Кеш буфера обмена Handoff
+clean_group_containers_logs_caches	Журналы и кеши Group Containers
+clean_external_bind_failed	Очистка внешнего диска · не удалось проверить подключённый том, изменений нет
+clean_external_scan_prepare_failed	Очистка внешнего диска · не удалось подготовить сканирование, изменений нет
+clean_external_scan_timeout	Очистка внешнего диска · сканирование превысило лимит времени, изменений нет
+clean_external_scan_interrupted	Очистка внешнего диска · сканирование прервано, изменений нет
+clean_external_scan_failed	Очистка внешнего диска · сканирование не удалось, изменений нет
+clean_support_no_permission	Пропуск: нет доступа к Application Support
+clean_tart_process_unknown	Кеши Tart · пропуск (состояние процесса неизвестно)
+clean_tart_cache_preview	Кеши Tart · будут удалены кеши старше %s дн. (%s)
+clean_tart_prune_failed	Кеши Tart · не удалось очистить
+clean_tart_pruned	Кеши Tart · очищено, освобождено %s
+clean_reason_process_unknown	состояние процесса неизвестно
+clean_reason_app_started	запущен %s
+clean_status_stopped	%s · остановлено (%s)
+clean_status_skipped	%s · пропущено (%s)
+clean_status_would_clean	%s · будет очищено
+clean_status_would_skip_whitelist	%s · будет пропущено (список исключений)
+clean_status_skipped_whitelist	%s · пропущено (список исключений)
+clean_status_process_unknown	%s · пропущено (состояние процесса неизвестно)
+clean_reason_cache_unsafe	небезопасный путь к кешу
+clean_reason_timed_out	превышен лимит времени
+clean_reason_owner_cleanup_failed	не удалось выполнить очистку командой владельца
+clean_reason_symlinked_module_root	корень модулей является символической ссылкой
+clean_reason_cache_path_unknown	состояние пути к кешу неизвестно
+clean_reason_cache_leaves_cargo_home	путь к кешу выходит за пределы CARGO_HOME
+clean_reason_metadata_unavailable	метаданные недоступны
+clean_reason_scan_unavailable	сканирование недоступно
+clean_reason_reports_in_use	отчёты используются
+clean_reason_crash_handler_unknown	состояние обработчика сбоев неизвестно
+purge_paths_save_failed	Не удалось сохранить пути для очистки проектов в %s; для этого запуска будут использованы найденные пути
+purge_first_run_discovery	Первый запуск: поиск каталогов проектов...
+purge_discovery_incomplete	Поиск проектов завершён не полностью; используются найденные каталоги без сохранения. Выполните mo purge --paths, чтобы проверить пути поиска.
+purge_discovery_saved	Найдено каталогов проектов: %s; пути сохранены в конфигурацию
+purge_selected_paths	Выбранные пути:
+purge_cloud_warning	Артефакты из облачных каталогов могут также удалиться на других устройствах.
+purge_cloud_exclude_hint	Выполните mo purge --paths, чтобы исключить облачные каталоги.
+purge_scan_incomplete_one	Не завершено сканирование одного корневого каталога проекта (пропущено: %s):
+purge_scan_incomplete_many	Не завершено сканирование корневых каталогов проектов (пропущено: %s):
+purge_scan_more	и ещё: %s
+purge_debug_scan_hint	Выполните mo purge --debug, чтобы узнать причину ошибки сканирования.
+purge_no_old_artifacts	Старых артефактов проектов для очистки нет
+purge_inspect_failed_kept	Не удалось проверить %s; объект сохранён
+purge_no_eligible_artifacts	Нет подходящих артефактов проектов для очистки
+purge_measure_failed_skipped	Не удалось измерить размер %s; объект пропущен
+purge_no_review_artifacts	Не удалось подготовить артефакты к проверке
+purge_cloud_noninteractive_skipped_one	В неинтерактивном режиме пропущен облачный артефакт: %s (требуется подтверждение)
+purge_cloud_noninteractive_skipped_many	В неинтерактивном режиме пропущено облачных артефактов: %s (требуется подтверждение)
+purge_no_items_selected	Элементы не выбраны
+purge_cancelled	Очистка проектов отменена
+purge_candidate_skipped_reason	Пропущен %s (%s)
+purge_reason_root_changed	корневой каталог изменился после проверки
+purge_reason_root_target_changed	объект корневого каталога изменился после проверки
+purge_reason_path_changed	путь изменился после проверки
+purge_reason_contents_unavailable	не удалось проверить содержимое; повторите mo purge, чтобы проверить его снова
+purge_reason_activity_changed	активность изменилась после проверки
+purge_reason_final_check_failed	заключительная проверка удаления не пройдена; повторите mo purge, чтобы проверить объект снова
+purge_dry_run_prefix	[ПРЕДПРОСМОТР]
+clean_dry_run_prefix	[ПРЕДПРОСМОТР]
+clean_reason_pnpm_busy	pnpm занят
+clean_reason_cache_path_changed	путь к кешу изменился
+clean_github_cli_cache	Кеш GitHub CLI
+clean_conda_metadata_caches	Индексы, архивы и журналы кеша conda
+clean_xcode_documentation_cache	Кеш документации Xcode
+clean_xcode_doc_protected_skipped	Кеш документации Xcode · пропущено защищённых элементов: %s
+clean_xcode_doc_process_unknown	Кеш документации Xcode · пропуск (состояние процесса неизвестно)
+clean_xcode_doc_sudo_denied	Кеш документации Xcode · пропуск (в доступе sudo отказано)
+clean_xcode_doc_removed	Кеш документации Xcode · удалено старых индексов: %s
+clean_xcode_doc_remove_failed	Кеш документации Xcode · не удалось удалить старых индексов: %s
+clean_xcode_doc_none_removed	Кеш документации Xcode · нечего удалять
+clean_orphan_system_services	Остаточные системные службы
+clean_tm_scan_label	Резервные копии Time Machine
+clean_tm_backups_label	Резервные копии Time Machine
+clean_powerlog_database_label	База данных телеметрии питания
+clean_active_kept	активна, сохранена
+clean_timeout_partial	превышен лимит времени, очистка может быть частичной
+clean_system_cleanup_title	Очистка системы
+clean_system_scan_budget_exhausted	превышен лимит времени, оставшиеся медленные сканирования пропущены
+clean_permission_setup_title	Первоначальная настройка
+clean_permission_setup_explanation	macOS запросит доступ к папкам Library.
+clean_permission_setup_dialogs	Может появиться запрос доступа: %s диалога. Разрешите каждый, чтобы очистить эти кеши.
+clean_service_worker_result_protected	%s Service Worker · %s, защищённых кешей: %s
+clean_service_worker_result	%s: кеш Service Worker · %s
+clean_service_worker_preview	%s Service Worker · будет очищено: %s, защищённых кешей: %s
+clean_service_worker_label	%s: кеш Service Worker
+clean_protected_count	защищено: %s
+clean_python_cache_label	Байткод-кеш Python
+clean_python_cache_summary	Каталогов: %s, размер: %s
+clean_skipped_count	пропущено: %s
+clean_project_scan_one	Кеши проектов · пропущено сканирований: %s (незавершённое или слишком медленное)
+clean_project_scan_many	Кеши проектов · пропущено сканирований: %s (незавершённые или слишком медленные)
+clean_xcode_derived_data	Данные сборки Xcode (DerivedData)
+clean_simulator_caches	Кеши симулятора
+clean_xcode_build_products	Продукты сборки Xcode и DerivedData
+clean_xcode_cache_build_products	Кеш и продукты сборки Xcode
+clean_jianying_generated_caches	Созданные кеши JianyingPro
+clean_derived_data_one	Данные сборки Xcode · проектов: %s, %s
+clean_derived_data_many	Данные сборки Xcode · проектов: %s, %s
+clean_fusion_root_untrusted	Старые версии Autodesk Fusion · пропуск (корневой каталог не прошёл проверку)
+clean_fusion_version_timeout	Старые версии Autodesk Fusion · пропуск (проверка текущей версии превысила лимит времени)
+clean_fusion_version_unknown	Старые версии Autodesk Fusion · пропуск (текущая версия неизвестна)
+clean_fusion_inventory_timeout	Старые версии Autodesk Fusion · пропуск (инвентаризация превысила лимит времени)
+clean_fusion_inventory_incomplete	Старые версии Autodesk Fusion · пропуск (инвентаризация не завершена)
+clean_fusion_process_unknown	Старые версии Autodesk Fusion · пропуск (состояние процесса неизвестно)
+clean_fusion_old_versions	Старые версии Autodesk Fusion
+clean_fusion_remove_failed	Старые версии Autodesk Fusion · не удалось удалить: %s
+clean_autodesk_cache	Кеш Autodesk
+clean_neatdm_stale_downloads	Старые загрузки NeatDM
+clean_edge_updater_old_versions	Старые версии Edge updater
+clean_external_volume_label	Очистка внешнего диска
+clean_chrome_profile_caches	Кеши профилей Chrome
+clean_dia_app_support_cache	Кеш Dia в Application Support
+clean_firefox_caches	Кеши Firefox
+clean_dropbox_cache	Кеш Dropbox
+clean_google_drive_cache	Кеш Google Drive
+clean_onedrive_cache	Кеш OneDrive
+clean_tart_caches	Кеши Tart
+clean_app_support_logs_caches	Журналы и кеши Application Support
+clean_at_least_size	не менее %s
+clean_cached_device_firmware	Кеш прошивок устройств
+clean_counted_files	Файлов: %s, размер: %s
+clean_reason_dia_running	Dia запущен
+clean_brew_unused_dependencies	Неиспользуемые зависимости Homebrew
+clean_brew_formula_count	формул: %s
+clean_brew_remove_with	удалить командой
+clean_brew_cleanup	Очистка Homebrew
+clean_brew_links_restored	Ссылки Homebrew · восстановлено активных исполняемых файлов: %s
+clean_brew_links_restore_failed	Ссылки Homebrew · не удалось восстановить: %s
+clean_brew_run_command	выполните
+clean_brew_skipped_whitelist	Homebrew · пропуск (список исключений)
+clean_brew_preview_timeout	Предварительный просмотр очистки Homebrew превысил лимит времени
+clean_brew_would_cleanup	Homebrew · будет очищен
+clean_brew_autoremove_preview_timeout	Предварительный просмотр autoremove превысил лимит времени
+clean_brew_cleanup_timeout	Очистка Homebrew превысила лимит времени
+clean_brew_autoremove_preview_failed	Не удалось выполнить предварительный просмотр autoremove
+clean_brew_manually	вручную
+opt_finder_remove_failed	Не удалось удалить целей кеша Finder: %s
+opt_finder_rebuild_failed	Не удалось обновить служб Finder: %s
+opt_saved_scan_prepare_failed	Не удалось подготовить сканирование сохранённых состояний
+opt_saved_scan_failed	Не удалось просканировать старые сохранённые состояния
+opt_saved_remove_failed	Не удалось удалить старых сохранённых состояний: %s
+opt_preference_scan_budget	Сканирование настроек превысило лимит времени; исправлено: %s
+opt_vpn_state_inspect_failed	Не удалось определить состояние активного VPN
+opt_dns_refresh_failed	Не удалось обновить кеш DNS
+opt_quarantine_sqlite_unavailable	Очистка карантина пропущена: sqlite3 недоступна
+opt_quarantine_inspect_failed	Не удалось проверить базу данных карантина
+opt_quarantine_cleanup_failed	Не удалось очистить базу данных карантина
+opt_database_probe_unavailable	Оптимизация баз данных недоступна: проверка процессов недоступна
+opt_database_apps_inspect_failed	Не удалось проверить активные приложения перед оптимизацией баз данных
+opt_database_apps_busy	Закройте эти приложения перед оптимизацией баз данных: %s
+opt_database_already_optimal_sqlite_unavailable	Базы данных уже оптимальны; sqlite3 недоступна
+opt_database_incomplete	Оптимизация баз данных завершена не полностью
+opt_database_timeout_count	Истекло время ожидания баз данных: %s
+opt_database_failure_count	Не удалось обработать баз данных: %s
+opt_network_check_timeout	Проверка состояния сети превысила лимит времени
+opt_network_inspect_failed	Не удалось проверить состояние сети
+opt_network_refresh_admin_required	Обновление сетевого стека · пропуск (нужны права администратора)
+opt_network_refresh_incomplete	Обновление сетевого стека завершено не полностью (неудачных операций: %s)
+opt_disk_permission_admin_required	Исправление прав доступа к диску · пропуск (нужны права администратора)
+opt_disk_permission_repair_failed	Не удалось исправить права доступа; возможно, это не требуется
+opt_spotlight_inspect_failed	Не удалось проверить индекс Spotlight (код выхода: %s)
+opt_spotlight_disabled	Индексация Spotlight отключена
+opt_spotlight_speed_check_failed	Не удалось проверить скорость Spotlight (проверок: %s)
+opt_spotlight_rebuild_admin_required	Перестроение индекса Spotlight · пропуск (нужны права администратора)
+opt_spotlight_slow_rebuilding	Поиск Spotlight работает медленно; перестраиваем индекс. Это может занять 1–2 часа
+opt_spotlight_background_continue	Индексация продолжится в фоновом режиме
+opt_spotlight_rebuild_failed	Не удалось перестроить индекс Spotlight
+opt_spotlight_rules_inspect_failed	Не удалось проверить правила поиска Spotlight
+opt_spotlight_rules_changed_kept	Правила Spotlight изменились или не читаются; они сохранены
+opt_spotlight_orphan_rules_remove_failed	Не удалось удалить осиротевшие правила Spotlight
+opt_dsstore_prevention_enable_failed	Не удалось включить защиту от создания .DS_Store
+opt_dsstore_prevention_types_failed	Не удалось включить защиту .DS_Store для типов томов: %s
+opt_remove_override_preview	Будет удалено переопределение: %s
+opt_remove_override_failed	Не удалось удалить переопределение: %s
+opt_broken_launch_agents	Найдено объектов Launch Agent без программы: %s
+opt_periodic_maintenance_failed	Не удалось выполнить периодическое обслуживание (код выхода: %s)
+opt_shared_lists_prepare_failed	Не удалось подготовить сканирование общих списков файлов
+opt_shared_lists_unreadable	Общие списки файлов не читаются (проверьте права доступа к каталогам и Full Disk Access)
+opt_shared_lists_scan_failed	Не удалось просканировать общие списки файлов
+opt_shared_lists_repair_failed	Не удалось восстановить повреждённых общих списков файлов: %s
+opt_notification_db_unavailable	База данных Центра уведомлений недоступна (поддерживаемый путь не найден)
+opt_notification_db_size_failed	Не удалось определить размер базы данных Центра уведомлений
+opt_notification_db_busy	Очистка Центра уведомлений пропущена (база данных занята или заблокирована)
+opt_sqlite3_unavailable	sqlite3 недоступна
+opt_disk_verify_timeout	Проверка диска превысила лимит времени
+opt_disk_verify_failed	Проверка диска завершилась ошибкой (код выхода: %s)
+opt_disk_issues_detected	Обнаружены проблемы с диском
+opt_run_command	выполните:
+opt_disk_verify_unrecognized	Не удалось распознать результат проверки диска
+opt_knowledge_db_size_failed	Не удалось определить размер базы данных Knowledge
+opt_knowledge_db_busy	Очистка базы Knowledge пропущена (база данных занята или заблокирована)
+opt_login_items_snapshot_timeout	Объекты входа недоступны (снимок списка превысил лимит времени)
+opt_login_items_snapshot_interrupted	Не удалось проверить объекты входа (снимок прерван)
+opt_login_items_inspect_failed	Не удалось проверить объекты входа
+opt_login_audit_inventory_prepare_failed	Проверка объектов входа завершена не полностью (не удалось подготовить список приложений; выводы не опубликованы)
+opt_login_audit_inventory_timeout	Проверка объектов входа завершена не полностью (получение списка приложений превысило лимит времени; выводы не опубликованы)
+opt_login_audit_inventory_interrupted	Проверка объектов входа завершена не полностью (получение списка приложений прервано; выводы не опубликованы)
+opt_login_audit_inventory_unavailable	Проверка объектов входа завершена не полностью (список приложений недоступен; выводы не опубликованы)
+opt_login_audit_time_limit	Проверка объектов входа завершена не полностью (превышен лимит времени; выводы не опубликованы)
+opt_login_audit_probe_interrupted	Проверка объектов входа завершена не полностью (проверка прервана; выводы не опубликованы)
+opt_login_audit_owner_unknown	Проверка объектов входа завершена не полностью (состояние владельца неизвестно; выводы не опубликованы)
+opt_login_item_broken	Некорректный объект входа: %s (приложение не найдено)
+opt_broken_login_items	Некорректных объектов входа: %s
+opt_login_items_remove_via	удалить через
+opt_unknown_action	Неизвестное действие: %s
+opt_missing_handler	Не найден обработчик оптимизации: %s
+opt_diag_enterprise_agent_pressure	Обнаружена нагрузка от внешнего корпоративного агента. Mole не завершает процессы корпоративной защиты; проверку политик и перезапуск выполняйте вне Mole.
+opt_diag_gatekeeper_pressure	Повышена активность Gatekeeper и проверки подписей кода.
+opt_diag_windowserver_pressure	Графическая композиция занята. Если нагрузка другой группы выше, это, вероятно, следствие, а не причина.
+opt_diag_spotlight_pressure	Индексация метаданных или импорт потребляют процессорное время.
+opt_diag_simulator_images_active	Активны службы образов дисков среды Simulator.
+opt_diag_missing_launch_agent_program	Launch Agent %s: программа не найдена по пути %s
+opt_diag_image_detached	Образ отключён: %s
+opt_diag_image_detach_failed	Не удалось отключить образ: %s
+opt_diag_images_detached	Отключено смонтированных образов: %s
+opt_diag_images_manual_review	Смонтированных образов требуют ручной проверки: %s
+opt_diag_mounted_image_overhead_one	Смонтированный образ увеличивает время оценки:
+opt_diag_mounted_image_overhead_many	Смонтированные образы увеличивают время оценки:
+opt_diag_detach_preview	Будет предложено отключить смонтированных образов: %s
+opt_diag_detach_review_hint	Проверьте эти смонтированные образы и отключите ненужные.
+opt_diag_kept_mounted	Образы оставлены смонтированными; добавьте в список исключений:
+opt_diag_performance_title	Диагностика производительности
+opt_diag_no_cpu_bottleneck	Длительной высокой нагрузки на процессор не обнаружено
+opt_diag_likely_bottleneck	Вероятная причина нагрузки: %s (процессор занят примерно на %s%% длительное время)
+opt_diag_additional_pressure	Другие источники длительной нагрузки:
+opt_diag_gatekeeper_status	Состояние Gatekeeper: %s
+opt_diag_system_simulator_images_only	Смонтированы только системные образы CoreSimulator; это справочная информация, отключать их нельзя
+opt_diag_memory_pressure	Нагрузка на память: использовано подкачки %s из %s (%s%%), свободно %s%%
+opt_diag_pressure_many_processes	Нагрузка распределена между множеством процессов с небольшим потреблением
+opt_diag_vm_without_containers	Виртуальная машина занимает %s, запущенных контейнеров нет (вероятно, это Docker Desktop)
+opt_diag_vm_quit_hint	Если это Docker Desktop, его завершение освободит эту память; приложение резервирует её даже в простое.
+opt_diag_vm_holding_memory	Виртуальная машина занимает %s
+opt_diag_vm_memory_hint	Проверьте Docker Desktop, UTM и другие средства виртуализации: возможно, они используют эту память.
+opt_diag_containers_running	запущено контейнеров: %s
+opt_diag_vm_using_memory	Виртуальная машина использует %s (контейнеров: %s)
+opt_diag_runaway_process	%s: процессорное время %s ч за %s ч работы (примерно %s%% всё это время)
+opt_diag_runaway_hint	Процесс нагружает систему всё время работы. Если он не выполняет нужную задачу, можно завершить его командой:
+sudo_touchid_hint_before	Совет: выполните
+sudo_touchid_hint_after	, чтобы использовать Touch ID вместо пароля
+sudo_enter_credentials	Введите учётные данные:
+sudo_touchid_or_password	, Touch ID или пароль
+update_repaired_stale_launcher	Исправлена устаревшая ссылка на текущую установку Homebrew
+update_updated_latest	Установлена последняя версия: %s
+sudo_admin_access_required	Требуется доступ администратора
+sudo_system_cleanup_required	Для очистки системы нужны права администратора
+sudo_system_optimization_required	Для оптимизации системы нужны права администратора
+sudo_clean_xcode_docs_required	Для очистки кеша документации Xcode нужны права администратора
+sudo_clean_xcode_simulator_required	Для очистки системного кеша Xcode Simulator нужны права администратора
+touchid_enabled_status	Touch ID включён для sudo
+touchid_not_configured	Touch ID не настроен для sudo
+touchid_already_enabled_no_changes	Touch ID уже включён, изменений не требуется
+touchid_dry_run_prefix	[ПРЕДПРОСМОТР]
+touchid_would_enable	Touch ID будет включён для sudo
+touchid_target_files	Файлы настроек:
+touchid_continue_anyway	Всё равно продолжить? [y/N]
+touchid_already_enabled	Touch ID уже включён
+touchid_not_currently_enabled	Touch ID сейчас не включён
+touchid_would_disable	Touch ID будет выключен для sudo
+touchid_disabled_from_sudo_local	Touch ID выключен, запись удалена из sudo_local
+touchid_disabled	Touch ID выключен
+system_health_line	Система  %s/%s ГБ памяти | %s/%s ГБ на диске | Работа %s дн.
+optimize_missing_dependency_bc	Не найдена зависимость: bc
+optimize_install_with	Установите командой:
+optimize_missing_system_commands	Проверьте наличие команд awk, sysctl и df
+optimize_active_whitelist	Активный список исключений:
+optimize_health_finder_cache_refresh	Обновление кеша Finder
+optimize_health_app_state_cleanup	Очистка состояний приложений
+optimize_health_broken_config_repair	Исправление повреждённых настроек
+optimize_health_network_cache_refresh	Обновление сетевого кеша
+optimize_health_database_optimization	Оптимизация баз данных
+optimize_health_prevent_finder_dsstore	Запрет файлов .DS_Store для Finder
+optimize_health_legacy_overrides	Устаревшие переопределения
+optimize_health_network_stack_refresh	Обновление сетевого стека
+optimize_health_permission_repair	Исправление прав доступа
+optimize_health_spotlight_optimization	Оптимизация Spotlight
+optimize_health_spotlight_orphan_rules	Осиротевшие правила Spotlight
+optimize_health_periodic_maintenance	Периодическое обслуживание
+optimize_health_shared_file_lists	Общие списки файлов
+optimize_health_disk_health	Состояние диска
+optimize_health_login_items	Объекты входа
+optimize_health_quarantine_cleanup	Очистка базы карантина
+optimize_health_launch_agents_cleanup	Очистка Launch Agents
+optimize_health_notifications	Уведомления
+optimize_health_usage_data	Данные об использовании
+clean_build_artifacts_scan_skipped	Артефакты сборки · сканирование пропущено
+clean_project_artifact_count	каталогов: %s
+clean_partial_scan	сканирование завершено не полностью
+clean_build_artifacts	Артефакты сборки
+clean_stale_login_item	Устаревший объект входа
+clean_reason_missing_app_helper_target	Приложение или вспомогательная программа не найдены
+clean_reason_program_not_executable	Программа не является исполняемым файлом
+clean_reason_associated_app_missing	Связанное приложение не найдено
+clean_review_before_removing	проверьте перед удалением
+help_option_whitelist_paths	Настроить защищённые пути
+help_option_whitelist_items	Настроить защищённые элементы
+help_option_debug	Показывать подробный журнал операций
+help_option_help	Показать эту справку
+help_option_dry_run_installer	Предпросмотр очистки установщиков без изменений
+help_option_dry_run_optimize	Предпросмотр оптимизации без изменений
+help_option_dry_run_touchid	Предпросмотр настройки Touch ID без изменения конфигурации sudo
+help_option_dry_run_uninstall	Предпросмотр удаления приложений без изменений
+help_option_permanent	Удалить сразу, минуя Корзину macOS
+help_option_with_data	Сначала выбрать личные данные; клавиша D позволяет оставить нужные
+help_option_uninstall_whitelist	Не поддерживается для удаления приложений (используйте clean или optimize)
+help_config_language	Задать язык интерфейса: английский или русский
+config_current	Текущий язык интерфейса: %s
+config_saved	Язык интерфейса сохранён: %s
+config_invalid_language	Неизвестный язык «%s». Выберите «en» или «ru».
+config_usage	Использование: mo config language [en|ru]
+config_write_failed	Не удалось сохранить настройку языка: %s
+language_english	английский
+language_russian	русский
+main_unknown	Неизвестно
+help_uninstall_example_selector	Открыть интерактивный список приложений
+help_option_list	Показать установленные приложения и допустимые имена для mo uninstall
+go_analyze_missing	Не найден встроенный анализатор. Переустановите Mole или выполните mo update, чтобы восстановить его.
+go_status_missing	Не найден встроенный модуль состояния системы. Переустановите Mole или выполните mo update, чтобы восстановить его.
+analyze_title	Анализ диска
+analyze_free	(%s свободно)
+analyze_local_snapshots	Локальные снимки Time Machine: %d · место, занятое только снимками, ниже не показано
+analyze_select_location	Выберите каталог для анализа:
+analyze_analyzing_usage	Анализ использования диска...
+analyze_total	Всего: %s
+analyze_scanning	Сканирование
+analyze_files	файлов
+analyze_directories	папок
+analyze_moving_count	Перемещение в Корзину: перемещено элементов — %s, подождите...
+analyze_moving	Перемещение в Корзину, подождите...
+analyze_cached_refresh	Показаны сохранённые результаты, идёт обновление...
+analyze_filter	Фильтр:
+analyze_matches	(совпадений: %d)
+analyze_no_matches	Нет совпадений для %q
+analyze_no_large_files	Крупные файлы не найдены
+analyze_empty_directory	Папка пуста
+analyze_scanning_size	скан...
+analyze_progress_left	Сканирование %s..., осталось папок: %d
+analyze_directories_left	Сканирование папок: %d, осталось: %d
+analyze_scan_path	Сканирование %s...
+analyze_moved_some_failed	Перемещено в Корзину элементов: %d; часть переместить не удалось: %v
+analyze_moved_count	Перемещено в Корзину элементов: %d
+analyze_move_failed	Не удалось переместить в Корзину: %v
+analyze_scan_failed	Ошибка сканирования: %v
+analyze_cache_refresh_path	Загружены сохранённые данные для %s, обновление...
+analyze_size_unavailable	Размер недоступен
+analyze_partial_size	Размер рассчитан частично
+analyze_size_status	%s — %s (%s)
+analyze_move_progress	Перемещение в Корзину... элементов: %s
+analyze_nothing_to_move	Нет элементов для перемещения в Корзину
+analyze_move_path	Перемещение %s в Корзину...
+analyze_move_items	Перемещение элементов в Корзину: %d...
+analyze_cancelled	Отменено
+analyze_refreshing	Обновление...
+analyze_top_after_scan	Список крупных файлов появится после завершения сканирования
+analyze_filter_help	Фильтр: введите текст, Enter — применить, Esc — очистить
+analyze_live_sort	Сортировка во время сканирования: %s
+analyze_too_many_open	Слишком много элементов для открытия: максимум %d, выбрано %d
+analyze_open_items	Открытие элементов: %d...
+analyze_open_path	Открытие %s...
+analyze_too_many_reveal	Слишком много элементов для показа: максимум %d, выбрано %d
+analyze_reveal_items	Показ в Finder элементов: %d...
+analyze_reveal_path	Показ %s в Finder...
+analyze_preview_path	Предпросмотр %s...
+analyze_selection_after_scan	Выбор станет доступен после завершения сканирования
+analyze_selected_count	Выбрано: %d; размер — %s
+analyze_cannot_select_unknown	Нельзя выбрать %s: размер неизвестен
+analyze_delete_after_scan	Перемещение в Корзину станет доступно после сканирования
+analyze_cannot_move_unknown	Нельзя переместить %s в Корзину: размер неизвестен
+analyze_filter_count	Фильтр %q: совпадений %d
+analyze_cached_view	Сохранённый просмотр: %s
+analyze_file_size	Файл: %s, %s
+analyze_help_description	Показывает использование диска. Если путь не задан, сканируется весь Mac.
+analyze_help_json	Вывести анализ в JSON вместо интерактивного интерфейса
+analyze_example_overview	Обзор диска Mac
+analyze_example_directory	Сканировать каталог
+analyze_example_json	Данные для автоматической обработки
+analyze_error_hint	Справка: mo analyze --help
+analyze_error_prefix	ошибка анализатора: %v
+analyze_prepare	Подготовка к сканированию...
+analyze_checking_system	Проверка системных папок...
+analyze_ready	Готово
+analyze_home	Домашняя папка
+analyze_user_library	Библиотека пользователя
+analyze_applications	Программы
+analyze_system_library	Системная библиотека
+analyze_measure_timeout	время ожидания истекло
+analyze_measure_cancelled	отменено
+analyze_measure_denied	нет доступа
+analyze_measure_read_error	ошибка чтения
+analyze_measure_unknown	неизвестно
+analyze_partial_scan	Частичное сканирование · %s
+analyze_scanned	Просканировано: %s
+analyze_controls_overview	↑↓←→ Навигация | Enter Открыть | R Обновить | O Открыть | P Просмотр | F Файл | Esc Назад | Q Выход
+analyze_controls_overview_short	↑↓→ Навигация | Enter Открыть | R Обновить | O Открыть | P Просмотр | F Файл | Esc/Q Выход
+analyze_controls_filter	Фильтр: ввод | Enter Применить | Esc Очистить | Ctrl+C Выход
+analyze_controls_large_filtered	↑↓← Перемещение | Space Выбрать | / Изменить | Esc Сбросить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | Q Выход
+analyze_controls_large	↑↓← Перемещение | Space Выбрать | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить %d | Esc Назад | Q Выход
+analyze_controls_large_plain	↑↓← Перемещение | Space Выбрать | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | Esc Назад | Q Выход
+analyze_controls_entry_filtered	↑↓←→ Навигация | Enter Открыть | Space Выбрать | / Изменить | Esc Сбросить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | Q Выход
+analyze_controls_entries	↑↓←→ Навигация | Space Выбрать | Enter Открыть | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить %d | T Крупные %d | Esc Назад | Q Выход
+analyze_controls_entries_no_top	↑↓←→ Навигация | Space Выбрать | Enter Открыть | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить %d | Esc Назад | Q Выход
+analyze_controls_entries_plain	↑↓←→ Навигация | Space Выбрать | Enter Открыть | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | T Крупные %d | Esc Назад | Q Выход
+analyze_controls_entries_plain_no_top	↑↓←→ Навигация | Space Выбрать | Enter Открыть | / Фильтр | R Обновить | O Открыть | P Просмотр | F Файл | ⌫ Удалить | Esc Назад | Q Выход
+analyze_confirm_many	Переместить в Корзину: элементов %d, %s  Enter — подтвердить | Esc — отмена
+analyze_confirm_one	Переместить в Корзину: %s, %s  Enter — подтвердить | Esc — отмена
+analyze_app_bundle_many	В Корзину попадёт только приложение. Для удаления связанных файлов выполните mo uninstall <App>.
+analyze_app_bundle_one	В Корзину попадёт только приложение. Для удаления связанных файлов выполните %s.
+analyze_live_sort_continuous	непрерывная
+analyze_live_sort_freeze	пауза при перемещении
+status_small_terminal	Окно терминала слишком узкое. Увеличьте его, чтобы увидеть состояние системы.
+status_title	Состояние системы
+status_health	Состояние
+status_uptime	работает %s
+status_error	ОШИБКА: %s
+status_alert	ТРЕВОГА
+status_last_alert	ПОСЛЕДНЯЯ ТРЕВОГА
+status_old	РАНЕЕ
+status_alert_detail	%s: %.1f%% в течение %s (порог %.1f%%)
+status_alert_more	 · ещё: %d
+status_stale	УСТАРЕЛО
+status_unknown	НЕИЗВЕСТНО
+status_cpu_title	ЦП
+status_memory_title	Память
+status_disk_title	Диск
+status_process_title	Процессы
+status_network_title	Сеть
+status_power_title	Питание
+status_total	Всего
+status_used	Занято
+status_free	Свободно
+status_free_short	Своб.
+status_swap	Подкачка
+status_cache	Кеш
+status_available	Доступ
+status_status	Состояние
+status_pressure_normal	норма
+status_pressure_warn	предупреждение
+status_pressure_critical	критично
+status_cpu_core	Ядро%-2d
+status_cpu_core_estimated	Данные по ядрам недоступны, показана средняя загрузка
+status_cpu_load	Нагрузка
+status_cpu_cores	ядер: %d
+status_collecting	Сбор данных...
+status_no_disks	Диски не обнаружены
+status_disk_label	ДИСК
+status_disk_usage	занято %s, свободно %s
+status_purgeable	можно освободить
+status_disk_failing	Неисправен
+status_disk_fail	СБОЙ
+status_back_up_now	Срочно создайте резервную копию
+status_smart_failing	Ошибка SMART, создайте резервную копию
+status_smart	Диск
+status_alert_label	ТРЕВОГА
+status_io	I/O
+status_process_no_activity	Нет активности процессов
+status_process_no_rows_alert	Нет данных о процессах · выше есть активное предупреждение
+status_process_no_retained	нет сохранённых данных об активности процессов
+status_process_sample_unavailable	данные о процессах недоступны
+status_down	Вход
+status_up	Выход
+status_tunnel	Туннель
+status_proxy	Прокси %s
+status_level	Заряд
+status_battery_health	Ресурс
+status_input	Питание
+status_watts_max	макс. %.0f Вт
+status_no_battery	Аккумулятор не обнаружен
+status_cycles	циклов: %d
+status_unknown_battery	Неизвестно
+status_charged	Заряжен
+status_charging	Заряжается
+status_discharging	Разряжается
+status_battery_health_good	В норме
+status_battery_health_fair	Среднее
+status_battery_health_service	Требуется обслуживание
+status_cpu_high	Высокая загрузка ЦП
+status_memory_high	Высокая нагрузка на память
+status_disk_low	Мало места на диске: свободно %s
+status_battery_low	Состояние аккумулятора ухудшилось
+status_battery_cycles_high	Высокое число циклов аккумулятора
+status_temperature_high	Высокая температура ЦП
+status_disk_io_busy	Высокая активность диска
+status_all_clear	Проблем не обнаружено
+status_flag_cpu_threshold	предупреждение, если процесс дольше заданного времени превышает порог загрузки ЦП
+status_flag_cpu_window	период, в течение которого процесс должен превышать порог ЦП
+status_flag_cpu_alerts	включить постоянные предупреждения о высокой загрузке ЦП
+status_flag_watch	непрерывно выводить метрики в формате NDJSON вместо разового интерфейса или JSON
+status_flag_interval	интервал сбора данных в режиме --watch (например, 1s или 2s); по умолчанию 1s
+status_invalid_cpu_threshold	--proc-cpu-threshold должен быть не меньше 0
+status_invalid_cpu_window	--proc-cpu-window должен быть больше 0
+status_collection_failed	status: ошибка сбора: метрики не получены
+status_invalid_interval	неверный интервал --interval %q (пример: 1s, 2s): %w
+status_interval_positive	неверный интервал --interval %q (значение должно быть больше 0)
+status_error_hint	Справка: mo status --help
+status_help_description	Показывает состояние системы. Без параметров открывается интерактивная панель; при выводе в конвейер показывается один снимок JSON.
+status_help_json	Вывести снимок метрик в формате JSON
+status_help_watch	Непрерывно выводить снимки в формате NDJSON
+status_help_interval	Интервал сбора в режиме --watch (по умолчанию 1s)
+status_help_cpu_alerts	Включить предупреждения о высокой загрузке ЦП (по умолчанию включены)
+status_help_cpu_threshold	Порог загрузки ЦП процесса (по умолчанию 100)
+status_help_cpu_window	Время превышения порога до предупреждения (по умолчанию 5m)
+status_example_dashboard	Интерактивная панель
+status_example_snapshot	Один снимок для автоматической обработки
+status_example_stream	Непрерывный поток NDJSON
+status_system_error	ошибка состояния системы: %v
+status_process_cpu_high	Высокая загрузка ЦП: %s
+status_process_memory_pressure	Высокое потребление памяти: %s
+status_unknown_flag	Неизвестный параметр: %s
+analyze_cannot_resolve	не удалось разрешить %q: %v
+analyze_not_macos	analyze поддерживается только в macOS
+analyze_time_years	>%d г.
+analyze_time_one_year	>1 г.
+analyze_time_months	>%d мес.
+analyze_unknown_size	н/д
+analyze_error_read	ошибка чтения
+status_collect_error	status: ошибка сбора данных: %v
+status_json_error	ошибка кодирования JSON: %v
+status_ram_label	ОЗУ
+status_disk_spec_label	Диск
+status_flag_json	вывести метрики в формате JSON вместо интерфейса
+status_uptime_days	%s дн.
+status_uptime_hours	%s ч
+status_uptime_minutes	%s мин
+status_score_excellent	Отлично
+status_score_good	Хорошо
+status_score_fair	Средне
+status_score_attention	Требуется внимание
+status_issue_high_memory	Высокое потребление памяти
+status_issue_memory_pressure	Нагрузка на память
+status_issue_critical_memory	Критическая нагрузка на память
+status_issue_disk_almost_full	На диске почти нет места
+status_issue_disk_smart_failing	Ошибка SMART диска
+status_issue_overheating	Перегрев
+status_issue_heavy_disk_io	Высокая активность диска
+status_issue_battery_service	Требуется обслуживание аккумулятора
+status_issue_restart_recommended	Рекомендуется перезагрузка
+analyze_flag_json	вывести анализ в формате JSON вместо интерфейса
+analyze_local_snapshot	Локальный снимок Time Machine: %d · место снимка ниже не отображается
+analyze_unknown_flag	Неизвестный параметр: %s
+analyze_snapshot_stale	последняя успешная проверка
+help_usage_label	Использование:
+help_purge_title	Очистка проектов Mole
+help_purge_description	Удаление старых артефактов сборки проектов
+help_purge_paths	Изменить каталоги поиска
+help_purge_dry_run	Показать, что будет удалено, без изменений
+help_purge_include_empty	Показывать каталоги артефактов с нулевым размером
+help_purge_yes	Подтвердить автоматическое удаление подходящих артефактов
+help_purge_default_paths	Каталоги по умолчанию:
+help_slim_usage	Использование: mo slim [OPTIONS]
+help_slim_description	Удалить код Intel из универсальных приложений на Apple Silicon.
+help_slim_copy	Для каждого приложения создаётся копия, которая должна пройти проверку
+help_slim_trash	подписи и Gatekeeper перед заменой оригинала; оригинал попадёт в Корзину.
+help_slim_updates	Обновление приложения вернёт код Intel.
+help_slim_whitelist	Защищённые списком ~/.config/mole/whitelist приложения пропускаются.
+help_slim_dry_run	Показать приложения и объём, который можно освободить
+help_slim_debug	Показать причины пропуска приложений
+help_history_usage	Использование: mo history [OPTIONS]
+help_history_description	Просмотреть историю операций Mole и удаления файлов.
+help_history_json	Вывести историю в формате JSON
+help_history_limit	Показать не более N последних записей, от 1 до 200
+history_missing_limit	Не указано значение --limit
+history_invalid_limit	Недопустимое значение --limit: %s
+history_unknown_option	Неизвестный параметр mo history: %s
+history_unexpected_argument	Лишний аргумент mo history: %s
+history_help_hint	Запустите «mo history --help», чтобы узнать формат команды.
+help_update_usage	Использование: mo update [--force] [--nightly]
+help_update_description	Обновить Mole до последней версии.
+help_update_force	Принудительно переустановить последнюю стабильную версию
+help_update_nightly	Установить свежую невыпущенную сборку из ветки main
+update_unknown_option	Неизвестный параметр update: %s
+update_help_hint	Доступные параметры: «mole update [--force] [--nightly]».
+help_remove_usage	Использование: mo remove [--dry-run]
+help_remove_description	Удалить Mole с этого Mac.
+help_remove_keep_logs	Журналы операций в ~/Library/Logs/mole сохраняются.
+help_remove_dry_run	Предпросмотр удаления Mole
+remove_unknown_option	Неизвестный параметр remove: %s
+remove_help_hint	Доступные параметры: «mole remove [--dry-run]».
+router_unknown_command	Неизвестная команда: %s
+router_help_hint	Запустите «mole --help», чтобы просмотреть справку.
+history_title	История Mole
+history_recent_sessions	Последние сеансы
+history_no_operations	История операций пока пуста.
+history_count_removed	удалено %s
+history_count_trashed	в Корзину: %s
+history_count_skipped	пропущено %s
+history_count_failed	ошибок %s
+history_count_rebuilt	пересоздано %s
+history_count_other	прочее %s
+history_no_file_actions	нет действий с файлами
+history_failed_optimize_tasks	сбоев задач оптимизации: %s
+history_legacy_uncertain	принадлежность запуска к сеансу неясна
+history_not_ended	не завершён
+history_items	объектов
+history_ended	завершён
+history_deletion_audit	Журнал удаления
+history_no_deletions	Записей об удалении пока нет.
+history_logs	Журналы
+history_operations	операции
+history_deletions	удаления
+history_event_trash	КОРЗИНА
+history_event_permanent	НАВСЕГДА
+history_event_trashed	В КОРЗИНУ
+history_event_removed	УДАЛЕНО
+history_event_skipped	ПРОПУСК
+history_event_failed	ОШИБКА
+clean_nothing_to_clean	Нет данных для очистки
+clean_nothing_to_tidy	Нет данных для обслуживания
+ui_section_external_volume	Внешний том
+ui_section_system	Система
+ui_section_user_essentials	Основное пользователя
+ui_section_app_caches	Кеши приложений
+ui_section_browsers	Браузеры
+ui_section_cloud_office	Облако и офисные приложения
+ui_section_developer_tools	Инструменты разработки
+ui_section_apps_utilities	Приложения и утилиты
+ui_section_virtualization	Виртуализация
+ui_section_application_support	Поддержка приложений
+ui_section_app_leftovers	Остатки приложений
+ui_section_backups_firmware	Резервные копии и прошивки
+ui_section_time_machine	Time Machine
+ui_section_large_files	Крупные файлы
+ui_section_project_artifacts	Артефакты проектов
+ui_summary_cleanup_complete	Очистка завершена
+ui_summary_cleanup_cancelled	Очистка отменена
+ui_summary_cleanup_interrupted	Очистка прервана
+ui_summary_cleanup_incomplete	Очистка завершена не полностью
+ui_summary_dry_run_cancelled	Предпросмотр отменён
+ui_summary_dry_run_interrupted	Предпросмотр прерван
+ui_summary_dry_run_incomplete	Предпросмотр завершён не полностью
+ui_summary_dry_run_complete	Предпросмотр завершён — изменений нет
+ui_summary_test_mode	Тестовый режим завершён
+ui_summary_no_reclaimable	Других доступных для освобождения данных не найдено.
+ui_summary_no_space_freed	Дополнительное место не освобождено.
+ui_summary_already_clean	Система уже очищена; дополнительное место не освобождено.
+ui_summary_clean_reclaimable	Значимых данных для освобождения нет, система уже очищена.
+ui_summary_preview_file	Полный список файлов: %s
+ui_summary_preview_failed	Не удалось безопасно сохранить файл предпросмотра очистки
+ui_summary_no_artifacts	Артефакты не удалены.
+ui_summary_partial_artifacts	Некоторые артефакты пропущены или не обработаны.
+ui_log_system_caches	Системные кеши
+ui_log_system_crash_reports	Системные отчёты о сбоях
+ui_log_system_logs	Системные журналы
+ui_log_third_party_system_logs	Журналы сторонних приложений
+ui_log_memory_exception_reports	Отчёты об исключениях памяти
+ui_log_wallpaper_downloads	Старые загрузки обоев
+ui_log_system_diagnostic_logs	Системные диагностические журналы
+ui_log_power_logs	Журналы питания
+ui_log_no_apps_uninstall	Не найдено приложений для удаления
+ui_log_no_apps_available_uninstall	Нет приложений, доступных для удаления
+ui_log_no_apps_selected_uninstall	Не выбраны приложения для удаления
+ui_log_touchid_unsupported	Этот Mac может не поддерживать Touch ID
+ui_log_touchid_migrated	Настройка Touch ID перенесена в sudo_local
+ui_log_touchid_enabled_sudo_local	Touch ID включён через sudo_local; проверьте командой: sudo ls
+ui_log_touchid_enabled	Touch ID включён; проверьте командой: sudo ls
+ui_log_touchid_write_failed	Не удалось записать sudo_local
+ui_log_touchid_backup_failed	Не удалось создать резервную копию
+ui_log_touchid_config_failed	Не удалось изменить конфигурацию
+ui_log_touchid_enable_failed	Не удалось включить Touch ID
+ui_log_touchid_disable_sudo_local_failed	Не удалось отключить Touch ID в sudo_local
+ui_log_touchid_disable_failed	Не удалось отключить Touch ID
+ui_log_touchid_config_missing	Не найдена конфигурация Touch ID для отключения
+ui_log_invalid_key	Недопустимая клавиша
+ui_log_touchid_once	За один запуск поддерживается только одна команда touchid
+ui_log_health_collection_failed	Не удалось получить данные о состоянии системы
+ui_log_health_format_invalid	Недопустимый формат данных о состоянии системы
+ui_log_optimize_outcomes_incomplete	Не удалось получить результаты всех задач оптимизации
+ui_log_homebrew_upgrade_failed	Не удалось обновить Homebrew
+ui_log_homebrew_removed_launcher	Ссылка запуска указывает на удалённую версию Homebrew
+ui_log_touchid_homebrew_attempt	Попытка удалить Mole через Homebrew...
+ui_log_nix_remove_disabled	Mole установлен через Nix. Самостоятельное удаление отключено.
+ui_log_nix_update_disabled	Mole установлен через Nix. Самостоятельное обновление отключено.
+ui_log_update_network_failed	Не удалось проверить обновления. Проверьте подключение к сети.
+ui_log_update_path_failed	Не удалось определить текущий путь Mole
+ui_log_update_dir_failed	Не удалось определить каталог установки Mole
+ui_log_update_nightly_failed	Не удалось определить последний коммит nightly. Обновление не установлено.
+ui_log_update_failed	Не удалось обновить Mole
+ui_log_nightly_failed	Не удалось выполнить nightly-обновление
+ui_log_update_admin_denied	Обновление отменено: отказано в доступе администратора
+ui_log_update_wget_failed	Ошибка wget при обновлении
+ui_log_download_tool_required	Требуется curl или wget
+ui_log_remove_homebrew_missing	Команда Homebrew не найдена. Убедитесь, что Homebrew установлен и доступен в PATH.
+ui_log_remove_manual_step	Выполните вручную: brew uninstall --force mole
+ui_log_remove_homebrew_failed	Не удалось удалить Mole через Homebrew:
+ui_log_remove_homebrew_success	Mole удалён через Homebrew.
+ui_log_remove_confirmation_missing	Не удалось прочитать подтверждение удаления; Mole не удалён.
+ui_log_remove_confirmation_tty	Для подтверждения удаления нужен интерактивный терминал; Mole не удалён.
+ui_log_remove_confirmation_hint	Запустите mo remove в интерактивном терминале; изменения не внесены
+ui_log_uninstall_confirmation_missing	Не удалось прочитать подтверждение; приложения не удалены.
+ui_log_uninstall_confirmation_tty	Для подтверждения удаления нужен интерактивный терминал; приложения не удалены.
+ui_log_uninstall_confirmation_hint	Запустите mo uninstall в интерактивном терминале; изменения не внесены
+ui_log_uninstall_scan_timeout	Сканирование приложений превысило время ожидания; ничего не удалено
+ui_log_uninstall_scan_hint	Запустите mo uninstall --debug, чтобы узнать, на каком этапе произошёл сбой
+ui_log_uninstall_step_hint	Запустите mo uninstall --debug, чтобы узнать, какой этап завершился с ошибкой
+ui_log_uninstall_protected_data	Переместите его в Корзину через Finder; Mole сохранил защищённые контейнеры и данные приложений
+ui_log_uninstall_dry_run_complete	Предпросмотр завершён; список выше показывает план, приложения не удалены.
+ui_log_uninstall_brew_failed	Команда Homebrew завершилась с ошибкой. Проверьте установку Homebrew и повторите попытку.
+ui_log_uninstall_admin_denied	Отказано в доступе администратора
+ui_log_completion_missing_mole	Команда mole не найдена в PATH. Установите Mole перед настройкой автодополнения.
+completion_path_desc	Каталог для анализа
+completion_generate_bash	Сгенерировать сценарий автодополнения для Bash
+completion_generate_zsh	Сгенерировать сценарий автодополнения для Zsh
+completion_generate_fish	Сгенерировать сценарий автодополнения для Fish
+help_completion_usage	Использование: mole completion [bash|zsh|fish]
+help_completion_description	Настроить автодополнение команд mole и mo в оболочке.
+help_completion_auto_install	Автоматическая установка:
+help_completion_auto_detect	Определить оболочку и установить автодополнение
+help_completion_preview	Предпросмотр изменений без записи в файлы
+help_completion_manual_install	Ручная установка:
+help_completion_recommended	Автоматическая установка (рекомендуется)
+help_completion_manual_bash	Ручная установка — Bash
+help_completion_manual_zsh	Ручная установка — Zsh
+help_completion_manual_fish	Ручная установка — Fish
+completion_dry_run_mode	ПРЕДПРОСМОТР: файлы конфигурации оболочки не будут изменены
+completion_dry_run_write_fish	[ПРЕДПРОСМОТР] Будут созданы файлы автодополнения Fish:
+completion_dry_run_complete	Предпросмотр завершён, изменений нет
+completion_write_fish	Будут созданы файлы автодополнения Fish:
+completion_enable_prompt	Включить автодополнение для %s?
+completion_confirm_cancel	Enter — подтвердить, Q — отменить
+completion_cancelled	Отменено
+completion_fish_written	Файлы автодополнения Fish записаны в %s
+completion_dry_run_remove_stale	[ПРЕДПРОСМОТР] Будут удалены устаревшие записи автодополнения из %s
+completion_removed_stale	Удалены устаревшие записи автодополнения из %s
+completion_dry_run_normalize	[ПРЕДПРОСМОТР] Будет обновлена запись автодополнения в %s
+completion_updated	Автодополнение обновлено в %s
+completion_will_add	Будет добавлено в %s:
+completion_added	Автодополнение добавлено в %s
+completion_activate_now	Чтобы включить настройку сейчас:
+completion_remove_old_config	Удалены устаревшие записи автодополнения из config.fish
+completion_remove_old_source	Удалены устаревшие записи source из config.fish
+ui_log_empty_path	Проверка пути не пройдена: путь пуст
+ui_msg_path_absolute	Проверка пути не пройдена: требуется абсолютный путь: %s
+ui_msg_path_traversal	Проверка пути не пройдена: обход каталогов недопустим: %s
+ui_msg_path_control	Проверка пути не пройдена: путь содержит управляющие символы: %s
+ui_msg_symlink_unreadable	Не удалось прочитать символическую ссылку: %s
+ui_msg_symlink_protected	Символическая ссылка ведёт в защищённый системный путь: %s -> %s
+ui_msg_path_critical_resolved	Проверка пути не пройдена: разрешённый путь ведёт в критический системный каталог: %s -> %s
+ui_msg_path_protected_resolved	Проверка пути: разрешённый путь защищён: %s -> %s
+ui_msg_endpoint_cache_skipped	Проверка пути: пропущен кеш агента Endpoint Security: %s
+ui_msg_path_critical	Проверка пути не пройдена: критический системный путь: %s
+ui_msg_path_protected_skipped	Проверка пути: защищённый путь пропущен: %s
+ui_msg_remove_failed	Не удалось удалить: %s
+ui_msg_sudo_remove_validation	Проверка пути для удаления с sudo не пройдена: %s
+ui_msg_sudo_remove_symlink	Отказано в удалении символической ссылки с sudo: %s
+ui_msg_dry_sudo_remove	[ПРЕДПРОСМОТР] Будет удалён с sudo: %s
+ui_msg_dry_sudo_remove_typed	[ПРЕДПРОСМОТР] Будет удалён с sudo: %s %s
+ui_msg_dry_size	  Размер: %s
+ui_msg_dry_age	  Возраст: %s
+ui_msg_sudo_remove_failed	Не удалось удалить с sudo: %s
+ui_msg_trash_interrupted	Перемещение в Корзину прервано; объект сохранён для восстановления: %s
+ui_msg_trash_failed	Не удалось переместить объект в Корзину; он сохранён для восстановления: %s
+ui_msg_directory_missing	Каталог не существует: %s
+ui_msg_directory_symlink_refused	Отказано в поиске в каталоге через символическую ссылку: %s
+ui_msg_invalid_type_filter	Недопустимый фильтр типа: %s; допустимы только 'f' и 'd'
+ui_msg_invalid_age	Недопустимый возраст: %s; требуется целое неотрицательное число
+ui_msg_invalid_depth	Недопустимая глубина: %s; допустимо от 1 до 5
+ui_msg_invalid_deadline	Недопустимый срок очистки: %s
+ui_msg_uninstall_aborted	Удаление приложений отменено: %s
+ui_msg_touchid_unknown_command	Неизвестная команда: %s
+ui_msg_cloud_cleanup_failed	Не удалось очистить облачные и офисные данные; код завершения: %s
+ui_msg_purge_outcome_unknown	Неизвестный результат очистки проектов: %s
+ui_msg_completion_link_error	Не удалось пройти по ссылке на файл оболочки %s, файл не изменён. Исправьте или удалите ссылку и повторите mo completion
+ui_msg_update_version_invalid	Ответ с версией недопустим: %s
+ui_msg_update_repair_needed	Установка Mole требует восстановления: %s
+ui_msg_update_curl_failed	Ошибка curl при обновлении: %s
+ui_msg_remove_completion_resolve	Не удалось определить файл автодополнения оболочки: %s
+ui_msg_remove_completion_prepare	Не удалось создать временный файл для очистки автодополнения в %s
+ui_msg_remove_completion_read	Не удалось прочитать записи автодополнения оболочки из %s
+ui_msg_remove_completion_failed	Не удалось удалить автодополнение оболочки из %s
+ui_msg_remove_completion_success	Автодополнение удалено из %s
+ui_msg_remove_fish_success	Удалены файлы автодополнения Fish: %s
+ui_msg_remove_fish_failed	Не удалось удалить файлы автодополнения Fish: %s
+ui_msg_remove_install_failed	Не удалось удалить %s
+ui_msg_remove_trash_failed	Не удалось переместить %s в Корзину; объект оставлен на месте
+ui_msg_uninstall_scan_failed	Не удалось завершить сканирование приложений (%s, код завершения %s); ничего не удалено
+ui_msg_uninstall_brew_failed	Homebrew завершил работу с ошибкой: %s; исправьте Homebrew и повторите mo uninstall
+ui_msg_uninstall_brew_unreadable	%s относится к cask Homebrew, который не удалось прочитать. Выполните brew info --cask <cask>, исправьте или отключите cask и повторите mo uninstall --debug
+ui_msg_uninstall_stopped_timeout	Удаление остановлено на %s: превышено время ожидания этапа %s; следующие приложения не затронуты
+ui_msg_uninstall_stopped_failed	Удаление остановлено на %s во время этапа %s (код завершения %s); следующие приложения не затронуты
+ui_msg_dry_refresh_launch_services	[ПРЕДПРОСМОТР] Будут обновлены LaunchServices и записи Dock
+ui_dry_run_purge_banner	ПРЕДПРОСМОТР: артефакты проектов удалены не будут
+ui_dry_run_slim_banner	ПРЕДПРОСМОТР: приложения не будут изменены
+ui_dry_run_remove_banner	ПРЕДПРОСМОТР: файлы удалены не будут
+ui_dry_run_touchid_banner	ПРЕДПРОСМОТР: файлы аутентификации sudo не будут изменены
+ui_dry_run_optimize_banner	ПРЕДПРОСМОТР: файлы не будут изменены
+ui_dry_run_uninstall_banner	ПРЕДПРОСМОТР: файлы и настройки приложений не будут изменены
+ui_dry_run_installer_banner	ПРЕДПРОСМОТР: файлы установщиков не будут удалены
+ui_summary_dry_run_incomplete_no_changes	Предпросмотр завершён не полностью — изменений нет
+ui_summary_purge_complete	Очистка проектов завершена
+ui_summary_purge_incomplete	Очистка проектов завершена не полностью
+ui_summary_optimize_complete	Оптимизация завершена
+ui_summary_optimize_dry_run	Предпросмотр завершён, изменений нет
+ui_summary_optimize_pass_complete	Оптимизация завершена
+ui_summary_review_warnings	Проверьте предупреждения выше
+ui_outcome_unchanged	без изменений
+ui_outcome_skipped	пропущено
+ui_outcome_unavailable	недоступно
+ui_outcome_attention	требуют внимания
+ui_outcome_failed	с ошибкой
+ui_summary_would_apply	Будет применено оптимизаций: %s
+ui_summary_run_without_dry_run	Запустите без %s, чтобы применить изменения
+ui_cache_cleaned	кеша очищено
+ui_databases_optimized	баз оптимизировано
+ui_configs_repaired	настроек исправлено
+ui_summary_applied_with_stat	Применено оптимизаций: %s, %s
+ui_summary_applied	Применено оптимизаций: %s
+whitelist_cancelled	Отменено, изменения не сохранены
+spinner_calculating_sizes	Расчёт размеров...
+spinner_checking_homebrew_dependencies	Проверка зависимостей Homebrew...
+spinner_checking_spotlight_speed	Проверка скорости Spotlight...
+spinner_checking_time_machine_configuration	Проверка настроек Time Machine...
+spinner_checking_time_machine_status	Проверка состояния Time Machine...
+spinner_checking_xcode_deriveddata	Проверка DerivedData Xcode...
+spinner_checking_xcode_simulators	Проверка симуляторов Xcode...
+spinner_checking_backup_volumes	Проверка резервных дисков...
+spinner_checking_bun_cache_path	Проверка пути к кешу bun...
+spinner_checking_local_snapshots	Проверка локальных снимков...
+spinner_checking_login_items	Проверка объектов входа...
+spinner_checking_npm_cache_path	Проверка пути к кешу npm...
+spinner_checking_orphaned_system_services	Проверка оставшихся системных служб...
+spinner_checking_pnpm_store_path	Проверка пути к хранилищу pnpm...
+spinner_checking_preferences	Проверка настроек...
+spinner_checking_project_caches	Проверка кешей проектов...
+spinner_checking_recent_activity	Проверка недавней активности...
+spinner_checking_simulator_runtimes	Проверка сред выполнения симуляторов...
+spinner_checking_unavailable_simulators	Проверка недоступных симуляторов...
+spinner_cleaning_finder_metadata	Очистка метаданных Finder...
+spinner_cleaning_github_cli_cache	Очистка кеша GitHub CLI...
+spinner_cleaning_memory_exception_reports	Очистка отчётов об исключениях памяти...
+spinner_cleaning_old_mail_attachments	Очистка старых вложений Mail...
+spinner_cleaning_power_logs	Очистка журналов энергопотребления...
+spinner_cleaning_rebuildable_system_service_caches	Очистка восстанавливаемых кешей системных служб...
+spinner_cleaning_system_caches	Очистка системных кешей...
+spinner_cleaning_system_crash_reports	Очистка отчётов о сбоях системы...
+spinner_cleaning_system_diagnostic_logs	Очистка диагностических журналов системы...
+spinner_cleaning_system_logs	Очистка системных журналов...
+spinner_cleaning_third_party_system_logs	Очистка системных журналов сторонних приложений...
+spinner_cleaning	Очистка...
+spinner_collecting_system_info	Сбор сведений о системе...
+spinner_detecting_mole_installations	Поиск установленных копий Mole...
+spinner_emptying_trash	Очистка Корзины...
+spinner_homebrew_cleanup	Очистка Homebrew...
+spinner_measuring_trash	Подсчёт размера Корзины...
+spinner_optimizing_databases	Оптимизация баз данных...
+spinner_preparing_app_list	Подготовка списка приложений...
+spinner_preparing_artifacts	Подготовка артефактов...
+spinner_preparing_summary	Подготовка сводки...
+spinner_pruning_tart_caches	Очистка кешей Tart...
+spinner_removing_installers	Удаление установщиков...
+spinner_repairing_disk_permissions	Восстановление прав доступа к диску...
+spinner_requesting_permissions	Запрос разрешений...
+spinner_scanning_application_support	Сканирование Application Support...
+spinner_scanning_gradle_caches	Сканирование кешей Gradle...
+spinner_scanning_group_containers	Сканирование Group Containers...
+spinner_scanning_accessible_rebuildable_gpu_caches	Сканирование доступных восстанавливаемых кешей GPU...
+spinner_scanning_app_caches	Сканирование кешей приложений...
+spinner_scanning_apps	Сканирование приложений...
+spinner_scanning_backup_volumes	Сканирование резервных дисков...
+spinner_scanning_browser_service_worker_caches	Сканирование кешей Service Worker браузеров...
+spinner_scanning_browser_code_signature_caches	Сканирование кешей подписей браузеров...
+spinner_scanning_caches	Сканирование кешей...
+spinner_scanning_external_volume	Сканирование внешнего диска...
+spinner_scanning_files	Сканирование файлов...
+spinner_scanning_for_installers	Поиск установщиков...
+spinner_scanning_installed_apps	Сканирование установленных приложений...
+spinner_scanning_large_files	Поиск крупных файлов...
+spinner_scanning_macos_installer_files	Поиск файлов установщиков macOS...
+spinner_scanning_orphaned_app_resources	Поиск ресурсов удалённых приложений...
+spinner_scanning_orphaned_containers	Поиск оставшихся контейнеров...
+spinner_scanning_orphaned_system_services	Поиск оставшихся системных служб...
+spinner_scanning_project_artifacts	Сканирование артефактов проектов...
+spinner_scanning_sandboxed_apps	Сканирование приложений в песочнице...
+spinner_scanning_stale_wallpaper_downloads	Поиск устаревших загруженных обоев...
+spinner_searching_project_caches	Поиск кешей проектов...
+spinner_updating_homebrew	Обновление Homebrew...
+spinner_upgrading_mole	Обновление Mole...
+spinner_verifying_disk_filesystem	Проверка файловой системы диска...
+spinner_scanning_description	Сканирование %s...
+spinner_checking_description	Проверка: %s...
+spinner_cleaning_description	Очистка: %s...
+spinner_removing_description	Удаление: %s...
+spinner_measuring_description	Измерение: %s...
+spinner_slimming_app	Оптимизация приложения: %s...
+spinner_uninstalling_app	Удаление приложения: %s...
+spinner_scanning_target_count	Сканирование объектов: %s...
+spinner_scanning_items_progress	Сканирование объектов... %s/%s
+spinner_scanning_label_progress	Сканирование: %s, %s/%s...
+spinner_scanning_project_path	Сканирование проекта · %s
+spinner_scanning_app_support_bulk	Сканирование Application Support... %s/%s [%s, полная очистка]
+spinner_scanning_app_support_items	Сканирование Application Support... %s/%s [%s объектов]
+spinner_scanning_group_bulk	Сканирование группы Application Support... [%s, полная очистка]
+spinner_scanning_group_items	Сканирование группы Application Support... [%s, %s объектов]
+spinner_measuring_derived_data	Измерение DerivedData Xcode, %s/%s...
+spinner_removing_derived_data	Удаление DerivedData Xcode, %s/%s...
+spinner_removing_sized_target	Удаление %s (%s)...
+spinner_cleaning_app_files	Очистка файлов приложения %s...
+spinner_cleaning_app_system_files	Очистка системных файлов приложения %s...
+spinner_emptying_trash_progress	Очистка Корзины... %s/%s
+ui_msg_unsupported_shell	Не поддерживаемая оболочка: %s
+spinner_scan_project_roots	Сканирование проектов · %s
+ui_clean_cancelled_section	%s Раздел: %s.
+ui_external_metadata_scan_stopped	Очистка метаданных внешнего диска остановлена (код завершения %s).
+ui_browser_signature_cache_count	Кеши подписей браузеров: %s объектов
+ui_rebuildable_system_cache_one	Восстановлен системный кеш: %s объект
+ui_rebuildable_system_cache_many	Восстановлены системные кеши: %s объектов
+ui_rebuildable_gpu_cache_one	Восстановлен доступный кеш GPU: %s объект
+ui_rebuildable_gpu_cache_many	Восстановлены доступные кеши GPU: %s объектов
+ui_dry_remove_memory_reports_with_size	[ПРЕДПРОСМОТР] Будут удалены старые отчёты об исключениях памяти: %s шт. (%s КБ)
+ui_dry_remove_memory_reports	[ПРЕДПРОСМОТР] Будут удалены старые отчёты об исключениях памяти: %s шт.
+ui_uninstall_temp_file_list_create_failed	Не удалось создать временный файл со списком файлов приложения %s
+ui_uninstall_file_list_decode_failed	Не удалось декодировать список файлов приложения %s
+ui_uninstall_file_list_null_bytes	Список файлов приложения %s содержит нулевые байты; список отклонён
+ui_uninstall_file_list_read_failed	Не удалось прочитать декодированный список файлов приложения %s
+ui_uninstall_file_list_path_invalid	Недопустимый путь в списке файлов приложения %s: %s
+ui_uninstall_temp_helper_list_create_failed	Не удалось создать временный файл со списком идентификаторов помощников приложения %s
+ui_uninstall_helper_list_decode_failed	Не удалось декодировать список идентификаторов помощников приложения %s
+ui_uninstall_helper_list_null_bytes	Список идентификаторов помощников приложения %s содержит нулевые байты; список отклонён
+ui_uninstall_helper_list_read_failed	Не удалось прочитать декодированный список идентификаторов помощников приложения %s
+ui_uninstall_interactive_list_hint	Запустите mo uninstall в интерактивном терминале или используйте mo uninstall --list для просмотра приложений
+ui_uninstall_homebrew_cask_unreadable_quoted	'%s' относится к cask Homebrew, который не удалось прочитать. Выполните brew info --cask <cask>, исправьте cask или отключите tap, затем повторите mo uninstall --debug
+ui_nightly_update_channel	Ночная сборка доступна только для установок из скрипта. Установки Homebrew получают стабильные версии.
+ui_admin_access_transfer_unavailable	В этой среде нельзя передать установщику права администратора
+ui_manual_homebrew_uninstall	Выполните вручную: %s
+ui_remove_interactive_hint	Запустите mo remove в интерактивном терминале или используйте mo remove --dry-run для предварительного просмотра
+spinner_indexed_slimming	[%s/%s] Удаление Intel-кода из приложения %s...
+spinner_indexed_uninstalling	[%s/%s] Удаление приложения %s%s...
+spinner_uninstalling	Удаление приложения %s%s...
+spinner_indexed_removing_app	[%s/%s] Удаление %s (%s)...
+spinner_removing_app	Удаление %s (%s)...
+spinner_indexed_cleaning_app_files	[%s/%s] Очистка файлов приложения %s...
+spinner_cleaning_app_files_indexed	Очистка файлов приложения %s...
+spinner_indexed_cleaning_app_system_files	[%s/%s] Очистка системных файлов приложения %s...
+section_apple_silicon_updates	Обновления Apple Silicon
+ui_menu_no_items	Элементы не найдены
+ui_menu_no_matches	Совпадений не найдено
+ui_menu_quit	Выход
+ui_menu_selected_count	Выбрано: %s/%s
+ui_menu_filtered_count	(%s/%s; выбрано: %s)
+ui_menu_search_prompt	Поиск: %s%s
+ui_menu_search_label	Поиск
+ui_menu_search_empty	Поиск: _
+ui_menu_type_to_search	(введите запрос)
+ui_menu_space_select	Пробел — выбрать
+ui_menu_all_select	A — выбрать всё
+ui_menu_enter_save	Enter — сохранить
+ui_menu_q_cancel	Q — отмена
+ui_menu_hl_page	h/l — страница
+ui_menu_enter_apply	Enter — применить
+ui_menu_ctrl_u_clear	Ctrl+U — очистить
+ui_menu_esc_clear	Esc — очистить
+ui_menu_date	Дата
+ui_menu_name	Имя
+ui_menu_size	Размер
+ui_menu_simple_controls	Пробел — выбрать | Enter — сохранить | Q — отмена
+ui_prompt_press	Нажмите
+ui_prompt_confirm	для подтверждения
+ui_prompt_cancel	для отмены
+ui_prompt_enable	чтобы включить
+ui_prompt_disable	чтобы отключить
+ui_prompt_clean_continue_skip	Нажмите Enter, чтобы продолжить, или пробел, чтобы пропустить
+ui_title_clean_external	Очистка внешнего диска
+ui_title_clean_mac	Очистка Mac
+ui_title_optimize	Оптимизация
+ui_title_purge_artifacts	Выберите артефакты для очистки
+ui_title_purge_paths	Настройка путей очистки проектов
+ui_title_files_removed	Файлы, которые будут удалены:
+ui_cleanup_legacy_config	Очистка устаревшей конфигурации
+ui_prompt_return_app_list	Enter — вернуться к списку приложений, q — выйти
+ui_footer_projects_find	Проекты / Поиск
+ui_footer_enter_confirm	Enter — подтвердить
+ui_footer_all	A — выбрать всё
+ui_footer_invert	I — инвертировать выбор
+ui_footer_skip_project	X — пропустить проект
+ui_footer_skip	X — пропустить
+ui_title_select_slim_apps	Выберите приложения для удаления кода Intel
+ui_title_select_apps_remove	Выберите приложения для удаления
+ui_title_personal_data_remove	Личные данные для удаления
+ui_whitelist_title_optimize	Менеджер исключений: задачи оптимизации
+ui_whitelist_title_clean	Менеджер исключений: кеши для защиты
+ui_whitelist_edit_file	Файл: %s
+ui_whitelist_edit_file_extra	Файл: %s; добавленные в него пути также будут защищены
+ui_menu_footer_invert	I — инвертировать выбор
+ui_menu_footer_skip_project	X — пропустить проект
+ui_menu_footer_skip	X — пропустить
+ui_menu_footer_projects_find	Проекты / Поиск
+ui_menu_footer_enter_confirm	Enter — подтвердить
+ui_menu_footer_q_quit	Q Выход
+ui_update_spinner_check	Проверка обновлений...
+ui_update_spinner_download_latest	Загрузка последней версии...
+ui_update_spinner_install	Установка обновления...
+ui_update_spinner_download_nightly	Загрузка установщика ночной сборки...
+ui_update_spinner_install_nightly	Установка ночной сборки...
+ui_update_spinner_switch_stable	Переключение на стабильный канал...
+ui_update_spinner_download_repair	Загрузка установщика для восстановления...
+ui_update_spinner_repair	Восстановление установки Mole...
+ui_update_nix_instruction	Чтобы обновить Mole, выполните nix profile upgrade mole или обновите источник Mole в конфигурации Nix
+ui_update_try_main	Чтобы установить main, выполните: %s
+ui_update_github_retry	Проверьте доступ к GitHub и повторите попытку.
+ui_update_force_nightly	Чтобы принудительно переустановить Mole:
+ui_update_already_nightly	Уже установлена последняя ночная сборка, %s
+ui_update_github_url	Проверьте доступность GitHub: https://github.com
+ui_update_try_with	Повторите попытку с командой:
+ui_update_try_nightly	Повторите попытку позже или используйте:
+ui_update_already_latest	Уже установлена последняя версия, %s
+ui_update_dns_retry	Не удалось определить адрес сервера. Проверьте DNS или подключение к сети.
+ui_update_connect_retry	Не удалось подключиться. Проверьте сеть или настройки прокси.
+ui_update_404_retry	HTTP 404: установщик мог быть перемещён.
+ui_update_timeout_retry	Истекло время ожидания подключения. Повторите попытку или проверьте файрвол.
+ui_update_tls_retry	TLS-подключение сброшено. Возможно, локальный прокси или VPN блокирует GitHub.
+ui_update_network_retry	Проверьте подключение к сети и повторите попытку.
+ui_update_url_label	Адрес: %s
+ui_update_install_curl	Установите curl командой:
+ui_update_run	Запустите
+ui_update_from_terminal	в терминале или заранее сохраните учётные данные:
+ui_remove_none_found	Установка Mole не найдена
+ui_remove_dry_preview_title	Удаление Mole: будут удалены следующие файлы:
+ui_remove_preview_title	Удаление Mole: будут удалены следующие файлы:
+ui_remove_preview_homebrew_run	Будет выполнена команда: brew uninstall --force mole
+ui_remove_preview_item	Будет удалён файл: %s
+ui_remove_preview_completion	Будет удалено автодополнение Mole из файла %s
+ui_remove_preview_fish	Будет удалён файл: %s
+ui_remove_preview_trash	Будет перемещено в Корзину: %s
+ui_remove_kept_manual	%s (оставлено для проверки вручную)
+ui_remove_kept_history	%s (оставлено: история операций)
+ui_remove_nix_instruction	Чтобы удалить Mole, выполните nix profile remove mole или удалите источник из конфигурации Nix
+ui_remove_homebrew	Mole через Homebrew
+ui_remove_completion_in	Автодополнение Mole в файле %s
+ui_remove_config_trash	~/.config/mole (в Корзину)
+ui_remove_logs_kept	~/Library/Logs/mole (сохранено: история операций)
+ui_menu_no_items_provided	Не переданы элементы для выбора
+ui_prompt_confirm_lower	подтвердить
+ui_prompt_cancel_lower	отменить
+ui_remove_title	Удаление Mole
+ui_remove_intro_dry	будут удалены следующие файлы:
+ui_remove_intro_live	будут удалены следующие файлы:
+ui_slim_apps_heading	Приложения для оптимизации:
+ui_slim_originals_note	Оригиналы перемещаются в Корзину. Обновления приложений возвращают код Intel.
+ui_slim_running_note	Запущенные приложения будут пропущены. Перед подтверждением завершите их.
+ui_slim_confirm_one	Удалить код Intel из приложения: %s, %s
+ui_slim_confirm_many	Удалить код Intel из приложений: %s, %s
+ui_prompt_enter_confirm	подтвердить
+ui_slim_quit_instruction	Завершите %s и повторно запустите mo slim
+ui_uninstall_matched_apps	Найдено приложений: %s
+ui_uninstall_selected_apps	Выбрано приложений: %s
+ui_uninstall_no_apps_selected	Приложения не выбраны
+ui_uninstall_list_name	НАЗВАНИЕ
+ui_uninstall_list_bundle_id	ИДЕНТИФИКАТОР
+ui_uninstall_list_uninstall_name	ИМЯ ДЛЯ УДАЛЕНИЯ
+ui_uninstall_list_size	РАЗМЕР
+ui_uninstall_list_count	Приложений: %s | Для удаления выполните: mo uninstall <UNINSTALL NAME>
+ui_uninstall_last_label	Последний запуск: %s
+ui_uninstall_selected_count	Выбрано приложений: %s
+ui_uninstall_summary_running	Продолжают работать после удаления (процесс остался активным): %s
+ui_uninstall_quit_note	Завершите приложение, чтобы освободить его копию в памяти; переустановка до завершения может привести к сбоям
+ui_uninstall_summary_complete	Удаление приложений завершено
+ui_uninstall_summary_incomplete	Удаление приложений завершено не полностью
+ui_uninstall_summary_dry	Предпросмотр удаления приложений завершён
+ui_slim_quit_them	Завершите эти приложения и повторно запустите mo slim
+ui_slim_quit_it	Завершите приложение и повторно запустите mo slim
+ui_prompt_to_continue	чтобы продолжить
+ui_prompt_including_personal_data	включая личные данные
+ui_prompt_choose_personal_data	выбрать личные данные
+ui_prompt_running_tag	[Работает]
+ui_remove_intro	Удаление Mole
+ui_remove_preview_would	будут удалены следующие файлы:
+ui_remove_preview_will	будут удалены следующие файлы:
+ui_uninstall_remove_one	Удалить приложение: %s
+ui_uninstall_remove_many	Удалить приложений: %s
+ui_installer_delete_prompt	Удалить установщики: %s шт., объём %s
+ui_whitelist_config_file	Файл конфигурации:
+ui_whitelist_open_editor	Открытие в %s...
+ui_whitelist_save_editor	Сохраните файл и выйдите, чтобы применить изменения. Оставьте его пустым для значений по умолчанию.
+ui_whitelist_updated	Конфигурация обновлена
+ui_last_used_label	Последний запуск: %s
+ui_uninstall_list_name_upper	НАЗВАНИЕ
+ui_uninstall_list_bundle_id_upper	ИДЕНТИФИКАТОР
+ui_uninstall_list_uninstall_upper	ИМЯ ДЛЯ УДАЛЕНИЯ
+ui_uninstall_list_size_upper	РАЗМЕР
+ui_update_check_plain	Проверка обновлений
+ui_update_download_latest_plain	Загрузка последней версии
+ui_update_install_plain	Установка обновления
+ui_update_download_nightly_plain	Загрузка установщика ночной сборки
+ui_update_install_nightly_plain	Установка ночной сборки
+ui_update_switch_stable_plain	Переключение на стабильный канал
+ui_update_download_repair_plain	Загрузка установщика для восстановления
+ui_update_repair_plain	Восстановление установки Mole
+ui_summary_remaining_cleanup_skipped	Остальная очистка пропущена.
+ui_summary_cancel_timeout	Отменено: превышено время ожидания этапа %s (код %s).
+ui_summary_cancel_interrupted	Отменено: этап %s прерван (код %s).
+ui_summary_cancel_unknown_timeout	Отменено: превышено время ожидания сканирования или проверки размера (код %s).
+ui_summary_cancel_unknown_interrupt	Отменено: этап очистки прерван (код %s).
+ui_summary_cleanup_step_failed	Обязательный этап очистки завершился с ошибкой (код %s).
+ui_summary_potential_space	Возможное освобождение места: %s
+ui_summary_removed_size	Удалено: %s
+ui_summary_free_space	Свободное место: %s%s
+ui_summary_test_mode_detail	Тестовый режим: очистка не выполнялась
+ui_installer_summary_heading	Очистка установщиков завершена
+ui_installer_summary_incomplete	Очистка установщиков завершена не полностью
+ui_installer_summary_would_remove	Будут удалены установщики: %s шт.; освободится %s
+ui_installer_summary_removed	Удалены установщики: %s шт.; освобождено %s
+ui_installer_summary_cleaner	Теперь на Mac стало чище!
+ui_installer_summary_none	Установщики не удалены
+ui_installer_summary_failed	Не удалось удалить: %s %s
+ui_installer_summary_more_failed	Ещё ошибок: %s
+ui_installer_no_files	Нет файлов установщиков для удаления
+ui_uninstall_success_one	Удалено приложений: %s
+ui_uninstall_success_many	Удалено приложений: %s
+ui_uninstall_dry_one	Будет удалено приложений: %s
+ui_uninstall_dry_many	Будет удалено приложений: %s
+ui_uninstall_no_success_or_failure	Приложения не удалены.
+ui_uninstall_failed_summary	Не удалось удалить: %s %s
+ui_uninstall_kept_system_paths	Сохранены системные пути: %s %s; Mole их не удаляет
+ui_uninstall_extensions_remain	После удаления могут остаться системные расширения: %s
+ui_uninstall_extensions_settings	Чтобы удалить оставшиеся расширения, откройте «Системные настройки» > «Основные» > «Объекты входа и расширения»
+ui_uninstall_background_item	Фоновый элемент приложения %s продолжает работать. Отключите его в «Системные настройки» > «Объекты входа и расширения»
+ui_uninstall_remove_note	включая личные данные
+opt_msg_quicklook_refreshed	Миниатюры Quick Look обновлены
+opt_msg_icon_services_rebuilt	Кеш служб значков перестроен
+opt_msg_saved_states_optimized	Состояния приложений оптимизированы
+opt_msg_saved_states_removed	Удалено устаревших состояний приложений: %s
+opt_msg_preferences_repaired	Исправлено повреждённых файлов настроек: %s
+opt_msg_preferences_valid	Все файлы настроек исправны
+opt_msg_network_admin_required	Обновление сетевого кеша пропущено: нужны права администратора
+opt_msg_dns_refreshed	Кеш DNS обновлён
+opt_msg_dns_vpn_skipped	Обновление кеша DNS пропущено: обнаружено активное VPN-подключение
+opt_msg_dns_signal_skipped	Обновление кеша DNS пропущено: macOS не разрешает отправить сигнал mDNSResponder
+opt_msg_quarantine_clean	База данных карантина уже очищена
+opt_msg_quarantine_cleared	История карантина очищена: записей %s
+opt_msg_databases_optimized	Оптимизированы базы данных приложений Mail, Safari и Messages: %s
+opt_msg_no_databases_compacted	Сжать базы данных не удалось
+opt_msg_databases_optimal	Все базы данных уже оптимизированы
+opt_msg_no_databases_found	Базы данных для оптимизации не найдены
+opt_msg_databases_already_optimal	Баз данных уже в оптимальном состоянии: %s
+opt_msg_databases_policy_skipped	Пропущено баз данных размером более 100 МБ: %s
+opt_msg_network_vpn_skipped	Обновление сетевого стека пропущено: обнаружено активное VPN-подключение
+opt_msg_network_optimal	Сетевой стек уже оптимален
+opt_msg_routing_refreshed	Таблица маршрутизации сети обновлена
+opt_msg_arp_cleared	Кеш ARP очищен
+opt_msg_permissions_optimal	Права доступа к каталогу пользователя уже настроены
+opt_msg_permissions_repaired	Права доступа к каталогу пользователя исправлены
+opt_msg_access_resolved	Проблемы с доступом к файлам устранены
+opt_msg_spotlight_optimal	Индекс Spotlight уже оптимален
+opt_msg_spotlight_rebuild_started	Перестроение индекса Spotlight запущено
+opt_msg_spotlight_verified	Индекс Spotlight проверен
+opt_msg_spotlight_rules_clean	Правила поиска Spotlight уже очищены
+opt_msg_spotlight_rules_would_remove	Будут удалены оставшиеся правила Spotlight: %s
+opt_msg_spotlight_rules_removed	Удалены оставшиеся правила Spotlight: %s
+opt_msg_dsstore_prevent_enabled	Предотвращение создания .DS_Store уже включено для сетевых и USB-томов
+opt_msg_dsstore_enabled	Предотвращено создание .DS_Store на сетевых и USB-томах
+opt_msg_no_legacy_overrides	Устаревшие параметры App Nap и проверки образов дисков не найдены
+opt_msg_whitelist_skipped	Пропущено (в списке исключений): %s
+opt_msg_override_removed	Удалён параметр: %s
+opt_msg_launch_agents_healthy	Все агенты запуска работают исправно
+opt_msg_maintenance_unavailable	Периодическое обслуживание пропущено: оно недоступно в этой версии macOS
+opt_msg_maintenance_current	Периодическое обслуживание уже выполнялось %s назад
+opt_msg_maintenance_sudo	Периодическое обслуживание пропущено: нужны права администратора
+opt_msg_maintenance_triggered	Периодическое обслуживание запущено
+opt_msg_shared_lists_missing	Каталог общих списков файлов не найден
+opt_msg_shared_lists_repaired	Исправлено повреждённых общих списков файлов: %s
+opt_msg_shared_lists_healthy	Общие списки файлов исправны
+opt_msg_notification_db_healthy	База данных Центра уведомлений исправна (%s)
+opt_msg_notification_db_cleaned	База данных Центра уведомлений очищена (было %s)
+opt_msg_disk_verify_skipped	Проверка диска пропущена
+opt_msg_disk_verify_dry_skipped	Проверка диска · пропущена в предпросмотре
+opt_msg_disk_verified	Файловая система диска проверена
+opt_msg_knowledge_db_missing	База знаний не найдена
+opt_msg_knowledge_db_healthy	База знаний исправна (%s)
+opt_msg_knowledge_db_cleaned	База знаний очищена (было %s)
+opt_msg_login_audit_skipped	Проверка объектов входа · пропущена в тестовом режиме
+opt_msg_login_items_missing	Объекты входа не найдены
+opt_msg_login_items_healthy	Объекты входа исправны: проверено %s
+opt_msg_spotlight_rule_skip	Пропущено (в списке исключений): %s
+ui_no_apps_to_uninstall_period	Не найдено приложений для удаления.
+ui_no_apps_to_uninstall	Не найдено приложений для удаления
+ui_warning	Предупреждение:
+ui_no_matching_application	Не найдено приложение по запросу «%s»
+ui_no_applications_found	Приложения не найдены.
+ui_no_matching_applications	Подходящие приложения не найдены.
+ui_no_artifacts_completed_scans	В завершённых сканированиях проектов артефакты не найдены
+ui_no_artifacts_to_purge	Артефакты для очистки не найдены
+clean_missing_external_path	Не указан путь для --external
+clean_removed_option	Параметр mo clean %s удалён в этой версии.
+clean_removed_option_help	Для предварительного просмотра используйте 'mo clean --dry-run', для защиты путей — 'mo clean --whitelist'.
+clean_unknown_option	Неизвестный параметр mo clean: %s
+clean_unexpected_argument	Неожиданный аргумент mo clean: %s
+clean_usage_hint	Для справки выполните 'mo clean --help'.
+cli_unknown_option	Неизвестный параметр: %s
+purge_usage_hint	Для справки выполните 'mo purge --help'
+slim_usage_hint	Для просмотра параметров выполните 'mo slim --help'.
+optimize_unknown_option	Неизвестный параметр optimize: %s
+optimize_usage_hint	Для просмотра параметров выполните 'mo optimize --help'.
+clean_noninteractive	Работа в неинтерактивном режиме
+clean_system_enabled	Очистка системы включена: сеанс sudo активен
+clean_system_skipped	Очистка системы пропущена: требуется sudo
+clean_user_automatic	Очистка пользовательских данных продолжится автоматически
+remove_detecting_installations	Поиск установленных копий...
+update_retry_direct	Повторная попытка прямой переустановки из GitHub...
+clean_space_unknown	Неизвестно
+uninstall_unknown_option	Неизвестный параметр uninstall: %s
+uninstall_whitelist_hint	Список исключений доступен в командах: mo clean --whitelist / mo optimize --whitelist
+uninstall_usage_hint	Для просмотра параметров выполните 'mo uninstall --help'.
+slim_requires_apple_silicon	Для mo slim нужен Mac с Apple Silicon; на Mac с Intel используется код Intel.
+slim_terminal_required	Чтобы выбрать приложения, запустите mo slim в терминале.
+slim_reason_whitelisted	в списке исключений
+slim_reason_symlink	символическая ссылка
+slim_reason_not_bundle	не является приложением
+slim_reason_app_store	приложение App Store
+slim_reason_not_owned	принадлежит другому пользователю
+slim_reason_not_writable	нет прав на запись в папку
+slim_reason_other_owner	содержит файлы другого пользователя
+slim_reason_no_bundle_id	нет идентификатора приложения
+slim_reason_apple	приложение Apple
+slim_reason_protected	защищённое приложение
+slim_reason_rosetta	настроен запуск через Rosetta
+slim_reason_running	приложение запущено
+slim_reason_arm_missing	отсутствует код Apple Silicon
+slim_reason_signature_failed	проверка подписи не пройдена
+slim_reason_team_changed	идентификатор команды подписи изменился
+slim_reason_gatekeeper	проверка Gatekeeper не пройдена
+slim_reason_whitelist_unavailable	список исключений недоступен
+slim_reason_changed	изменилось после сканирования
+slim_reason_signature_invalid	подпись приложения уже недействительна
+slim_reason_no_stage	не удалось создать временную папку
+slim_reason_copy_failed	не удалось создать копию
+slim_reason_thin_failed	не удалось удалить код Intel из %s
+slim_reason_trash_failed	не удалось переместить оригинал в Корзину
+slim_reason_restore	оригинал находится в Корзине; перетащите его обратно в %s
+clean_sudo_required	Для очистки системных кешей нужен sudo.
+clean_continue	продолжить
+clean_skip	пропустить
+clean_cancelled	Отменено
+clean_skipped	Пропущено
+clean_admin_granted	Права администратора получены
+clean_auth_failed	Не удалось пройти проверку подлинности
+clean_continue_user	продолжается очистка пользовательских данных
+clean_preview_file_failed	Не удалось безопасно создать файл предварительного просмотра очистки
+clean_dry_run_mode	Режим предварительного просмотра
+clean_preview_only	Только просмотр, удаление не выполняется
+clean_flags_hint	Для просмотра используйте --dry-run, для настройки защищённых путей — --whitelist
+clean_admin_preview	Права администратора доступны; системные файлы включены в просмотр
+clean_sudo_preview_prefix	Для системных кешей нужен sudo; выполните
+clean_sudo_preview_suffix	для полного предварительного просмотра
+clean_admin_available	Права администратора уже доступны
+clean_user_app_cache	Кеш пользовательских приложений
+installer_file_check_timeout	Проверка файла превысила время ожидания; последующие выбранные файлы сохранены. Повторите mo installer.
+slim_no_intel_apps	Нет приложений с кодом Intel для удаления
+clean_whitelist_core	встроенных: %s
+clean_whitelist_custom	пользовательских: %s
+clean_whitelist_active	(действуют)
+clean_whitelist_label	Исключения
+clean_dry_label	просмотр
+clean_items_one	объектов: %s
+clean_items_many	объектов: %s
+clean_would_clean	будет очищено
+clean_docker_review	Неиспользуемые данные Docker · проверьте с помощью docker system df -v
+clean_brew_would_free	Очистка Homebrew · возможно освободить %s
+clean_npm_cache	кеш npm
+clean_npm_logs	журналы npm
+clean_pnpm_cache	кеш pnpm
+clean_pip_cache	кеш pip
+clean_trash_no_access	Корзина · пропущена; предоставьте терминалу полный доступ к диску
+clean_trash_preview	Корзина · будет очищена, %s
+clean_trash_partial	Корзина · удалено: %s; не удалось удалить: %s
+clean_trash_emptied	Корзина · очищена, %s
+clean_trash_failed	Корзина · не удалось удалить, %s
+clean_download_active	Пропущена активная загрузка: %s
+clean_download_unknown	Незавершённая загрузка сохранена: проверка открытых файлов недоступна: %s
+clean_download_final_check	Незавершённая загрузка сохранена после итоговой проверки открытых файлов: %s
+clean_mail_size_unknown	Загрузки Mail · пропущены: размер недоступен
+clean_mail_preview	Будут очищены вложения Mail: %s, старше %s дн., около %s МБ
+clean_mail_done	Очищены вложения Mail: %s, старше %s дн., около %s МБ
+clean_owner_cache_freed	%s · освобождено: %s
+clean_rust_dependency_cache	Кеш зависимостей Rust
+clean_mise_cache	Кеш mise
+clean_orbstack_container_data	Данные контейнеров OrbStack
+clean_xcode_xctest_devices	Устройства XCTestDevices Xcode
+clean_xcode_simulator_system_cache	Системный кеш симулятора Xcode
+clean_xcode_unavailable_simulators	Недоступные симуляторы Xcode
+clean_gradle_targets	Цели Gradle
+clean_claude_desktop_bundled_code	Встроенный Claude Code в Claude Desktop
+clean_codex_desktop_caches	Кеши Codex Desktop
+clean_codex_desktop_update_staging	Каталог подготовки обновления Codex Desktop
+clean_codex_daemon_old_releases	Старые версии службы Codex
+clean_codex_runtimes	Среды выполнения Codex
+clean_codex_marketplace_staging	Каталог подготовки Codex Marketplace
+clean_antigravity_gemini_caches	Кеши Antigravity/Gemini
+clean_chrome_devtools_mcp_caches	Кеши Chrome DevTools MCP
+clean_leaked_automation_browsers	Зависшие браузеры автоматизации
+clean_orphaned_simulator_runtime	Осиротевшая среда выполнения симулятора
+clean_reason_open_file_check_unavailable	проверка открытых файлов недоступна
+clean_reason_updater_state_unknown	состояние программы обновления неизвестно
+clean_reason_sudo_denied	в доступе sudo отказано
+clean_reason_simctl_probe_timed_out	проверка simctl превысила лимит времени
+clean_reason_simctl_probe_failed	проверка simctl завершилась с кодом %s
+clean_reason_simctl_unresolved	не удалось найти simctl
+clean_reason_cleanup_unverified	очистка завершена, но проверить оставшиеся устройства не удалось
+clean_reason_cleanup_timed_out	очистка превысила лимит времени
+clean_reason_cleanup_failed	не удалось выполнить очистку
+clean_orbstack_review	%s · %sпроверьте с помощью
+clean_xcode_simulator_would_remove	%s · будет удалено записей: %s, размер %s
+clean_xcode_simulator_removed_protected	%s · удалено: %s, размер %s; защищённых кешей пропущено: %s
+clean_xcode_simulator_removed	%s · удалено: %s, размер %s
+clean_xcode_simulator_remove_failed	%s · не удалось удалить записей: %s
+clean_xcode_simulator_skip_protected	%s · пропущено защищённых кешей: %s
+clean_xcode_simulator_skip_protected_none	%s · пропущено защищённых кешей: %s; ничего не удалено
+clean_old_versions_would_remove	%s · будут удалены старые версии: %s, размер %s; последних версий останется: %s
+clean_old_versions_removed	%s · удалены старые версии: %s, размер %s
+clean_orphaned_simulator_runtime_review	%s · %s %s%s%s · устройств нет · удалите командой %s
+clean_xcode_unavailable_multiple	Недоступные симуляторы · найдено несколько приложений Xcode; задайте DEVELOPER_DIR
+clean_xcode_unavailable_no_simctl	Недоступные симуляторы · в DEVELOPER_DIR нет simctl
+clean_xcode_unavailable_would_clean	%s · будет очищено: %s, размер %s
+clean_xcode_unavailable_removed	%s · удалено: %s, размер %s
+clean_xcode_unavailable_completed	%s · очистка завершена, размер %s
+clean_xcode_unavailable_failed	%s · не удалось выполнить очистку%s
+clean_leaked_browsers_would_stop	%s · будет остановлено браузеров: %s
+clean_leaked_browsers_stopped	%s · остановлено браузеров: %s
+clean_codex_crash_would_clean	Будут очищены старые отчёты о сбоях Codex: %s, старше %s дн., около %s МБ
+clean_codex_crash_cleaned	Очищены старые отчёты о сбоях Codex: %s, старше %s дн., около %s МБ
+clean_codex_manual_review	%s · требуется ручная проверка%s
+purge_paths_init_failed	Не удалось создать %s
+purge_paths_current_scan	Каталоги сканирования:
+purge_paths_not_found	, каталог не найден
+purge_paths_using_custom	Пользовательская настройка: каталогов — %s
+purge_paths_using_default	Каталогов по умолчанию: %s
+purge_paths_default_title	Каталоги по умолчанию:
+purge_paths_opening	Открытие в %s...
+purge_paths_apply_hint	Чтобы очистить каталоги, выполните mo purge
+purge_requires_confirmation	Для очистки проектов требуется подтверждение. Запустите mo purge в терминале; для просмотра используйте --dry-run, для очистки без вопросов — --yes.
+purge_unknown_size_one	, размер неизвестен: %s
+purge_unknown_size_many	, объектов с неизвестным размером: %s
+purge_confirm_remove_one	Удалить объектов: %s, размер %s%s
+purge_confirm_remove_many	Удалить объектов: %s, размер %s%s
+purge_resize_hint	Увеличьте окно терминала до 30 столбцов и 13 строк
+purge_size_unknown_count	+ не измерено: %s
+purge_menu_selection	Выбрано: %s · %s
+purge_project_label	Проект:
+purge_project_summary	 · размер %s · %s
+purge_group_summary	Группа: %s · %s
+purge_path_label	Путь:
+whitelist_error_directory	Не удаётся открыть каталог %s: %s
+whitelist_repair_directory	Очистка остановлена, чтобы не удалить защищённые данные. Выполните: chmod u+rx %q
+whitelist_error_invalid	Не удаётся прочитать %s: неверный путь или неработающая ссылка: %s
+whitelist_repair_invalid	Очистка остановлена, чтобы не удалить защищённые данные. Восстановите путь или цель ссылки и повторите попытку.
+whitelist_error_unknown	Не удаётся проверить путь %s: %s
+whitelist_repair_unknown	Очистка остановлена: подтвердить отсутствие файла не удалось. Проверьте доступ к пути и повторите попытку.
+whitelist_error_read	Не удаётся прочитать %s: %s
+whitelist_repair_read	Очистка остановлена, чтобы не удалить защищённые данные. Выполните: chmod u+r %q
+whitelist_perl_unavailable	Не удаётся проверить %s: системная среда Perl недоступна.
+whitelist_perl_repair	Очистка остановлена, чтобы не удалить защищённые данные. Восстановите /usr/bin/perl и повторите попытку.
+core_log_audit_unavailable	Предупреждение: журнал аудита недоступен (%s). В этом сеансе история действий неполна.
+core_log_debug_unwritable	Не удаётся записать отладочный журнал: %s
+core_log_debug_enabled	Отладочная запись включена. Журнал сеанса: %s
+core_log_debug_saved	Отладочный журнал сеанса сохранён:
+clean_protected_items_found	Обнаружены защищённые пути
+clean_full_disk_access_hint	Для более полной очистки разрешите Терминалу полный доступ к диску в Системных настройках
+clean_cloud_office_timeout	Облачные и офисные кеши · превышен лимит времени, оставшиеся элементы пропущены
+clean_old_versions_summary	Старые версии %s · %s, %s
+clean_docker_storage	Хранилище Docker
+ui_uninstall_steam_managed	Не применяется (управляется Steam)
+ui_uninstall_steam_launcher_only	Будет удалена только программа запуска Steam; файлы игр останутся под управлением Steam
+ui_uninstall_review_only	Только для проверки
+ui_uninstall_personal_data_kept	Личные данные оставлены
+ui_uninstall_kept_paths_many	%s: путей — %s
+ui_uninstall_app_failed_one	Не удалось удалить приложение %s: %s
+ui_uninstall_app_failed_many	[%s/%s] %s — %s
+ui_uninstall_leftovers_unreadable	Общие остаточные файлы сохранены (%s)
+ui_uninstall_leftovers_owners_unchecked	Общие остаточные файлы сохранены: другие копии не проверены
+ui_uninstall_leftovers_scan_timeout	Остаточные файлы сохранены: сканирование превысило лимит времени
+ui_uninstall_kept_could_not_remove	Не удалось удалить
+ui_uninstall_kept_protected	Сохранено (защищено Mole)
+ui_uninstall_kept_active	Сохранено (приложение может быть запущено)
+ui_uninstall_kept_access_denied	macOS запретила доступ
+ui_uninstall_kept_owner_unverified	Сохранено (владелец агента не подтверждён; проверьте plist)
+ui_uninstall_kept_app_reappeared	Сохранено (путь приложения снова существует; выберите приложение повторно)
+ui_uninstall_kept_shared_owner	Сохранено (используется другим установленным приложением)
+ui_uninstall_kept_owner_unknown	Сохранено (не удалось проверить другие копии)
+ui_uninstall_suggestion_review	Выберите приложение повторно и проверьте план удаления
+ui_uninstall_suggestion_check_paths	Проверьте подключённые тома и каталоги приложений, затем повторите попытку
+ui_uninstall_suggestion_brew	Выполните brew uninstall --cask %s
+ui_uninstall_official_uninstaller	Для удаления %s используйте официальное средство %s
+ui_uninstall_cannot_remove_safely	Из этого каталога Mole не может безопасно удалить %s
+ui_remove_could_not_remove_admin_test	Не удалось удалить %s: административный доступ недоступен в тестовом режиме
+update_brew_link_manual	Выполните вручную: brew link --overwrite mole
+update_whats_new	Что нового в версии %s
+update_success	Обновлено: %s
+update_success_detail	Обновлено: %s, %s
+update_brew_upgrade_failed	Не удалось обновить через Homebrew (код завершения: %s)
+update_manual_reinstall	Переустановите вручную: curl -fsSL https://raw.githubusercontent.com/tw93/mole/main/install.sh | MOLE_VERSION=%s bash -s -- --prefix %s --config %s
+opt_diag_detach_prompt	Отключить образ сейчас?
+opt_diag_vm_using_memory_without_count	Виртуальная машина использует %s
+clean_xcode_unavailable_probe_timed_out	%s · превышено время проверки simctl
+clean_xcode_unavailable_probe_failed	%s · проверка simctl завершилась с кодом %s
+clean_xcode_unavailable_cleanup_timed_out	%s · время очистки истекло
+opt_diag_detach_keys	Enter — подтвердить / Space — отменить
+ui_and_more	и ещё: %s
+core_log_risk_level	Уровень риска:
+clean_external_path_missing	Не указан путь к внешнему тому
+clean_external_path_not_absolute	Путь к внешнему тому должен быть абсолютным: %s
+clean_external_refuse_root	Отказ: корневой каталог томов нельзя очищать напрямую: %s
+clean_external_refuse_symlink	Отказ: путь к тому является символической ссылкой: %s
+clean_external_path_not_found	Путь к внешнему тому не существует: %s
+clean_external_path_outside_root	Путь к внешнему тому должен находиться в %s: %s
+clean_external_path_not_direct_child	Очистка внешних томов поддерживает только точки монтирования прямо в %s: %s
+clean_external_refuse_undescribed	Отказ: diskutil не смог описать том: %s
+clean_external_check_mounted	Убедитесь, что том всё ещё смонтирован (diskutil info -plist "%s"), и повторите
+clean_external_refuse_internal	Отказ: это внутренний том: %s
+clean_external_refuse_network	Отказ: сетевой том с протоколом %s не очищается: %s
+analyze_insight_ios_backups	Резервные копии iOS
+analyze_insight_old_downloads	Старые загрузки (90+ дн.)
+analyze_insight_system_logs	Системные журналы
+analyze_insight_homebrew_cache	Кеш Homebrew
+analyze_insight_xcode_derived_data	Xcode DerivedData
+analyze_insight_xcode_simulators	Симуляторы Xcode
+analyze_insight_xcode_archives	Архивы Xcode
+analyze_insight_spotify_cache	Кеш Spotify
+analyze_insight_jetbrains_cache	Кеш JetBrains
+analyze_insight_docker_data	Данные Docker
+analyze_insight_pip_cache	Кеш pip
+analyze_insight_uv_cache	Кеш uv
+analyze_insight_gradle_cache	Кеш Gradle
+analyze_insight_cocoapods_cache	Кеш CocoaPods
+analyze_insight_orbstack_data	Данные OrbStack

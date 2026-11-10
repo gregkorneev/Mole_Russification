@@ -11,33 +11,28 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync/atomic"
 	"syscall"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/tw93/mole/internal/i18n"
 )
 
 var (
-	jsonMode = flag.Bool("json", false, "output analysis as JSON instead of TUI")
+	jsonMode = flag.Bool("json", false, i18n.T("analyze_flag_json"))
 )
 
 // usageText is the help every other Mole subcommand prints by hand. The Go flag
 // package would otherwise render "Usage of /usr/local/bin/analyze-go:", naming a
 // bundled binary the user never typed, so the text is written out here instead.
-const usageText = `Usage: mo analyze [OPTIONS] [PATH]
-
-Explore disk usage. Without PATH, scans a machine-wide overview.
-
-Options:
-  --json          Output the analysis as JSON instead of the interactive TUI
-  -h, --help      Show this help message
-
-Examples:
-  mo analyze                 Machine-wide overview
-  mo analyze ~/Library       Scan one directory
-  mo analyze --json /Volumes Machine-readable output
-`
+func usageText() string {
+	return fmt.Sprintf("%s\n\n%s\n\n%s\n  --json          %s\n  -h, --help      %s\n\n%s\n  mo analyze                 %s\n  mo analyze ~/Library       %s\n  mo analyze --json /Volumes %s\n",
+		i18n.T("help_usage", "analyze [OPTIONS] [PATH]"), i18n.T("analyze_help_description"), i18n.T("help_options"),
+		i18n.T("analyze_help_json"), i18n.T("help_option_help"), i18n.T("help_examples"),
+		i18n.T("analyze_example_overview"), i18n.T("analyze_example_directory"), i18n.T("analyze_example_json"))
+}
 
 // parseArgs applies Mole's CLI conventions to the flag package: help goes to
 // stdout and exits 0, and an unknown flag goes to stderr and exits 1 the way
@@ -53,14 +48,22 @@ func parseArgs(args []string, stdout, stderr io.Writer) (int, bool) {
 	err := flag.CommandLine.Parse(args)
 	switch {
 	case errors.Is(err, flag.ErrHelp):
-		_, _ = fmt.Fprint(stdout, usageText)
+		_, _ = fmt.Fprint(stdout, usageText())
 		return 0, false
 	case err != nil:
-		_, _ = fmt.Fprintln(stderr, err)
-		_, _ = fmt.Fprintln(stderr, "Use 'mo analyze --help' for usage information")
+		_, _ = fmt.Fprintln(stderr, localizedAnalyzeFlagError(err))
+		_, _ = fmt.Fprintln(stderr, i18n.T("analyze_error_hint"))
 		return 1, false
 	}
 	return 0, true
+}
+
+func localizedAnalyzeFlagError(err error) string {
+	const unknownFlagPrefix = "flag provided but not defined: "
+	if flag, found := strings.CutPrefix(err.Error(), unknownFlagPrefix); found {
+		return i18n.T("analyze_unknown_flag", flag)
+	}
+	return err.Error()
 }
 
 func main() {
@@ -100,7 +103,7 @@ func resolveScanTarget(envPath string, args []string) (string, bool, error) {
 
 	abs, err := filepath.Abs(target)
 	if err != nil {
-		return "", false, fmt.Errorf("cannot resolve %q: %v", target, err)
+		return "", false, fmt.Errorf(i18n.T("analyze_cannot_resolve"), target, err)
 	}
 	return abs, false, nil
 }
@@ -119,7 +122,7 @@ func runTUIMode(path string, isOverview bool) {
 
 	p := tea.NewProgram(m, tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "analyzer error: %v\n", err)
+		fmt.Fprintf(os.Stderr, i18n.T("analyze_error_prefix")+"\n", err)
 		os.Exit(1)
 	}
 }
@@ -137,7 +140,7 @@ func newModel(path string, isOverview bool) model {
 	m := model{
 		path:                path,
 		selected:            0,
-		status:              "Preparing scan...",
+		status:              i18n.T("analyze_prepare"),
 		diskFree:            diskFreeBytes,
 		scanning:            !isOverview,
 		filesScanned:        &filesScanned,
@@ -163,9 +166,9 @@ func newModel(path string, isOverview bool) model {
 		m.offset = 0
 		if nextPendingOverviewIndex(m.entries) >= 0 {
 			m.overviewScanning = true
-			m.status = "Checking system folders..."
+			m.status = i18n.T("analyze_checking_system")
 		} else {
-			m.status = "Ready"
+			m.status = i18n.T("analyze_ready")
 		}
 	}
 
@@ -214,6 +217,44 @@ func systemOverviewRoots() []dirEntry {
 		{Name: "Applications", Path: "/Applications", IsDir: true, Size: -1},
 		{Name: "System Library", Path: "/Library", IsDir: true, Size: -1},
 	}
+}
+
+func overviewEntryDisplayName(name string) string {
+	switch name {
+	case "Home":
+		return i18n.T("analyze_home")
+	case "User Library":
+		return i18n.T("analyze_user_library")
+	case "Applications":
+		return i18n.T("analyze_applications")
+	case "System Library":
+		return i18n.T("analyze_system_library")
+	default:
+		// Insight names stay English in dirEntry.Name and JSON output; only
+		// the overview rendering looks up a localized label.
+		if key, ok := insightDisplayKeys[name]; ok {
+			return i18n.T(key)
+		}
+		return name
+	}
+}
+
+var insightDisplayKeys = map[string]string{
+	"iOS Backups":          "analyze_insight_ios_backups",
+	"Old Downloads (90d+)": "analyze_insight_old_downloads",
+	"System Logs":          "analyze_insight_system_logs",
+	"Homebrew Cache":       "analyze_insight_homebrew_cache",
+	"Xcode DerivedData":    "analyze_insight_xcode_derived_data",
+	"Xcode Simulators":     "analyze_insight_xcode_simulators",
+	"Xcode Archives":       "analyze_insight_xcode_archives",
+	"Spotify Cache":        "analyze_insight_spotify_cache",
+	"JetBrains Cache":      "analyze_insight_jetbrains_cache",
+	"Docker Data":          "analyze_insight_docker_data",
+	"pip Cache":            "analyze_insight_pip_cache",
+	"uv Cache":             "analyze_insight_uv_cache",
+	"Gradle Cache":         "analyze_insight_gradle_cache",
+	"CocoaPods Cache":      "analyze_insight_cocoapods_cache",
+	"OrbStack Data":        "analyze_insight_orbstack_data",
 }
 
 func sumKnownEntrySizes(entries []dirEntry) int64 {

@@ -2371,7 +2371,7 @@ _batch_preview_and_confirm() {
     while true; do
         local size_display=$(bytes_to_human "$((total_estimated_size * 1024))")
 
-        echo -e "\n${PURPLE_BOLD}Files to be removed:${NC}"
+        echo -e "\n${PURPLE_BOLD}$(mole_t ui_title_files_removed)${NC}"
 
         local review_index=0
         for detail in "${app_details[@]}"; do
@@ -2383,7 +2383,7 @@ _batch_preview_and_confirm() {
             local steam_managed=false
             if uninstall_app_is_steam_launcher "$app_path"; then
                 steam_managed=true
-                app_size_display="N/A (Steam-managed)"
+                app_size_display="$(mole_t ui_uninstall_steam_managed)"
             fi
             local display_app_name
             display_app_name=$(_uninstall_display_text "$app_name")
@@ -2401,12 +2401,12 @@ _batch_preview_and_confirm() {
             )
 
             if [[ "$steam_managed" == "true" ]]; then
-                echo -e "  ${YELLOW}${ICON_WARNING}${NC} Steam launcher only; game files managed by Steam are not included"
+                echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t ui_uninstall_steam_launcher_only)"
             fi
             local leftover_note
             for leftover_note in ${leftover_notes[@]+"${leftover_notes[@]}"}; do
                 [[ "${leftover_note%%|*}" == "$app_path" ]] || continue
-                echo -e "  ${YELLOW}${ICON_WARNING}${NC} ${leftover_note#*|}"
+                echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_display_text "${leftover_note#*|}")"
             done
 
             local preview_path=""
@@ -2417,8 +2417,8 @@ _batch_preview_and_confirm() {
             # so only the automatic leftovers sit beside the app.
             _uninstall_print_preview_paths "${_review_auto_files[review_index]}" "  ${GREEN}${ICON_SUCCESS}${NC} " || return $?
             review_index=$((review_index + 1))
-            _uninstall_print_preview_paths "$system_files" "  ${BLUE}${ICON_WARNING}${NC} System: " || return $?
-            _uninstall_print_preview_paths "$review_system_display" "  ${YELLOW}${ICON_WARNING}${NC} Review only: " || return $?
+            _uninstall_print_preview_paths "$system_files" "  ${BLUE}${ICON_WARNING}${NC} $(mole_t ui_section_system): " || return $?
+            _uninstall_print_preview_paths "$review_system_display" "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t ui_uninstall_review_only): " || return $?
         done
 
         if [[ ${#_review_personal_paths[@]} -gt 0 ]]; then
@@ -2431,11 +2431,11 @@ _batch_preview_and_confirm() {
                 fi
             done
             if [[ -n "$removed_data" ]]; then
-                echo -e "\n${PURPLE_BOLD}Personal data to remove:${NC}"
+                echo -e "\n${PURPLE_BOLD}$(mole_t ui_title_personal_data_remove):${NC}"
                 _uninstall_print_preview_paths "$removed_data" "  ${GREEN}${ICON_SUCCESS}${NC} " || return $?
             fi
             if [[ -n "$kept_data" ]]; then
-                echo -e "\n${GRAY}Personal data kept:${NC}"
+                echo -e "\n${GRAY}$(mole_t ui_uninstall_personal_data_kept):${NC}"
                 while IFS= read -r personal_path; do
                     local kept_display="$personal_path" tilde='~'
                     kept_display="${kept_display/#$HOME/$tilde}"
@@ -2450,13 +2450,13 @@ _batch_preview_and_confirm() {
         [[ $app_total -gt 1 ]] && app_text="apps"
 
         echo ""
-        local removal_note="Remove ${app_total} ${app_text}"
+        local removal_note="$(mole_display_text "Remove ${app_total} ${app_text}")"
         [[ -n "$size_display" ]] && removal_note+=", ${size_display}"
-        [[ ${#_review_selected_paths[@]} -eq 0 ]] || removal_note+=", including personal data"
+        [[ ${#_review_selected_paths[@]} -eq 0 ]] || removal_note+=", $(mole_display_text "including personal data")"
         if [[ ${#running_apps[@]} -gt 0 ]]; then
-            removal_note+=" ${YELLOW}[Running]${NC}"
+            removal_note+=" ${YELLOW}$(mole_display_text "[Running]")${NC}"
         fi
-        [[ ${#_review_personal_paths[@]} -eq 0 ]] || echo -e "${GRAY}D${NC} choose personal data"
+        [[ ${#_review_personal_paths[@]} -eq 0 ]] || echo -e "${GRAY}D${NC} $(mole_display_text "choose personal data")"
 
         # A read from a non-terminal fails and used to become an empty key,
         # which the case below treats as Enter: a script or agent could confirm
@@ -2475,7 +2475,7 @@ _batch_preview_and_confirm() {
             return 3
         fi
 
-        echo -ne "${PURPLE}${ICON_ARROW}${NC} ${removal_note}  ${GREEN}Enter${NC} confirm, ${GRAY}ESC${NC} cancel: "
+        echo -ne "${PURPLE}${ICON_ARROW}${NC} ${removal_note}  ${GREEN}Enter${NC} $(mole_display_text "confirm") ${GRAY}ESC${NC} $(mole_display_text "cancel"): "
 
         drain_pending_input # Clean up any pending input before confirmation
         local key="" key_rc=0
@@ -3071,6 +3071,7 @@ _batch_execute_removals() {
                         shared-owner) kept_label="Kept (shared with another installed app)" ;;
                         owner-unknown) kept_label="Kept (other copies of the app could not be checked)" ;;
                     esac
+                    kept_label="$(mole_display_text "$kept_label")"
                     case "$kept_reason" in
                         app-reappeared | shared-owner | owner-unknown)
                             if [[ $family_kept_count -eq 0 || "$family_kept_label" == "$kept_label" ]]; then
@@ -3086,7 +3087,7 @@ _batch_execute_removals() {
                 if [[ $family_kept_count -eq 1 ]]; then
                     echo -e "  ${YELLOW}${ICON_WARNING}${NC} $family_kept_label: ${family_kept_first/#$HOME/$tilde_display}"
                 elif [[ $family_kept_count -gt 1 ]]; then
-                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $family_kept_label: $family_kept_count paths"
+                    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t ui_uninstall_kept_paths_many "$family_kept_label" "$family_kept_count")"
                 fi
                 total_kb=$((total_kb - leftover_kb))
                 ((total_kb < 0)) && total_kb=0
@@ -3136,12 +3137,12 @@ _batch_execute_removals() {
             [[ -t 1 ]] && stop_inline_spinner
             if [[ -t 1 ]]; then
                 if [[ ${#app_details[@]} -gt 1 ]]; then
-                    echo -e "${ICON_ERROR} [$current_index/${#app_details[@]}] ${app_name} ${GRAY}, $reason${NC}"
+                    echo -e "${ICON_ERROR} $(mole_t ui_uninstall_app_failed_many "$current_index" "${#app_details[@]}" "$app_name" "$(mole_display_text "$reason")")${NC}"
                 else
-                    echo -e "${ICON_ERROR} ${app_name} failed: $reason"
+                    echo -e "${ICON_ERROR} $(mole_t ui_uninstall_app_failed_one "$app_name" "$(mole_display_text "$reason")")"
                 fi
                 if [[ -n "${suggestion:-}" ]]; then
-                    echo -e "${GRAY}   ${ICON_REVIEW} ${suggestion}${NC}"
+                    echo -e "${GRAY}   ${ICON_REVIEW} $(mole_display_text "$suggestion")${NC}"
                 fi
             fi
 

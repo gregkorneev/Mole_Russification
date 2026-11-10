@@ -20,6 +20,7 @@ fi
 
 # Never allow the scripted test run to trigger real sudo or Touch ID prompts.
 export MOLE_TEST_NO_AUTH=1
+export MOLE_LANG=en
 
 # Tests assert deterministic ANSI escape output. The suite runs without a
 # terminal, so lib/core/base.sh would otherwise drop color; the MOLE_TEST_NO_AUTH

@@ -191,7 +191,7 @@ write_purge_config() {
 warn_purge_config_write_failure() {
     [[ -t 1 ]] || return 0
     [[ -z "${_PURGE_DISCOVERY_SILENT:-}" ]] || return 0
-    echo -e "${YELLOW}${ICON_WARNING}${NC} Could not save purge paths to ${PURGE_CONFIG_FILE/#$HOME/~}, using discovered paths for this run" >&2
+    echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_paths_save_failed "${PURGE_CONFIG_FILE/#$HOME/~}")" >&2
 }
 
 # Save discovered paths to config.
@@ -228,7 +228,7 @@ load_purge_config() {
 
     if [[ ${#PURGE_SEARCH_PATHS[@]} -eq 0 ]]; then
         if [[ -t 1 ]] && [[ -z "${_PURGE_DISCOVERY_SILENT:-}" ]]; then
-            echo -e "${GRAY}First run: discovering project directories...${NC}" >&2
+            echo -e "${GRAY}$(mole_t purge_first_run_discovery)${NC}" >&2
         fi
 
         local -a discovered=()
@@ -239,7 +239,7 @@ load_purge_config() {
             [[ -n "$path" ]] && discovered+=("$path")
         done <<< "$discovery_output"
         if [[ $PURGE_DISCOVERY_STATUS -ne 0 && -z "${_PURGE_DISCOVERY_SILENT:-}" ]]; then
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Project discovery was incomplete; using completed roots without saving them. Run mo purge --paths to review search paths." >&2
+            echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_discovery_incomplete)" >&2
         fi
 
         if [[ ${#discovered[@]} -gt 0 ]]; then
@@ -248,7 +248,7 @@ load_purge_config() {
                 : # A partial inventory must not become the next run's saved scope.
             elif save_discovered_paths "${discovered[@]}"; then
                 if [[ -t 1 ]] && [[ -z "${_PURGE_DISCOVERY_SILENT:-}" ]]; then
-                    echo -e "${GRAY}Found ${#discovered[@]} project directories, saved to config${NC}" >&2
+                    echo -e "${GRAY}$(mole_t purge_discovery_saved "${#discovered[@]}")${NC}" >&2
                 fi
             else
                 warn_purge_config_write_failure
@@ -1653,7 +1653,7 @@ select_purge_categories() {
         menu_ready=true
         if [[ $_term_w -lt 30 || $items_per_page -eq 0 ]]; then
             menu_ready=false
-            printf '\033[H%s%s\n%s%s\n\033[J' "$clear_line" "$(truncate_by_display_width "Resize to 30 columns, 13 rows" "$_term_w")" "$clear_line" "$(truncate_by_display_width "Q Quit" "$_term_w")"
+            printf '\033[H%s%s\n%s%s\n\033[J' "$clear_line" "$(truncate_by_display_width "$(mole_t purge_resize_hint)" "$_term_w")" "$clear_line" "$(truncate_by_display_width "$(mole_t main_controls_quit)" "$_term_w")"
             return 0
         fi
         if [[ $rendered_width -ne $_term_w ]]; then
@@ -1681,7 +1681,7 @@ select_purge_categories() {
         # Format selected size (stored in KB) using shared display rules.
         local selected_size_human
         selected_size_human=$(bytes_to_human_kb "$selected_size")
-        [[ $selected_unknown -eq 0 ]] || selected_size_human+=" + $selected_unknown unmeasured"
+        [[ $selected_unknown -eq 0 ]] || selected_size_human+=" $(mole_t purge_size_unknown_count "$selected_unknown")"
 
         # Show position indicator if scrolling is needed
         local scroll_indicator=""
@@ -1690,8 +1690,9 @@ select_purge_categories() {
             scroll_indicator=" [${current_pos}/${total_items}]"
         fi
 
-        printf "%s${PURPLE_BOLD}%s${NC}\n" "$clear_line" "$(truncate_by_display_width "Select Artifacts to Purge${scroll_indicator}" "$_term_w")"
-        local subtitle="${selected_size_human}, ${selected_count} selected"
+        printf "%s${PURPLE_BOLD}%s${NC}\n" "$clear_line" "$(truncate_by_display_width "$(mole_t ui_title_purge_artifacts)${scroll_indicator}" "$_term_w")"
+        local subtitle
+        subtitle="$(mole_t purge_menu_selection "$selected_count" "$selected_size_human")"
         if [[ -n "$search_message" ]]; then
             subtitle="$subtitle · $search_message"
         fi
@@ -1769,16 +1770,20 @@ select_purge_categories() {
                 fi
             fi
 
-            local project_label="Project: "
-            local project_summary=" · ${group_size_label} · ${group_selected_count}/${group_item_count} selected"
-            local project_path_width=$((_term_w - ${#project_label} - ${#project_summary}))
+            local project_label
+            project_label="$(mole_t purge_project_label) "
+            local group_count
+            group_count="$(mole_t ui_menu_selected_count "$group_selected_count" "$group_item_count")"
+            local project_summary
+            project_summary="$(mole_t purge_project_summary "$group_size_label" "$group_count")"
+            local project_path_width=$((_term_w - $(get_display_width "$project_label") - $(get_display_width "$project_summary")))
             if [[ $project_path_width -ge 12 ]]; then
                 printf "%s${GRAY}%s${NC}%s%s\n" "$clear_line" "$project_label" "$(compact_purge_menu_path "$current_project_path" "$project_path_width")" "$project_summary"
             else
-                project_path_width=$((_term_w - ${#project_label}))
+                project_path_width=$((_term_w - $(get_display_width "$project_label")))
                 [[ $project_path_width -lt 4 ]] && project_path_width=4
                 printf "%s${GRAY}%s${NC}%s\n" "$clear_line" "$project_label" "$(compact_purge_menu_path "$current_project_path" "$project_path_width")"
-                printf "%s${GRAY}%s${NC}\n" "$clear_line" "$(truncate_by_display_width "Group: $group_size_label · $group_selected_count/$group_item_count selected" "$_term_w")"
+                printf "%s${GRAY}%s${NC}\n" "$clear_line" "$(truncate_by_display_width "$(mole_t purge_group_summary "$group_size_label" "$group_count")" "$_term_w")"
             fi
         fi
 
@@ -1788,19 +1793,19 @@ select_purge_categories() {
             current_full_path="${PURGE_CATEGORY_FULL_PATHS_ARRAY[current_index]}"
         fi
         if [[ -n "$current_full_path" ]]; then
-            printf "%s${GRAY}Path:${NC} %s\n" "$clear_line" "$(compact_purge_menu_path "$current_full_path" "$((_term_w - 6))")"
+            printf "%s${GRAY}$(mole_t purge_path_label)${NC} %s\n" "$clear_line" "$(compact_purge_menu_path "$current_full_path" "$((_term_w - 6))")"
             printf "%s\n" "$clear_line"
         fi
 
         # Adaptive footer hints, mirrors menu_paginated.sh pattern
         local _sep=" ${GRAY}|${NC} "
-        local _nav="${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN} [] Projects / Find${NC}"
-        local _space="${GRAY}Space Select${NC}"
-        local _enter="${GRAY}Enter Confirm${NC}"
-        local _all="${GRAY}A All${NC}"
-        local _invert="${GRAY}I Invert${NC}"
-        local _skip_project="${GRAY}X Skip Project${NC}"
-        local _quit="${GRAY}Q Quit${NC}"
+        local _nav="${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN} [] $(mole_display_text "Projects / Find")${NC}"
+        local _space="${GRAY}$(mole_display_text "Space Select")${NC}"
+        local _enter="${GRAY}$(mole_display_text "Enter Confirm")${NC}"
+        local _all="${GRAY}$(mole_display_text "A All")${NC}"
+        local _invert="${GRAY}$(mole_display_text "I Invert")${NC}"
+        local _skip_project="${GRAY}$(mole_display_text "X Skip Project")${NC}"
+        local _quit="${GRAY}$(mole_display_text "Q Quit")${NC}"
 
         # Strip ANSI to measure real length
         _ph_len() { printf "%s" "$1" | LC_ALL=C awk '{gsub(/\033\[[0-9;]*[A-Za-z]/,""); printf "%d", length}'; }
@@ -1821,7 +1826,7 @@ select_purge_categories() {
                     printf "%s${_l2}${NC}\n" "$clear_line"
                 else
                     # Level 3 (minimal): ↑↓ | Enter | X Skip | Q
-                    printf "%s${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN}${NC}${_sep}${GRAY}Enter${NC}${_sep}${GRAY}X Skip${NC}${_sep}${GRAY}Q${NC}\n" "$clear_line"
+                    printf "%s${GRAY}${ICON_NAV_UP}${ICON_NAV_DOWN}${NC}${_sep}${GRAY}Enter${NC}${_sep}${GRAY}$(mole_display_text "X Skip")${NC}${_sep}${GRAY}Q${NC}\n" "$clear_line"
                 fi
             fi
         fi
@@ -1973,22 +1978,21 @@ confirm_purge_cleanup() {
     [[ "$unknown_count" =~ ^[0-9]+$ ]] || unknown_count=0
     [[ "$cloud_count" =~ ^[0-9]+$ ]] || cloud_count=0
 
-    local item_text="artifact"
-    [[ $item_count -ne 1 ]] && item_text="artifacts"
-
     local size_display
     size_display=$(bytes_to_human "$((total_size_kb * 1024))")
 
     local unknown_hint=""
     if [[ $unknown_count -gt 0 ]]; then
-        local unknown_text="unknown size"
-        [[ $unknown_count -gt 1 ]] && unknown_text="unknown sizes"
-        unknown_hint=", ${unknown_count} ${unknown_text}"
+        if [[ $unknown_count -eq 1 ]]; then
+            unknown_hint="$(mole_t purge_unknown_size_one "$unknown_count")"
+        else
+            unknown_hint="$(mole_t purge_unknown_size_many "$unknown_count")"
+        fi
     fi
 
     if [[ ${#selected_paths[@]} -gt 0 ]]; then
         echo ""
-        echo -e "${GRAY}Selected paths:${NC}"
+        echo -e "${GRAY}$(mole_t purge_selected_paths)${NC}"
         local selected_path=""
         for selected_path in "${selected_paths[@]}"; do
             echo "  $selected_path"
@@ -1997,11 +2001,17 @@ confirm_purge_cleanup() {
 
     if [[ $cloud_count -gt 0 ]]; then
         echo ""
-        echo -e "${YELLOW}${ICON_WARNING}${NC} Cloud-synced artifacts may also be removed from other devices."
-        echo -e "${GRAY}Use 'mo purge --paths' to exclude cloud storage roots.${NC}"
+        echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_cloud_warning)"
+        echo -e "${GRAY}$(mole_t purge_cloud_exclude_hint)${NC}"
     fi
 
-    echo -ne "${PURPLE}${ICON_ARROW}${NC} Remove ${item_count} ${item_text}, ${size_display}${unknown_hint}  ${GREEN}Enter${NC} confirm, ${GRAY}ESC${NC} cancel: "
+    local removal_note=""
+    if [[ $item_count -eq 1 ]]; then
+        removal_note="$(mole_t purge_confirm_remove_one "$item_count" "$size_display" "$unknown_hint")"
+    else
+        removal_note="$(mole_t purge_confirm_remove_many "$item_count" "$size_display" "$unknown_hint")"
+    fi
+    echo -ne "${PURPLE}${ICON_ARROW}${NC} ${removal_note}  ${GREEN}Enter${NC} $(mole_t ui_prompt_confirm_lower), ${GRAY}ESC${NC} $(mole_t ui_prompt_cancel_lower): "
     drain_pending_input
     local key=""
     if ! IFS= read -r -s -n1 key; then
@@ -2029,7 +2039,7 @@ confirm_purge_cleanup() {
 clean_project_artifacts() {
     if [[ ! -t 0 && "${MOLE_DRY_RUN:-0}" != "1" && "${MOLE_PURGE_YES:-0}" != "1" ]]; then
         PURGE_RUN_OUTCOME="cancelled"
-        echo "Purge requires confirmation. Run mo purge in a terminal, or use --dry-run to preview and --yes to confirm unattended cleanup." >&2
+        printf '%s\n' "$(mole_t purge_requires_confirmation)" >&2
         return 1
     fi
     PURGE_RUN_OUTCOME="completed"
@@ -2405,10 +2415,14 @@ clean_project_artifacts() {
     _restore_purge_scan_traps
     if [[ $failed_scan_count -gt 0 ]]; then
         PURGE_RUN_OUTCOME="incomplete"
-        local root_text="root"
-        [[ $failed_scan_count -ne 1 ]] && root_text="roots"
+        local scan_summary=""
+        if [[ $failed_scan_count -eq 1 ]]; then
+            scan_summary=$(mole_t purge_scan_incomplete_one "$failed_scan_count")
+        else
+            scan_summary=$(mole_t purge_scan_incomplete_many "$failed_scan_count")
+        fi
         echo ""
-        echo -e "${YELLOW}${ICON_WARNING}${NC} Skipped ${failed_scan_count} project scan ${root_text} because scanning did not complete:"
+        echo -e "${YELLOW}${ICON_WARNING}${NC} $scan_summary"
         # A root with thousands of children must not flood the screen; the
         # heading keeps the full count.
         local failed_shown_limit=10
@@ -2417,9 +2431,9 @@ clean_project_artifacts() {
             echo -e "  ${GRAY}${display_root}${NC} (status ${failed_scan_statuses[$scan_index]:-1})"
         done
         if [[ ${#failed_scan_roots[@]} -gt $failed_shown_limit ]]; then
-            echo -e "  ${GRAY}and $((${#failed_scan_roots[@]} - failed_shown_limit)) more${NC}"
+            echo -e "  ${GRAY}$(mole_t purge_scan_more "$((${#failed_scan_roots[@]} - failed_shown_limit))")${NC}"
         fi
-        echo -e "${GRAY}Re-run with 'mo purge --debug' to inspect the scan failure.${NC}"
+        echo -e "${GRAY}$(mole_t purge_debug_scan_hint)${NC}"
         if [[ $completed_scan_count -eq 0 ]]; then
             printf '\n'
             PURGE_RUN_OUTCOME="scan_failed"
@@ -2429,9 +2443,9 @@ clean_project_artifacts() {
     if [[ ${#all_found_items[@]} -eq 0 ]]; then
         echo ""
         if [[ "$PURGE_RUN_OUTCOME" == "incomplete" ]]; then
-            echo -e "${GRAY}No artifacts found in the completed project scans${NC}"
+            echo -e "${GRAY}$(mole_t ui_no_artifacts_completed_scans)${NC}"
         else
-            echo -e "${GREEN}${ICON_SUCCESS}${NC} No old project artifacts to clean"
+            echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t purge_no_old_artifacts)"
         fi
         printf '\n'
         [[ "$PURGE_RUN_OUTCOME" != "incomplete" ]] && PURGE_RUN_OUTCOME="no_candidates"
@@ -2563,10 +2577,10 @@ clean_project_artifacts() {
         safe_scan_root_indexes=("${kept_root_indexes[@]+"${kept_root_indexes[@]}"}")
     fi
     for item in "${uninspected_paths[@]+"${uninspected_paths[@]}"}"; do
-        echo -e "${YELLOW}${ICON_WARNING}${NC} Could not inspect ${item/#$HOME/~}; kept" >&2
+        echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_inspect_failed_kept "${item/#$HOME/~}")" >&2
     done
     if [[ ${#safe_to_clean[@]} -eq 0 ]]; then
-        echo -e "${GRAY}No eligible project artifacts to purge${NC}"
+        echo -e "${GRAY}$(mole_t purge_no_eligible_artifacts)${NC}"
         [[ "$PURGE_RUN_OUTCOME" != "incomplete" ]] && PURGE_RUN_OUTCOME="no_candidates"
         return 0
     fi
@@ -3068,16 +3082,16 @@ clean_project_artifacts() {
         stop_inline_spinner
     fi
     for item in "${size_failed_paths[@]+"${size_failed_paths[@]}"}"; do
-        echo -e "${YELLOW}${ICON_WARNING}${NC} Could not measure ${item/#$HOME/~}; skipped" >&2
+        echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_measure_failed_skipped "${item/#$HOME/~}")" >&2
     done
     # Exit early if no artifacts were found to avoid unbound variable errors
     # when expanding empty arrays with set -u active.
     if [[ ${#menu_options[@]} -eq 0 ]]; then
         echo ""
         if [[ "$PURGE_RUN_OUTCOME" == "incomplete" ]]; then
-            echo -e "${YELLOW}No artifacts could be prepared for review${NC}"
+            echo -e "${YELLOW}$(mole_t purge_no_review_artifacts)${NC}"
         else
-            echo -e "${GRAY}No artifacts found to purge${NC}"
+            echo -e "${GRAY}$(mole_t ui_no_artifacts_to_purge)${NC}"
             PURGE_RUN_OUTCOME="no_candidates"
         fi
         printf '\n'
@@ -3126,15 +3140,17 @@ clean_project_artifacts() {
             fi
         done
         if [[ $skipped_cloud_count -gt 0 ]]; then
-            local skipped_cloud_text="artifact"
-            [[ $skipped_cloud_count -ne 1 ]] && skipped_cloud_text="artifacts"
             echo ""
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Skipped ${skipped_cloud_count} cloud-synced ${skipped_cloud_text} in non-interactive mode (confirmation required)"
+            if [[ $skipped_cloud_count -eq 1 ]]; then
+                echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_cloud_noninteractive_skipped_one "$skipped_cloud_count")"
+            else
+                echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_cloud_noninteractive_skipped_many "$skipped_cloud_count")"
+            fi
         fi
     fi
     if [[ -z "$PURGE_SELECTION_RESULT" ]]; then
         echo ""
-        echo -e "${GRAY}No items selected${NC}"
+        echo -e "${GRAY}$(mole_t purge_no_items_selected)${NC}"
         printf '\n'
         PURGE_CATEGORY_FULL_PATHS_ARRAY=()
         PURGE_CATEGORY_PROJECT_IDS_ARRAY=()
@@ -3164,7 +3180,7 @@ clean_project_artifacts() {
 
     if [[ -t 0 ]]; then
         if ! confirm_purge_cleanup "${#selected_indices[@]}" "$selected_total_kb" "$selected_unknown_count" "$selected_cloud_count" "${selected_display_paths[@]}"; then
-            echo -e "${GRAY}Purge cancelled${NC}"
+            echo -e "${GRAY}$(mole_t purge_cancelled)${NC}"
             printf '\n'
             PURGE_CATEGORY_FULL_PATHS_ARRAY=()
             PURGE_CATEGORY_PROJECT_IDS_ARRAY=()
@@ -3208,7 +3224,7 @@ clean_project_artifacts() {
             "${scan_root_parents[$expected_scan_root_index]}" \
             "${scan_root_parent_ids[$expected_scan_root_index]}" \
             "${scan_root_target_ids[$expected_scan_root_index]}"; then
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Skipped $display_item_path (scan root changed after review)"
+            echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_candidate_skipped_reason "$display_item_path" "$(mole_t purge_reason_root_changed)")"
             continue
         fi
         if ! _mole_path_matches_identity \
@@ -3216,12 +3232,12 @@ clean_project_artifacts() {
             "${scan_root_physical_parents[$expected_scan_root_index]}" \
             "${scan_root_physical_parent_ids[$expected_scan_root_index]}" \
             "${scan_root_physical_target_ids[$expected_scan_root_index]}"; then
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Skipped $display_item_path (scan root target changed after review)"
+            echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_candidate_skipped_reason "$display_item_path" "$(mole_t purge_reason_root_target_changed)")"
             continue
         fi
         if ! _mole_path_matches_identity \
             "$item_path" "$expected_parent" "$expected_parent_id" "$expected_target_id"; then
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Skipped $display_item_path (path changed after review)"
+            echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_candidate_skipped_reason "$display_item_path" "$(mole_t purge_reason_path_changed)")"
             continue
         fi
         local current_item_physical_path="${_MOLE_PATH_SNAPSHOT_PARENT%/}/${item_path##*/}"
@@ -3239,7 +3255,7 @@ clean_project_artifacts() {
         fi
         if [[ $protection_rc -eq 0 ]]; then
             if [[ "$PURGE_PROTECTION_UNVERIFIED" == "true" ]]; then
-                echo -e "${YELLOW}${ICON_WARNING}${NC} Skipped $display_item_path (could not inspect contents; re-run mo purge to review it again)"
+                echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_candidate_skipped_reason "$display_item_path" "$(mole_t purge_reason_contents_unavailable)")"
             else
                 debug_log "Skipping purge target that became protected after review: $item_path"
             fi
@@ -3253,7 +3269,7 @@ clean_project_artifacts() {
             return "$activity_status"
         fi
         if [[ $activity_status -ne 0 ]]; then
-            echo -e "${YELLOW}${ICON_WARNING}${NC} Skipped $display_item_path (activity changed after review)"
+            echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_candidate_skipped_reason "$display_item_path" "$(mole_t purge_reason_activity_changed)")"
             continue
         fi
         if [[ -t 1 ]]; then
@@ -3296,7 +3312,7 @@ clean_project_artifacts() {
                     fi
                     return "$removal_status"
                 fi
-                echo -e "${YELLOW}${ICON_WARNING}${NC} Skipped $display_item_path (final removal check failed; re-run mo purge to review it again)"
+                echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t purge_candidate_skipped_reason "$display_item_path" "$(mole_t purge_reason_final_check_failed)")"
             fi
         fi
         if [[ -t 1 ]]; then
@@ -3304,7 +3320,7 @@ clean_project_artifacts() {
         fi
         if [[ "$removal_recorded" == "true" ]]; then
             if [[ "$dry_run_mode" == "1" ]]; then
-                echo -e "${GREEN}${ICON_SUCCESS}${NC} [DRY RUN] $display_item_path${NC}, ${GREEN}$size_human${NC}"
+                echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_dry_run_prefix) $display_item_path${NC}, ${GREEN}$size_human${NC}"
             elif [[ -t 1 ]]; then
                 echo -e "${GREEN}${ICON_SUCCESS}${NC} $display_item_path${NC}, ${GREEN}$size_human${NC}"
             fi

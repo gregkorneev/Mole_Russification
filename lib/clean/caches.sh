@@ -50,11 +50,11 @@ check_tcc_permissions() {
     fi
     if [[ "$needs_permission_check" == "true" ]]; then
         echo ""
-        echo -e "${BLUE}First-time setup${NC}"
-        echo -e "${GRAY}macOS will request permissions to access Library folders.${NC}"
-        echo -e "${GRAY}You may see ${GREEN}${#tcc_dirs[@]} permission dialogs${NC}${GRAY}, allow each one so these caches can be cleaned.${NC}"
+        echo -e "${BLUE}$(mole_t clean_permission_setup_title)${NC}"
+        echo -e "${GRAY}$(mole_t clean_permission_setup_explanation)${NC}"
+        echo -e "${GRAY}$(mole_t clean_permission_setup_dialogs "${#tcc_dirs[@]}")${NC}"
         echo ""
-        echo -ne "${PURPLE}${ICON_ARROW}${NC} Press ${GREEN}Enter${NC} to continue: "
+        echo -ne "${PURPLE}${ICON_ARROW}${NC} $(mole_display_text "Press") ${GREEN}Enter${NC} $(mole_display_text "to continue"): "
         read -r
         MOLE_SPINNER_PREFIX="" start_inline_spinner "Requesting permissions..."
         # Touch each directory to trigger prompts without deep scanning.
@@ -212,12 +212,12 @@ clean_service_worker_cache() {
         line_color=$(cleanup_result_color_kb "$cleaned_size")
         if [[ "$DRY_RUN" != "true" ]]; then
             if [[ $protected_count -gt 0 ]]; then
-                echo -e "  ${line_color}${ICON_SUCCESS}${NC} $browser_name Service Worker${NC} · $(colorize_human_size "${cleaned_human}"), ${protected_count} protected"
+                echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_service_worker_label "$browser_name")${NC} · $(colorize_human_size "${cleaned_human}"), $(mole_t clean_protected_count "$protected_count")"
             else
-                echo -e "  ${line_color}${ICON_SUCCESS}${NC} $browser_name Service Worker${NC} · $(colorize_human_size "${cleaned_human}")"
+                echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_service_worker_label "$browser_name")${NC} · $(colorize_human_size "${cleaned_human}")"
             fi
         else
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $browser_name Service Worker, would clean $(colorize_human_size "$cleaned_human"), ${protected_count} protected"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_service_worker_label "$browser_name"), $(mole_t clean_would_clean) $(colorize_human_size "$cleaned_human"), $(mole_t clean_protected_count "$protected_count")"
         fi
         note_activity
         if [[ "$spinner_was_running" == "true" ]]; then
@@ -997,19 +997,16 @@ clean_python_bytecode_cache_group() {
             done
         fi
 
-        if [[ $skipped_count -gt 0 ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Python bytecode cache · ${display_root}${NC} · ${YELLOW}$(mole_count_label "${removed_count}" dir), $(colorize_human_size "$size_human") ${YELLOW}dry, ${skipped_count} skipped${NC}"
-        else
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Python bytecode cache · ${display_root}${NC} · ${YELLOW}$(mole_count_label "${removed_count}" dir), $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
-        fi
+        local cache_summary="$(mole_t clean_python_cache_summary "$(mole_count_label "${removed_count}" dir)" "$size_human")"
+        [[ $skipped_count -gt 0 ]] && cache_summary+=" · $(mole_t clean_skipped_count "$skipped_count")"
+        cache_summary+=" $(mole_t clean_dry_label)"
+        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_python_cache_label) · ${display_root}${NC} · ${YELLOW}${cache_summary}${NC}"
     else
         local line_color
         line_color=$(cleanup_result_color_kb "$total_size_kb")
-        if [[ $skipped_count -gt 0 ]]; then
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} Python bytecode cache · ${display_root}${NC} · ${line_color}$(mole_count_label "${removed_count}" dir), $(colorize_human_size "${size_human}"), ${skipped_count} skipped"
-        else
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} Python bytecode cache · ${display_root}${NC} · ${line_color}$(mole_count_label "${removed_count}" dir), $(colorize_human_size "${size_human}")"
-        fi
+        local cache_summary="$(mole_t clean_python_cache_summary "$(mole_count_label "${removed_count}" dir)" "$size_human")"
+        [[ $skipped_count -gt 0 ]] && cache_summary+=" · $(mole_t clean_skipped_count "$skipped_count")"
+        echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_python_cache_label) · ${display_root}${NC} · ${line_color}${cache_summary}"
     fi
 
     mole_add_cleaned_row "$removed_count" "$total_size_kb"
@@ -1358,11 +1355,13 @@ collect_project_cache_scans() {
 
     if [[ $failed_scan_count -gt 0 ]]; then
         stop_section_spinner
-        local scan_noun="root scans"
+        local scan_message=""
         if [[ $failed_scan_count -eq 1 ]]; then
-            scan_noun="root scan"
+            scan_message=$(mole_t clean_project_scan_one "$failed_scan_count")
+        else
+            scan_message=$(mole_t clean_project_scan_many "$failed_scan_count")
         fi
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Project caches · skipped ${failed_scan_count} slow/incomplete ${scan_noun}"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $scan_message"
         if declare -f note_activity > /dev/null 2>&1; then
             note_activity
         fi

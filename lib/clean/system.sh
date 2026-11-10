@@ -97,7 +97,7 @@ show_large_active_powerlog_notice() {
 
     local size_human
     size_human=$(bytes_to_human "$size_bytes")
-    echo -e "  ${YELLOW}${ICON_WARNING}${NC} Power telemetry database · ${GREEN}${size_human}${NC} · ${GRAY}active, kept · $(format_path_link "$MOLE_ACTIVE_POWERLOG_DB_PATH")${NC}"
+    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_powerlog_database_label) · ${GREEN}${size_human}${NC} · ${GRAY}$(mole_t clean_active_kept) · $(format_path_link "$MOLE_ACTIVE_POWERLOG_DB_PATH")${NC}"
 }
 
 report_system_cleanup_incomplete() {
@@ -105,7 +105,7 @@ report_system_cleanup_incomplete() {
     local status="${2:-1}"
 
     if mole_rc_timeout "$status"; then
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} ${label} · ${GRAY}timed out, cleanup may be partial${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_display_text "$label") · ${GRAY}$(mole_t clean_timeout_partial)${NC}"
         if declare -F note_activity > /dev/null 2>&1; then
             note_activity
         fi
@@ -120,7 +120,7 @@ system_cleanup_budget_reached() {
 }
 
 report_system_cleanup_budget_reached() {
-    echo -e "  ${YELLOW}${ICON_WARNING}${NC} System cleanup · ${GRAY}time limit reached, skipped remaining slow scans${NC}"
+    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_system_cleanup_title) · ${GRAY}$(mole_t clean_system_scan_budget_exhausted)${NC}"
     if declare -F note_activity > /dev/null 2>&1; then
         note_activity
     fi
@@ -992,7 +992,7 @@ clean_time_machine_failed_backups() {
     fi
     if mole_rc_timeout "$tm_info_rc"; then
         stop_section_spinner
-        echo -e "  ${YELLOW}!${NC} Time Machine cleanup · skipped (configuration check timed out)"
+        echo -e "  ${YELLOW}!${NC} $(mole_t clean_tm_config_timeout)"
         note_activity
         return 0
     fi
@@ -1026,10 +1026,10 @@ clean_time_machine_failed_backups() {
             stop_section_spinner
         fi
         if [[ $rc_tm_running -eq 2 ]] || mole_rc_timeout "$rc_tm_running"; then
-            echo -e "  ${YELLOW}!${NC} Time Machine cleanup · skipped (status unknown)"
+            echo -e "  ${YELLOW}!${NC} $(mole_t clean_tm_status_unknown)"
             note_activity
         else
-            echo -e "  ${YELLOW}!${NC} Time Machine cleanup · skipped (backup in progress)"
+            echo -e "  ${YELLOW}!${NC} $(mole_t clean_tm_backup_running)"
             note_activity
         fi
         return 0
@@ -1060,7 +1060,7 @@ clean_time_machine_failed_backups() {
     local tm_scan_file=""
     if ! tm_scan_file=$(create_temp_file 2> /dev/null); then
         stop_section_spinner
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} Time Machine backups · ${GRAY}scan unavailable, skipped cleanup${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_tm_scan_label) · ${GRAY}$(mole_t clean_tm_scan_unavailable)${NC}"
         note_activity
         return 0
     fi
@@ -1169,13 +1169,13 @@ clean_time_machine_failed_backups() {
                     if declare -f record_dry_run_cleanup_target > /dev/null 2>&1; then
                         record_dry_run_cleanup_target "$inprogress_file" "$size_kb" 1 true || continue
                     fi
-                    echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Incomplete backup: $backup_name${NC} · $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+                    echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_tm_incomplete_backup "$backup_name")${NC} · $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
                     tm_cleaned=$((tm_cleaned + 1))
                     note_activity
                     continue
                 fi
                 if ! command -v tmutil > /dev/null 2>&1; then
-                    echo -e "  ${YELLOW}!${NC} Incomplete backup: $backup_name · skipped (tmutil unavailable)"
+                    echo -e "  ${YELLOW}!${NC} $(mole_t clean_tm_backup_tmutil_unavailable "$backup_name")"
                     note_activity
                     continue
                 fi
@@ -1202,12 +1202,12 @@ clean_time_machine_failed_backups() {
                 if [[ $tm_delete_rc -eq 0 ]]; then
                     local line_color
                     line_color=$(cleanup_result_color_kb "$size_kb")
-                    echo -e "  ${line_color}${ICON_SUCCESS}${NC} Incomplete backup: $backup_name${NC} · $(colorize_human_size "${size_human}")"
+                    echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_tm_incomplete_backup "$backup_name")${NC} · $(colorize_human_size "${size_human}")"
                     tm_cleaned=$((tm_cleaned + 1))
                     mole_add_cleaned_row 1 "$size_kb"
                     note_activity
                 else
-                    echo -e "  ${YELLOW}!${NC} Could not delete: $backup_name · try manually with sudo"
+                    echo -e "  ${YELLOW}!${NC} $(mole_t clean_tm_backup_remove_failed "$backup_name")"
                     # Mark activity so the idle-section erase in end_section
                     # never wipes this failure warning off the terminal.
                     note_activity
@@ -1323,7 +1323,7 @@ clean_time_machine_failed_backups() {
                         if declare -f record_dry_run_cleanup_target > /dev/null 2>&1; then
                             record_dry_run_cleanup_target "$inprogress_file" "$size_kb" 1 true || continue
                         fi
-                        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Incomplete APFS backup in $bundle_name: $backup_name${NC} · $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+                        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_tm_incomplete_apfs_backup "$bundle_name" "$backup_name")${NC} · $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
                         tm_cleaned=$((tm_cleaned + 1))
                         note_activity
                         continue
@@ -1354,12 +1354,12 @@ clean_time_machine_failed_backups() {
                     if [[ $tm_delete_rc -eq 0 ]]; then
                         local line_color
                         line_color=$(cleanup_result_color_kb "$size_kb")
-                        echo -e "  ${line_color}${ICON_SUCCESS}${NC} Incomplete APFS backup in $bundle_name: $backup_name${NC} · $(colorize_human_size "${size_human}")"
+                        echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_tm_incomplete_apfs_backup "$bundle_name" "$backup_name")${NC} · $(colorize_human_size "${size_human}")"
                         tm_cleaned=$((tm_cleaned + 1))
                         mole_add_cleaned_row 1 "$size_kb"
                         note_activity
                     else
-                        echo -e "  ${YELLOW}!${NC} Could not delete from bundle: $backup_name"
+                        echo -e "  ${YELLOW}!${NC} $(mole_t clean_tm_bundle_remove_failed "$backup_name")"
                         # Keep the warning visible past the idle-section erase.
                         note_activity
                         if [[ $tm_delete_rc -ge 128 ]]; then
@@ -1391,7 +1391,7 @@ clean_time_machine_failed_backups() {
         return "$tm_interrupt_rc"
     fi
     if [[ "$tm_scan_timed_out" == "true" || "$tm_scan_incomplete" == "true" ]]; then
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} Time Machine backups · ${GRAY}scan incomplete, skipped remaining cleanup${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_tm_backups_label) · ${GRAY}$(mole_t clean_tm_scan_incomplete)${NC}"
         note_activity
     fi
 }
@@ -1443,14 +1443,14 @@ clean_local_snapshots() {
 
     if [[ $rc_running -eq 2 ]]; then
         stop_section_spinner
-        echo -e "  ${YELLOW}!${NC} Snapshot check · skipped (Time Machine status unknown)"
+        echo -e "  ${YELLOW}!${NC} $(mole_t clean_tm_snapshot_status_unknown)"
         note_activity
         return 0
     fi
 
     if [[ $rc_running -eq 0 ]]; then
         stop_section_spinner
-        echo -e "  ${YELLOW}!${NC} Snapshot check · skipped (backup in progress)"
+        echo -e "  ${YELLOW}!${NC} $(mole_t clean_tm_snapshot_backup_running)"
         note_activity
         return 0
     fi

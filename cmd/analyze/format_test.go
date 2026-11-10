@@ -29,6 +29,8 @@ func TestRuneWidth(t *testing.T) {
 	}{
 		{"ASCII letter", 'a', 1},
 		{"ASCII digit", '5', 1},
+		{"Cyrillic letter", 'я', 1},
+		{"emoji", '👋', 2},
 		{"Chinese character", '中', 2},
 		{"Japanese hiragana", 'あ', 2},
 		{"Korean hangul", '한', 2},
@@ -55,6 +57,9 @@ func TestDisplayWidth(t *testing.T) {
 	}{
 		{"Empty string", "", 0},
 		{"ASCII only", "hello", 5},
+		{"Cyrillic only", "Очистка", 7},
+		{"Cyrillic with CJK", "папка文件", 9},
+		{"Emoji and Cyrillic path", "/Users/👋/Каталог", 17},
 		{"Chinese only", "你好", 4},
 		{"Mixed ASCII and CJK", "hello世界", 9}, // 5 + 4
 		{"Path with CJK", "/Users/张三/文件", 16}, // 7 (ASCII) + 4 (张三) + 4 (文件) + 1 (/) = 16
@@ -481,5 +486,15 @@ func TestFormatUnusedTime(t *testing.T) {
 				t.Errorf("formatUnusedTime(%d days ago) = %q, want %q", tt.daysAgo, got, tt.want)
 			}
 		})
+	}
+}
+
+func TestOverviewEntryDisplayNameLocalizesInsights(t *testing.T) {
+	t.Setenv("MOLE_LANG", "en")
+	if got := overviewEntryDisplayName("System Logs"); got != "System Logs" {
+		t.Fatalf("English insight label changed: %q", got)
+	}
+	if got := overviewEntryDisplayName("Some Custom Folder"); got != "Some Custom Folder" {
+		t.Fatalf("unknown names must pass through unchanged: %q", got)
 	}
 }

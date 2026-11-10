@@ -51,6 +51,8 @@ _owner_cache_size_kb() {
 clean_tool_cache() {
     local description="$1"
     local cache_path="$2"
+    local display_description
+    display_description="$(mole_display_text "$description")"
     shift 2
 
     local pending_clean_cancel="${MOLE_CLEAN_CANCEL_STATUS:-0}"
@@ -60,10 +62,10 @@ clean_tool_cache() {
 
     if [[ -n "$cache_path" ]] && is_path_whitelisted "$cache_path"; then
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $description · would skip (whitelist)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$display_description")"
             note_activity
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $description · skipped (whitelist)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_status_skipped_whitelist "$display_description")"
             note_activity
         fi
         log_operation "${MOLE_CURRENT_COMMAND:-clean}" "SKIPPED" "$cache_path" "whitelist"
@@ -84,7 +86,7 @@ clean_tool_cache() {
     if [[ "$DRY_RUN" != "true" ]]; then
         local command_rc=0
         if [[ -t 1 ]]; then
-            start_section_spinner "Cleaning $description..."
+            start_section_spinner "$(mole_t spinner_cleaning_description "$display_description")"
         fi
         # The owner command reports nothing Mole can parse, so the row measures
         # its root before and after and counts only what disappeared. Roots
@@ -116,10 +118,10 @@ clean_tool_cache() {
         fi
         if [[ $command_rc -eq 0 ]]; then
             if ((freed_kb > 0)); then
-                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $description · $(colorize_human_size "$(bytes_to_human_kb "$freed_kb")")"
+                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_owner_cache_freed "$display_description" "$(colorize_human_size "$(bytes_to_human_kb "$freed_kb")")")"
                 mole_add_cleaned_row 0 "$freed_kb"
             else
-                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $description"
+                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $display_description"
             fi
             note_activity
             # The owner command changed the Mac, so it gets an operations.log
@@ -152,7 +154,7 @@ clean_tool_cache() {
             return "$command_rc"
         fi
     else
-        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $description · would clean"
+        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_display_text "$description") · $(mole_t clean_would_clean)"
         note_activity
     fi
     return 0
@@ -336,7 +338,7 @@ clean_github_cli_cache() {
     fi
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} GitHub CLI cache · would clean"
+        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_clean "$(mole_display_text "GitHub CLI cache")")"
         note_activity
         return 0
     fi
@@ -354,7 +356,7 @@ clean_github_cli_cache() {
     fi
 
     if [[ $clear_status -eq 0 ]]; then
-        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} GitHub CLI cache"
+        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_display_text "GitHub CLI cache")"
         note_activity
         return 0
     fi
@@ -367,11 +369,11 @@ clean_github_cli_cache() {
             mole_defer_cleanup_family "GitHub CLI"
             ;;
         "process state unknown" | "cache path changed" | "owner cleanup failed")
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} GitHub CLI cache · stopped (${_MOLE_GITHUB_CLI_CLEAR_REASON})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "GitHub CLI cache")" "$(mole_display_text "$_MOLE_GITHUB_CLI_CLEAR_REASON")")"
             note_activity
             ;;
         *)
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} GitHub CLI cache · stopped (owner cleanup failed)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "GitHub CLI cache")" "$(mole_t clean_reason_owner_cleanup_failed)")"
             note_activity
             ;;
     esac
@@ -399,9 +401,9 @@ clean_conda_metadata_caches() {
     )
     if conda_cache_whitelisted "${conda_pkg_roots[@]}"; then
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} conda index/tarball/log caches · would skip (whitelist)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$(mole_display_text "conda index/tarball/log caches")")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} conda index/tarball/log caches · skipped (whitelist)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_status_skipped_whitelist "$(mole_display_text "conda index/tarball/log caches")")"
             note_activity
         fi
         return 0
@@ -545,7 +547,7 @@ clean_pnpm_stores() {
     if pnpm_process_blocks_prune; then
         debug_log "pnpm process running or process state unknown, skipping store prune"
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} pnpm cache · would skip (pnpm busy)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_skipped "$(mole_display_text "pnpm cache")" "$(mole_t clean_reason_pnpm_busy)")"
             note_activity
         fi
         return 0
@@ -827,13 +829,13 @@ clean_guarded_dev_cache_root() {
 
     local physical_root=""
     if ! physical_root=$(guarded_dev_cache_root_physical_path "$container_root" "$cache_root"); then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (cache path unsafe)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_cache_unsafe)")"
         note_activity
         return 0
     fi
 
     if ! _mole_snapshot_path_identity "$container_root"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (cache path unsafe)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_cache_unsafe)")"
         note_activity
         return 0
     fi
@@ -841,7 +843,7 @@ clean_guarded_dev_cache_root() {
     local container_parent_id="$_MOLE_PATH_SNAPSHOT_PARENT_ID"
     local container_target_id="$_MOLE_PATH_SNAPSHOT_TARGET_ID"
     if ! _mole_snapshot_path_identity "$cache_root"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (cache path unsafe)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_cache_unsafe)")"
         note_activity
         return 0
     fi
@@ -1084,14 +1086,14 @@ clean_go_cache_root() {
     # because `go clean -cache` empties the cache subdirectories and leaves the
     # root in place.
     if [[ "$cache_kind" == "GOMODCACHE" && -L "$cache_root" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (symlinked module root)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_symlinked_module_root)")"
         note_activity
         return 0
     fi
 
     local physical_root=""
     if ! physical_root=$(go_cache_root_physical_path "$cache_root"); then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (cache path unsafe)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_cache_unsafe)")"
         note_activity
         return 0
     fi
@@ -1113,13 +1115,13 @@ clean_go_cache_root() {
         mole_defer_cleanup_family "Go"
         return 0
     elif [[ $process_state -ne 1 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (process state unknown)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_process_unknown)")"
         note_activity
         return 0
     fi
 
     if ! _mole_snapshot_path_identity "$cache_root"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (cache path unsafe)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_cache_unsafe)")"
         note_activity
         return 0
     fi
@@ -1127,7 +1129,7 @@ clean_go_cache_root() {
     local lexical_parent_id="$_MOLE_PATH_SNAPSHOT_PARENT_ID"
     local lexical_target_id="$_MOLE_PATH_SNAPSHOT_TARGET_ID"
     if ! _mole_snapshot_path_identity "$physical_root"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (cache path unsafe)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_cache_unsafe)")"
         note_activity
         return 0
     fi
@@ -1171,12 +1173,12 @@ clean_go_cache_root() {
 
     if [[ $command_status -eq 0 ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $display_name · would clean"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_clean "$(mole_display_text "$display_name")")"
         elif ((freed_kb > 0)); then
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $display_name · $(colorize_human_size "$(bytes_to_human_kb "$freed_kb")")"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_owner_cache_freed "$(mole_display_text "$display_name")" "$(colorize_human_size "$(bytes_to_human_kb "$freed_kb")")")"
             mole_add_cleaned_row 0 "$freed_kb"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $display_name"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_display_text "$display_name")"
         fi
         note_activity
         if mole_rc_signal "$after_rc"; then
@@ -1189,7 +1191,7 @@ clean_go_cache_root() {
         # A timed-out `go clean` skips this one cache instead of cancelling
         # unrelated cleanup, as clean_tool_cache does for its owner commands.
         # Go may already have removed part of the root, so say it stopped.
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (timed out)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_timed_out)")"
         note_activity
         log_warning_to_file "$display_name timed out after ${MOLE_TIMEOUT_PKG_CLEANUP_SEC}s and was skipped: go clean $clean_flag $physical_root"
         return 0
@@ -1202,10 +1204,10 @@ clean_go_cache_root() {
     if [[ "$_MOLE_GO_CACHE_BOUND_REASON" == "Go started" ]]; then
         mole_defer_cleanup_family "Go"
     elif [[ -n "$_MOLE_GO_CACHE_BOUND_REASON" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${_MOLE_GO_CACHE_BOUND_REASON})"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$_MOLE_GO_CACHE_BOUND_REASON")")"
         note_activity
     else
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (owner cleanup failed)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_owner_cleanup_failed)")"
         note_activity
     fi
     return 0
@@ -1277,10 +1279,10 @@ clean_dev_mise() {
         if [[ "${DRY_RUN:-false}" != "true" ]]; then
             clean_tool_cache "mise cache" "$mise_cache_path" run_with_timeout "$MOLE_TIMEOUT_PKG_CLEANUP_SEC" mise cache clear || return $?
         elif is_path_whitelisted "$mise_cache_path"; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} mise cache · would skip (whitelist)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$(mole_display_text "mise cache")")"
             note_activity
         else
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} mise cache · would clean"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_clean "$(mole_display_text "mise cache")")"
             note_activity
         fi
         # The owner command is authoritative, including failure and timeout.
@@ -1386,7 +1388,7 @@ clean_rust_dependency_cache_root() {
 
     local physical_root
     if ! physical_root=$(rust_cache_root_physical_path "$cargo_home" "$cache_root"); then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (cache path leaves CARGO_HOME)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_cache_leaves_cargo_home)")"
         note_activity
         return 0
     fi
@@ -1433,7 +1435,7 @@ clean_dev_rust() {
                 "${cargo_home}/registry/cache" \
                 "Rust cargo cache" || return 0
         else
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Rust dependency cache · stopped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_rust_dependency_cache)" "$(mole_t clean_reason_process_unknown)")"
             note_activity
         fi
     fi
@@ -1533,7 +1535,7 @@ find_orbstack_data_dir() {
 clean_dev_docker() {
     if command -v docker > /dev/null 2>&1; then
         note_activity
-        echo -e "  ${GRAY}${ICON_REVIEW}${NC} Docker unused data · review with docker system df -v"
+        echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t clean_docker_review)"
         debug_log "Docker daemon-managed cleanup skipped by default"
     fi
 
@@ -1554,7 +1556,7 @@ clean_dev_docker() {
         fi
         [[ -n "$orb_size" ]] && orb_size_label="$(bytes_to_human $((orb_size * 1024))) · "
         note_activity
-        echo -e "  ${GRAY}${ICON_REVIEW}${NC} OrbStack container data · ${orb_size_label}review with docker system df -v"
+        echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t clean_orbstack_review "$(mole_t clean_orbstack_container_data)" "${orb_size_label}") docker system df -v"
         debug_log "OrbStack daemon-managed data left for manual prune ($orb_size KB)"
     fi
     safe_clean ~/.docker/buildx/cache/* "Docker BuildX cache"
@@ -1680,11 +1682,11 @@ clean_xcode_documentation_cache() {
     _xcode_xctest_devices_process_running || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $pre_skipped_count -gt 0 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · skipped ${pre_skipped_count} protected items"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_protected_skipped "$pre_skipped_count")"
             note_activity
         fi
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_process_unknown)"
             note_activity
         else
             mole_defer_cleanup_family "Xcode"
@@ -1703,7 +1705,7 @@ clean_xcode_documentation_cache() {
 
     if ! has_sudo_session; then
         if ! ensure_sudo_session "Cleaning Xcode documentation cache requires admin access"; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · skipped (sudo denied)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_sudo_denied)"
             note_activity
             return 0
         fi
@@ -1742,31 +1744,31 @@ clean_xcode_documentation_cache() {
     done
 
     if [[ $removed_count -gt 0 ]]; then
-        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Xcode documentation cache · removed ${removed_count} old indexes"
+        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_xcode_doc_removed "$removed_count")"
         mole_add_cleaned_row "$removed_count" "$removed_size_kb"
         if [[ $skipped_count -gt 0 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · skipped ${skipped_count} protected items"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_protected_skipped "$skipped_count")"
         fi
         if [[ $failed_count -gt 0 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · could not remove ${failed_count} old indexes"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_remove_failed "$failed_count")"
         fi
         note_activity
     elif [[ $failed_count -gt 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · could not remove ${failed_count} old indexes"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_remove_failed "$failed_count")"
         if [[ $skipped_count -gt 0 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · skipped ${skipped_count} protected items"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_protected_skipped "$skipped_count")"
         fi
         note_activity
     elif [[ $skipped_count -gt 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · skipped ${skipped_count} protected items"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_protected_skipped "$skipped_count")"
         note_activity
     elif [[ -z "$stop_reason" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · no items removed"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_doc_none_removed)"
         note_activity
     fi
     if [[ -n "$stop_reason" ]]; then
         if [[ "$stop_reason" == "process state unknown" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode documentation cache · stopped (${stop_reason})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "Xcode documentation cache")" "$(mole_display_text "$stop_reason")")"
             note_activity
         else
             mole_defer_cleanup_family "Xcode"
@@ -1960,7 +1962,7 @@ _xcode_safe_clean_guarded() {
     if ! declare -f safe_clean_guarded > /dev/null 2>&1; then
         if ! "$delete_guard"; then
             if [[ "$_MOLE_CLEAN_GUARD_REASON" == "process state unknown" ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
                 note_activity
             elif [[ "$delete_guard" == "_coresimulator_delete_guard_allows" ]]; then
                 mole_defer_cleanup_family "Simulator"
@@ -1977,7 +1979,7 @@ _xcode_safe_clean_guarded() {
     safe_clean_guarded "$delete_guard" "$@" || guarded_rc=$?
     if [[ $guarded_rc -eq 75 ]]; then
         if [[ "$_MOLE_CLEAN_GUARD_REASON" == "process state unknown" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
             note_activity
         elif [[ "$delete_guard" == "_coresimulator_delete_guard_allows" ]]; then
             mole_defer_cleanup_family "Simulator"
@@ -2017,7 +2019,7 @@ clean_xcode_xctest_devices() {
     _xctest_devices_activity_state || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode XCTestDevices · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_xcode_xctest_devices)")"
             note_activity
         else
             mole_defer_cleanup_family "Xcode"
@@ -2082,7 +2084,7 @@ clean_xcode_system_coresimulator_caches() {
     _coresimulator_activity_state || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode Simulator system cache · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_xcode_simulator_system_cache)")"
             note_activity
         else
             mole_defer_cleanup_family "Simulator"
@@ -2131,12 +2133,12 @@ clean_xcode_system_coresimulator_caches() {
         if [[ "$cleanable_count" -gt 0 ]]; then
             local total_size_human
             total_size_human=$(bytes_to_human "$((total_size_kb * 1024))")
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Xcode Simulator system cache · would remove ${cleanable_count} entries (${total_size_human})"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_xcode_simulator_would_remove "$(mole_t clean_xcode_simulator_system_cache)" "${cleanable_count}" "${total_size_human}")"
             note_activity
         fi
         if [[ -n "$stop_reason" ]]; then
             if [[ "$stop_reason" == "process state unknown" ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode Simulator system cache · stopped (${stop_reason})"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_xcode_simulator_system_cache)" "$(mole_display_text "${stop_reason}")")"
                 note_activity
             else
                 mole_defer_cleanup_family "Simulator"
@@ -2147,7 +2149,7 @@ clean_xcode_system_coresimulator_caches() {
 
     if ! has_sudo_session; then
         if ! ensure_sudo_session "Cleaning Xcode Simulator system cache requires admin access"; then
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} Xcode Simulator system cache · skipped (sudo denied)"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_xcode_simulator_system_cache)" "$(mole_t clean_reason_sudo_denied)")"
             note_activity
             return 0
         fi
@@ -2202,28 +2204,28 @@ clean_xcode_system_coresimulator_caches() {
         local line_color
         line_color=$(cleanup_result_color_kb "$removed_size_kb")
         if [[ $skipped_count -gt 0 ]]; then
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} Xcode Simulator system cache · removed ${removed_count} ($(colorize_human_size "${removed_human}")), skipped ${skipped_count} protected"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_xcode_simulator_removed_protected "$(mole_t clean_xcode_simulator_system_cache)" "${removed_count}" "$(colorize_human_size "${removed_human}")" "${skipped_count}")"
         else
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} Xcode Simulator system cache · removed ${removed_count} ($(colorize_human_size "${removed_human}"))"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_xcode_simulator_removed "$(mole_t clean_xcode_simulator_system_cache)" "${removed_count}" "$(colorize_human_size "${removed_human}")")"
         fi
         if [[ $failed_count -gt 0 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode Simulator system cache · could not remove ${failed_count} entries"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_simulator_remove_failed "$(mole_t clean_xcode_simulator_system_cache)" "${failed_count}")"
         fi
         mole_add_cleaned_row "$removed_count" "$removed_size_kb"
         note_activity
     elif [[ $failed_count -gt 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode Simulator system cache · could not remove ${failed_count} entries"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_simulator_remove_failed "$(mole_t clean_xcode_simulator_system_cache)" "${failed_count}")"
         if [[ $skipped_count -gt 0 ]]; then
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} Xcode Simulator system cache · skipped ${skipped_count} protected"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_xcode_simulator_skip_protected "$(mole_t clean_xcode_simulator_system_cache)" "${skipped_count}")"
         fi
         note_activity
     elif [[ $skipped_count -gt 0 ]]; then
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} Xcode Simulator system cache · skipped ${skipped_count} protected, none removed"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_xcode_simulator_skip_protected_none "$(mole_t clean_xcode_simulator_system_cache)" "${skipped_count}")"
         note_activity
     fi
     if [[ -n "$stop_reason" ]]; then
         if [[ "$stop_reason" == "process state unknown" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode Simulator system cache · stopped (${stop_reason})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_xcode_simulator_system_cache)" "$(mole_display_text "${stop_reason}")")"
             note_activity
         else
             mole_defer_cleanup_family "Simulator"
@@ -2260,7 +2262,7 @@ clean_xcode_device_support() {
         local preflight_mtime=""
         for candidate in "${preflight_dirs[@]}"; do
             if ! preflight_mtime=$("$STAT_BSD" -f%m "$candidate" 2> /dev/null) || [[ ! "$preflight_mtime" =~ ^[0-9]+$ ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (metadata unavailable)"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_metadata_unavailable)")"
                 note_activity
                 return 0
             fi
@@ -2303,7 +2305,7 @@ clean_xcode_device_support() {
     _xcode_xctest_devices_process_running || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_display_text "$display_name")")"
             note_activity
         else
             mole_defer_cleanup_family "Xcode"
@@ -2315,13 +2317,13 @@ clean_xcode_device_support() {
     local -a version_dirs=()
     local scan_file=""
     scan_file=$(mktemp "${TMPDIR:-/tmp}/mole-device-support.XXXXXX") || {
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (scan unavailable)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_scan_unavailable)")"
         note_activity
         return 0
     }
     if ! command find "$ds_dir" -mindepth 1 -maxdepth 1 -print0 > "$scan_file" 2> /dev/null; then
         rm -f "$scan_file" # SAFE: exact temporary file created by mktemp above
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (scan unavailable)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_scan_unavailable)")"
         note_activity
         return 0
     fi
@@ -2337,7 +2339,7 @@ clean_xcode_device_support() {
         local mtime=""
         for entry in "${version_dirs[@]}"; do
             if ! mtime=$("$STAT_BSD" -f%m "$entry" 2> /dev/null) || [[ ! "$mtime" =~ ^[0-9]+$ ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (metadata unavailable)"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_metadata_unavailable)")"
                 note_activity
                 return 0
             fi
@@ -2413,12 +2415,12 @@ clean_xcode_device_support() {
                 done
                 if [[ "$dry_run_count" -gt 0 ]]; then
                     stale_size_human=$(bytes_to_human "$((stale_size_kb * 1024))")
-                    echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} ${display_name} · would remove ${dry_run_count} old versions (${stale_size_human}), keeping ${keep_count} most recent"
+                    echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_old_versions_would_remove "$(mole_display_text "$display_name")" "${dry_run_count}" "${stale_size_human}" "${keep_count}")"
                     note_activity
                 fi
                 if [[ -n "$dry_stop_reason" ]]; then
                     if [[ "$dry_stop_reason" == "process state unknown" ]]; then
-                        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${dry_stop_reason})"
+                        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$dry_stop_reason")")"
                         note_activity
                     else
                         mole_defer_cleanup_family "Xcode"
@@ -2466,13 +2468,13 @@ clean_xcode_device_support() {
                     stale_size_human=$(bytes_to_human "$((removed_size_kb * 1024))")
                     local line_color
                     line_color=$(cleanup_result_color_kb "$removed_size_kb")
-                    echo -e "  ${line_color}${ICON_SUCCESS}${NC} ${display_name} · removed ${removed_count} old versions, $(colorize_human_size "${stale_size_human}")"
+                    echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_old_versions_removed "$(mole_display_text "$display_name")" "${removed_count}" "$(colorize_human_size "${stale_size_human}")")"
                     mole_add_cleaned_row "$removed_count" "$removed_size_kb"
                     note_activity
                 fi
                 if [[ -n "$stop_reason" ]]; then
                     if [[ "$stop_reason" == "process state unknown" ]]; then
-                        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${stop_reason})"
+                        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$stop_reason")")"
                         note_activity
                     else
                         mole_defer_cleanup_family "Xcode"
@@ -2518,7 +2520,7 @@ clean_xcode_device_support() {
             local stop_reason="Xcode or build tools started"
             [[ $process_state -eq 2 ]] && stop_reason="process state unknown"
             if [[ "$stop_reason" == "process state unknown" ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${stop_reason})"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$stop_reason")")"
                 note_activity
             else
                 mole_defer_cleanup_family "Xcode"
@@ -2850,7 +2852,7 @@ check_orphaned_simulator_runtimes() {
         size_note=""
         [[ "$size_bytes" =~ ^[0-9]+$ ]] && size_note=", $(bytes_to_human "$size_bytes")"
         build_note="${build:+ ($build)}"
-        echo -e "  ${GRAY}${ICON_REVIEW}${NC} Orphaned simulator runtime · ${platform} ${version}${build_note}${size_note} · no devices · remove with ${GRAY}xcrun simctl runtime delete ${id}${NC}"
+        echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t clean_orphaned_simulator_runtime_review "$(mole_t clean_orphaned_simulator_runtime)" "${platform}" "${version}" "${build_note}" "${size_note}" "${GRAY}xcrun simctl runtime delete ${id}${NC}")"
         note_activity
     done < <(_simctl_orphan_runtime_rows "$device_json" "$runtime_json")
     return 0
@@ -2867,10 +2869,10 @@ clean_dev_mobile() {
         _resolve_simctl_developer_dir || resolve_rc=$?
         mole_rc_signal "$resolve_rc" && return "$resolve_rc"
         if [[ "$_MOLE_SIMCTL_RESOLUTION_STATUS" == "ambiguous" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode unavailable simulators · multiple Xcode apps found; set DEVELOPER_DIR"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_unavailable_multiple)"
             note_activity
         elif [[ "$_MOLE_SIMCTL_RESOLUTION_STATUS" == "explicit-invalid" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode unavailable simulators · DEVELOPER_DIR has no simctl"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_unavailable_no_simctl)"
             note_activity
         elif [[ "$_MOLE_SIMCTL_RESOLUTION_STATUS" == "clt-only" ]]; then
             debug_log "Skipping unavailable simulator cleanup without a full Xcode installation"
@@ -2946,13 +2948,13 @@ clean_dev_mobile() {
             if [[ "$simctl_probe_ok" != "true" ]]; then
                 stop_section_spinner
                 if mole_rc_timeout "$simctl_probe_first_status" && mole_rc_timeout "$simctl_probe_retry_status"; then
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode unavailable simulators · simctl probe timed out"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_unavailable_probe_timed_out "$(mole_t clean_xcode_unavailable_simulators)")"
                 else
                     local simctl_probe_exit_code=$simctl_probe_retry_status
                     if mole_rc_timeout "$simctl_probe_exit_code"; then
                         simctl_probe_exit_code=$simctl_probe_first_status
                     fi
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode unavailable simulators · simctl probe failed (exit=${simctl_probe_exit_code})"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_unavailable_probe_failed "$(mole_t clean_xcode_unavailable_simulators)" "${simctl_probe_exit_code}")"
                 fi
                 note_activity
                 simctl_available=false
@@ -3002,7 +3004,7 @@ clean_dev_mobile() {
                             fi
                         done
                         stop_section_spinner
-                        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Xcode unavailable simulators · would clean ${unavailable_before}, ${unavailable_size_human}"
+                        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_xcode_unavailable_would_clean "$(mole_t clean_xcode_unavailable_simulators)" "${unavailable_before}" "${unavailable_size_human}")"
                         note_activity
                     else
                         debug_log "Xcode unavailable simulators already clean"
@@ -3024,7 +3026,7 @@ clean_dev_mobile() {
                             unavailable_devices_output=$(_run_simctl "$MOLE_TIMEOUT_PKG_LIST_SEC" list devices unavailable 2> /dev/null) || recount_exit_code=$?
                             stop_section_spinner
                             if [[ $recount_exit_code -ne 0 ]]; then
-                                echo -e "  ${YELLOW}${ICON_WARNING}${NC} Xcode unavailable simulators · cleanup completed, unable to verify remaining devices"
+                                echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_xcode_unavailable_simulators)" "$(mole_t clean_reason_cleanup_unverified)")"
                                 debug_log "simctl recount returned $recount_exit_code"
                             else
                                 unavailable_after=$(printf '%s\n' "$unavailable_devices_output" | command awk '/\(unavailable/ { count++ } END { print count+0 }')
@@ -3038,9 +3040,9 @@ clean_dev_mobile() {
                                 local line_color
                                 line_color=$(cleanup_result_color_kb "$unavailable_size_kb")
                                 if ((removed_unavailable > 0)); then
-                                    echo -e "  ${line_color}${ICON_SUCCESS}${NC} Xcode unavailable simulators · removed ${removed_unavailable}, $(colorize_human_size "${unavailable_size_human}")"
+                                    echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_xcode_unavailable_removed "$(mole_t clean_xcode_unavailable_simulators)" "${removed_unavailable}" "$(colorize_human_size "${unavailable_size_human}")")"
                                 else
-                                    echo -e "  ${line_color}${ICON_SUCCESS}${NC} Xcode unavailable simulators · cleanup completed, $(colorize_human_size "${unavailable_size_human}")"
+                                    echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_xcode_unavailable_completed "$(mole_t clean_xcode_unavailable_simulators)" "$(colorize_human_size "${unavailable_size_human}")")"
                                 fi
                             fi
                         else
@@ -3071,10 +3073,10 @@ clean_dev_mobile() {
                             # mean the device became active after the list, so never
                             # bypass it with direct directory removal.
                             if mole_rc_timeout "$delete_exit_code"; then
-                                echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode unavailable simulators · cleanup timed out"
+                                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_unavailable_cleanup_timed_out "$(mole_t clean_xcode_unavailable_simulators)")"
                                 debug_log "simctl delete unavailable timed out"
                             else
-                                echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode unavailable simulators cleanup failed${error_hint}"
+                                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_xcode_unavailable_failed "$(mole_t clean_xcode_unavailable_simulators)" "${error_hint}")"
                                 debug_log "simctl delete error: $delete_output"
                             fi
                         fi
@@ -3094,7 +3096,7 @@ clean_dev_mobile() {
                 debug_log "Orphaned runtime review skipped: unavailable-simulator probe failed"
             fi
         else
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode unavailable simulators · simctl could not be resolved"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_xcode_unavailable_simulators)" "$(mole_t clean_reason_simctl_unresolved)")"
             note_activity
         fi
     fi
@@ -3257,7 +3259,7 @@ clean_dev_jvm() {
                     "Gradle daemon/workers" || return 0
             fi
         else
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Gradle targets · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_gradle_targets)")"
             note_activity
         fi
     fi
@@ -3688,7 +3690,7 @@ _versioned_agent_delete_guard_allows() {
 
 _report_versioned_agent_guard_stop() {
     local label="$1"
-    echo -e "  ${GRAY}${ICON_WARNING}${NC} ${label} · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$label")" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
     note_activity
 }
 
@@ -3908,7 +3910,7 @@ _claude_desktop_safe_clean_guarded() {
                 if [[ "$_MOLE_CLEAN_GUARD_REASON" == "Claude Desktop started" ]]; then
                     mole_defer_cleanup_family "Claude Desktop"
                 else
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
                     note_activity
                 fi
                 return 1
@@ -3924,7 +3926,7 @@ _claude_desktop_safe_clean_guarded() {
         if [[ "$_MOLE_CLEAN_GUARD_REASON" == "Claude Desktop started" ]]; then
             mole_defer_cleanup_family "Claude Desktop"
         else
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$display_name")" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
             note_activity
         fi
         return 1
@@ -4042,7 +4044,7 @@ clean_claude_desktop_bundled_versions() {
     claude_desktop_running || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Claude Desktop bundled Claude Code · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_claude_desktop_bundled_code)")"
             note_activity
         else
             mole_defer_cleanup_family "Claude Desktop"
@@ -4172,7 +4174,7 @@ clean_dev_automation_browsers() {
 
     if [[ ${#leaked_processes[@]} -gt 0 ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Leaked automation browsers · would stop ${#leaked_processes[@]} processes ${YELLOW}dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_leaked_browsers_would_stop "$(mole_t clean_leaked_automation_browsers)" "${#leaked_processes[@]}") ${YELLOW}\$(mole_t clean_dry_label)${NC}"
         else
             local stopped=0
             local -a term_processes=()
@@ -4210,7 +4212,7 @@ clean_dev_automation_browsers() {
                     fi
                 done
             fi
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Leaked automation browsers · stopped ${stopped} processes"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_leaked_browsers_stopped "$(mole_t clean_leaked_automation_browsers)" "${stopped}")"
         fi
         note_activity
     fi
@@ -4420,7 +4422,7 @@ clean_codex_desktop_caches() {
     codex_desktop_process_state || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex Desktop caches · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_codex_desktop_caches)")"
             note_activity
         else
             mole_defer_cleanup_family "Codex"
@@ -4781,9 +4783,9 @@ clean_codex_desktop_staging() {
 
     if is_path_whitelisted "$staging_root"; then
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Codex Desktop update staging · would skip (whitelist)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$(mole_t clean_codex_desktop_update_staging)")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Codex Desktop update staging · skipped (whitelist)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_status_skipped_whitelist "$(mole_t clean_codex_desktop_update_staging)")"
         fi
         note_activity
         return 0
@@ -4793,7 +4795,7 @@ clean_codex_desktop_staging() {
     codex_desktop_process_state || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex Desktop update staging · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_codex_desktop_update_staging)")"
             note_activity
         else
             mole_defer_cleanup_family "Codex"
@@ -4805,7 +4807,7 @@ clean_codex_desktop_staging() {
     codex_sparkle_updater_running || updater_state=$?
     if [[ $updater_state -ne 1 ]]; then
         if [[ $updater_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex Desktop update staging · skipped (updater state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_codex_desktop_update_staging)" "$(mole_t clean_reason_updater_state_unknown)")"
             note_activity
         else
             mole_defer_cleanup_family "Codex"
@@ -4822,12 +4824,12 @@ clean_codex_desktop_staging() {
     fi
     if mole_rc_timeout_or_signal "$open_file_state"; then
         _mole_record_clean_cancellation "$open_file_state"
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex Desktop update staging · skipped (open-file check unavailable)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_codex_desktop_update_staging)" "$(mole_t clean_reason_open_file_check_unavailable)")"
         note_activity
         return 0
     fi
     if [[ "$open_file_state" -eq 2 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex Desktop update staging · skipped (open-file check unavailable)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_codex_desktop_update_staging)" "$(mole_t clean_reason_open_file_check_unavailable)")"
         note_activity
         return 0
     fi
@@ -4841,7 +4843,7 @@ clean_codex_desktop_staging() {
         if [[ $guarded_rc -eq 75 ]]; then
             case "$_MOLE_CLEAN_GUARD_REASON" in
                 "process state unknown" | "updater state unknown" | "open-file check unavailable")
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex Desktop update staging · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_codex_desktop_update_staging)" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
                     note_activity
                     ;;
                 "staging entry changed")
@@ -5013,7 +5015,7 @@ _clean_codex_daemon_releases_locked() {
     # Without a complete lsof view (no sudo yet) nothing can be called idle;
     # say so instead of letting the preview look like there is nothing to do.
     if [[ "$open_unknown" == "true" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex daemon old releases · skipped (open-file check unavailable)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_codex_daemon_old_releases)" "$(mole_t clean_reason_open_file_check_unavailable)")"
         note_activity
     fi
     [[ ${#candidates[@]} -gt 0 ]] || return 0
@@ -5052,9 +5054,9 @@ clean_codex_daemon_releases() {
 
     if is_path_whitelisted "$releases_dir"; then
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Codex daemon old releases · would skip (whitelist)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$(mole_t clean_codex_daemon_old_releases)")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Codex daemon old releases · skipped (whitelist)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_status_skipped_whitelist "$(mole_t clean_codex_daemon_old_releases)")"
         fi
         note_activity
         return 0
@@ -5125,7 +5127,7 @@ clean_codex_crashpad_pending() {
     codex_desktop_process_state || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_display_text "$display_name")")"
             note_activity
         else
             mole_defer_cleanup_family "Codex"
@@ -5136,7 +5138,7 @@ clean_codex_crashpad_pending() {
     codex_crashpad_handler_process_state || handler_state=$?
     if [[ $handler_state -ne 1 ]]; then
         if [[ $handler_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (crash handler state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_crash_handler_unknown)")"
             note_activity
         else
             mole_defer_cleanup_family "Codex"
@@ -5150,7 +5152,7 @@ clean_codex_crashpad_pending() {
     # process question is re-asked periodically inside the loop.
     local open_file_state=0
     if codex_sparkle_staging_has_open_files "$physical_root"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (reports in use)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_reports_in_use)")"
         note_activity
         return 0
     else
@@ -5161,7 +5163,7 @@ clean_codex_crashpad_pending() {
         return "$open_file_state"
     fi
     if [[ $open_file_state -eq 2 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} ${display_name} · skipped (open-file check unavailable)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_display_text "$display_name")" "$(mole_t clean_reason_open_file_check_unavailable)")"
         note_activity
         return 0
     fi
@@ -5217,9 +5219,9 @@ clean_codex_crashpad_pending() {
         local cleaned_mb
         cleaned_mb=$(echo "$cleaned_kb" | awk '{printf "%.1f", $1/1024}' || echo "0.0")
         if [[ "$dry_run_mode" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Would clean $count stale Codex crash reports older than ${MOLE_ORPHAN_AGE_DAYS}d, about ${cleaned_mb}MB"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_codex_crash_would_clean "$count" "$MOLE_ORPHAN_AGE_DAYS" "$cleaned_mb")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Cleaned $count stale Codex crash reports older than ${MOLE_ORPHAN_AGE_DAYS}d, about ${cleaned_mb}MB"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_codex_crash_cleaned "$count" "$MOLE_ORPHAN_AGE_DAYS" "$cleaned_mb")"
         fi
         note_activity
     fi
@@ -5299,7 +5301,7 @@ _codex_runtime_safe_clean_guarded() {
         if [[ "$_MOLE_CLEAN_GUARD_REASON" == "Codex started" ]]; then
             mole_defer_cleanup_family "Codex"
         else
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex runtimes · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_codex_runtimes)" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
             note_activity
         fi
         return 1
@@ -5313,10 +5315,10 @@ clean_codex_runtimes() {
 
     if declare -f is_path_whitelisted > /dev/null 2>&1 && is_path_whitelisted "$runtime_root"; then
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Codex runtimes · would skip (whitelist)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$(mole_t clean_codex_runtimes)")"
             note_activity
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Codex runtimes · skipped (whitelist)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_status_skipped_whitelist "$(mole_t clean_codex_runtimes)")"
         fi
         note_activity
         return 0
@@ -5339,7 +5341,7 @@ clean_codex_runtimes() {
         if [[ "$has_stale_runtime" != "true" ]]; then
             return 0
         elif [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex runtimes · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_codex_runtimes)")"
             note_activity
         else
             mole_defer_cleanup_family "Codex"
@@ -5350,10 +5352,10 @@ clean_codex_runtimes() {
     while IFS= read -r -d '' runtime_dir; do
         if declare -f is_path_whitelisted > /dev/null 2>&1 && is_path_whitelisted "$runtime_dir"; then
             if [[ "${DRY_RUN:-false}" == "true" ]]; then
-                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Codex runtimes · would skip (whitelist)"
+                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$(mole_t clean_codex_runtimes)")"
                 note_activity
             else
-                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Codex runtimes · skipped (whitelist)"
+                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_status_skipped_whitelist "$(mole_t clean_codex_runtimes)")"
             fi
             note_activity
             continue
@@ -5396,7 +5398,7 @@ clean_codex_runtimes() {
         fi
     fi
     # A preview cannot establish which removals will succeed, so omit its size.
-    echo -e "  ${GRAY}${ICON_REVIEW}${NC} Codex runtimes · manual review${review_size}"
+    echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t clean_codex_manual_review "$(mole_t clean_codex_runtimes)" "${review_size}")"
     note_activity
 }
 
@@ -5538,9 +5540,9 @@ clean_codex_marketplace_staging() {
 
     if is_path_whitelisted "$tmp_root" || is_path_whitelisted "$HOME/.codex"; then
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Codex marketplace staging · would skip (whitelist)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$(mole_t clean_codex_marketplace_staging)")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Codex marketplace staging · skipped (whitelist)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_status_skipped_whitelist "$(mole_t clean_codex_marketplace_staging)")"
         fi
         note_activity
         return 0
@@ -5550,7 +5552,7 @@ clean_codex_marketplace_staging() {
     codex_runtime_process_state || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex marketplace staging · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_codex_marketplace_staging)")"
             note_activity
         else
             mole_defer_cleanup_family "Codex"
@@ -5583,12 +5585,12 @@ clean_codex_marketplace_staging() {
         fi
         if mole_rc_timeout_or_signal "$open_file_state"; then
             _mole_record_clean_cancellation "$open_file_state"
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex marketplace staging · skipped (open-file check unavailable)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_codex_marketplace_staging)" "$(mole_t clean_reason_open_file_check_unavailable)")"
             note_activity
             return 0
         fi
         if [[ "$open_file_state" -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex marketplace staging · skipped (open-file check unavailable)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_codex_marketplace_staging)" "$(mole_t clean_reason_open_file_check_unavailable)")"
             note_activity
             return 0
         fi
@@ -5600,7 +5602,7 @@ clean_codex_marketplace_staging() {
         if [[ $guarded_rc -eq 75 ]]; then
             case "${_MOLE_CLEAN_GUARD_REASON:-}" in
                 "process state unknown" | "open-file check unavailable")
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Codex marketplace staging · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_codex_marketplace_staging)" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
                     note_activity
                     ;;
                 "staging entry changed")
@@ -5665,7 +5667,7 @@ clean_antigravity_caches() {
     antigravity_or_gemini_running || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Antigravity/Gemini caches · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_antigravity_gemini_caches)")"
             note_activity
         else
             mole_defer_cleanup_family "Antigravity/Gemini"
@@ -5716,7 +5718,7 @@ clean_chrome_devtools_mcp_caches() {
     chrome_devtools_mcp_running || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Chrome DevTools MCP caches · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_chrome_devtools_mcp_caches)")"
             note_activity
         else
             mole_defer_cleanup_family "Chrome DevTools MCP"
@@ -5921,7 +5923,7 @@ clean_agent_browser_old_chrome() {
                 mole_report_guard_stop "$label" mole_defer_cleanup_family "agent-browser"
                 ;;
             *)
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} ${label} · stopped (${_MOLE_CLEAN_GUARD_REASON})"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_display_text "$label")" "$(mole_display_text "$_MOLE_CLEAN_GUARD_REASON")")"
                 note_activity
                 ;;
         esac

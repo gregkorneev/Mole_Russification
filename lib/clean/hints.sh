@@ -406,7 +406,7 @@ show_project_artifact_hint_notice() {
     if [[ "$PROJECT_ARTIFACT_HINT_DETECTED" != "true" ]]; then
         if [[ "${PROJECT_ARTIFACT_HINT_SCAN_SKIPPED:-false}" == "true" ]]; then
             note_activity
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} Build artifacts · scan skipped · ${GRAY}mo purge${NC}"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_build_artifacts_scan_skipped) · ${GRAY}mo purge${NC}"
         fi
         return 0
     fi
@@ -440,7 +440,7 @@ show_project_artifact_hint_notice() {
     fi
 
     # One compact row: "Build artifacts · 15+ dirs, 985.6MB+ · mo purge".
-    local detail="${hint_count_label} dirs"
+    local detail="$(mole_t clean_project_artifact_count "$hint_count_label")"
     if [[ $PROJECT_ARTIFACT_HINT_ESTIMATE_SAMPLES -gt 0 ]]; then
         local estimate_human
         estimate_human=$(bytes_to_human "$((PROJECT_ARTIFACT_HINT_ESTIMATED_KB * 1024))")
@@ -459,11 +459,11 @@ show_project_artifact_hint_notice() {
 
     local partial_note=""
     if [[ "${PROJECT_ARTIFACT_HINT_SCAN_SKIPPED:-false}" == "true" ]]; then
-        partial_note=" ${GRAY}(partial scan)${NC}"
+        partial_note=" ${GRAY}($(mole_t clean_partial_scan))${NC}"
     fi
 
     note_activity
-    echo -e "  ${YELLOW}${ICON_REVIEW}${NC} Build artifacts · ${GREEN}${detail}${NC} · ${GRAY}${review_command}${NC}${partial_note}"
+    echo -e "  ${YELLOW}${ICON_REVIEW}${NC} $(mole_t clean_build_artifacts) · ${GREEN}${detail}${NC} · ${GRAY}${review_command}${NC}${partial_note}"
 }
 
 # shellcheck disable=SC2329
@@ -532,6 +532,6 @@ show_user_launch_agent_hint_notice() {
 
     local i
     for i in "${!sources[@]}"; do
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} Stale login item · ${sources[$i]} · ${GRAY}${reasons[$i]}: ${targets[$i]} · review before removing${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_stale_login_item) · ${sources[$i]} · ${GRAY}$(mole_display_text "${reasons[$i]}"): ${targets[$i]} · $(mole_t clean_review_before_removing)${NC}"
     done
 }

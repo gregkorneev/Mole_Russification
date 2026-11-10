@@ -34,9 +34,9 @@ show_brew_autoremove_preview() {
             subject+=", ${names[i]}"
         done
     else
-        subject="${#names[@]} formulae"
+        subject="$(mole_t clean_brew_formula_count "${#names[@]}")"
     fi
-    echo -e "  ${GRAY}${ICON_REVIEW}${NC} Homebrew unused dependencies · ${subject} · remove with ${GRAY}brew autoremove${NC}"
+    echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(mole_t clean_brew_unused_dependencies) · ${subject} · $(mole_t clean_brew_remove_with) ${GRAY}brew autoremove${NC}"
 }
 
 # `brew cleanup --dry-run` shares the real run's arguments, so the preview
@@ -87,9 +87,9 @@ show_brew_cleanup_preview() {
     freed=$(sed -n 's/^==> This operation would free approximately \(.*\) of disk space\.$/\1/p' "$preview_file" | tail -1)
     freed=$(mole_terminal_safe_text "$freed")
     if [[ -n "$freed" ]]; then
-        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Homebrew cleanup · would free ${freed}"
+        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_brew_would_free "$freed")"
     else
-        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Homebrew cleanup · $(mole_count_label "${#rows[@]}" item)"
+        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_brew_cleanup) · $(mole_count_label "${#rows[@]}" item)"
     fi
     printf '    %s\n' "${rows[@]}"
 }
@@ -282,11 +282,11 @@ restore_homebrew_active_links() {
     done
 
     if [[ $restored -gt 0 ]]; then
-        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Homebrew links · restored ${restored} active executable(s)"
+        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_brew_links_restored "$restored")"
         note_activity
     fi
     if [[ $failed -gt 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Homebrew links · ${failed} could not be restored, run ${GRAY}brew link <formula>${NC}"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_brew_links_restore_failed "$failed"), $(mole_t clean_brew_run_command) ${GRAY}brew link <formula>${NC}"
         note_activity
     fi
 }
@@ -299,7 +299,7 @@ clean_homebrew() {
     if [[ "${DRY_RUN:-false}" == "true" ]]; then
         # Check if Homebrew cache is whitelisted
         if is_path_whitelisted "$HOME/Library/Caches/Homebrew"; then
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Homebrew · skipped (whitelist)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_brew_skipped_whitelist)"
             note_activity
         else
             if ! brew_cleanup_ran_recently "$brew_cache_file"; then
@@ -312,10 +312,10 @@ clean_homebrew() {
                 if [[ $dry_run_cleanup_exit -eq 0 ]]; then
                     show_brew_cleanup_preview "$dry_run_cleanup_file" && note_activity
                 elif mole_rc_timeout "$dry_run_cleanup_exit"; then
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Homebrew cleanup preview timed out · run ${GRAY}brew cleanup --dry-run${NC} manually"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_brew_preview_timeout) · $(mole_t clean_brew_run_command) ${GRAY}brew cleanup --dry-run${NC} $(mole_t clean_brew_manually)"
                     note_activity
                 else
-                    echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Homebrew · would cleanup"
+                    echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_brew_would_cleanup)"
                     note_activity
                 fi
                 # Autoremove sits after the window check in the real run too.
@@ -328,7 +328,7 @@ clean_homebrew() {
                 if [[ $dry_run_autoremove_exit -eq 0 ]] && brew_autoremove_preview_has_items "$dry_run_autoremove_file"; then
                     show_brew_autoremove_preview "$dry_run_autoremove_file"
                 elif mole_rc_timeout "$dry_run_autoremove_exit"; then
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Autoremove preview timed out · run ${GRAY}brew autoremove --dry-run${NC} manually"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_brew_autoremove_preview_timeout) · ${GRAY}brew autoremove --dry-run${NC} $(mole_t clean_brew_manually)"
                 fi
             fi
         fi
@@ -336,7 +336,7 @@ clean_homebrew() {
     fi
     # Keep behavior consistent with dry-run preview.
     if is_path_whitelisted "$HOME/Library/Caches/Homebrew"; then
-        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Homebrew · skipped (whitelist)"
+        echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_brew_skipped_whitelist)"
         note_activity
         return 0
     fi
@@ -378,15 +378,15 @@ clean_homebrew() {
         freed_space=$(printf '%s\n' "$brew_output" | grep -o "[0-9.]*[KMGT]B freed" 2> /dev/null | tail -1 || true)
         if [[ $removed_count -gt 0 ]] || [[ -n "$freed_space" ]]; then
             if [[ -n "$freed_space" ]]; then
-                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Homebrew cleanup${NC} · ${GREEN}$freed_space${NC}"
+                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_brew_cleanup)${NC} · ${GREEN}$freed_space${NC}"
                 note_activity
             else
-                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Homebrew cleanup · $(mole_count_label "${removed_count}" item)"
+                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_brew_cleanup) · $(mole_count_label "${removed_count}" item)"
                 note_activity
             fi
         fi
     elif mole_rc_timeout "$brew_exit"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Homebrew cleanup timed out · run ${GRAY}brew cleanup${NC} manually"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_brew_cleanup_timeout) · ${GRAY}brew cleanup${NC} $(mole_t clean_brew_manually)"
         note_activity
     fi
     local autoremove_preview_file
@@ -396,11 +396,11 @@ clean_homebrew() {
     run_brew_autoremove_preview "$autoremove_preview_timeout" "$autoremove_preview_file" || autoremove_preview_exit=$?
     if [[ -t 1 ]]; then stop_inline_spinner; fi
     if mole_rc_timeout "$autoremove_preview_exit"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autoremove preview timed out · run ${GRAY}brew autoremove --dry-run${NC} manually"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_brew_autoremove_preview_timeout) · ${GRAY}brew autoremove --dry-run${NC} $(mole_t clean_brew_manually)"
         # Keep the manual-action guidance visible past the idle-section erase.
         note_activity
     elif [[ $autoremove_preview_exit -ne 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autoremove preview failed · run ${GRAY}brew autoremove --dry-run${NC} manually"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_brew_autoremove_preview_failed) · ${GRAY}brew autoremove --dry-run${NC} $(mole_t clean_brew_manually)"
         note_activity
     elif brew_autoremove_preview_has_items "$autoremove_preview_file"; then
         show_brew_autoremove_preview "$autoremove_preview_file"

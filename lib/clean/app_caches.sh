@@ -246,7 +246,7 @@ clean_xcode_derived_data() {
     if [[ $xcode_state -ne 1 ]]; then
         stop_section_spinner
         if [[ $xcode_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode DerivedData · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_xcode_derived_data)")"
             note_activity
         else
             mole_defer_cleanup_family "Xcode"
@@ -309,7 +309,13 @@ clean_xcode_derived_data() {
             [[ $dry_run_count -eq 1 ]] && project_label="project"
             local size_human
             size_human=$(bytes_to_human "$((size_kb * 1024))")
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Xcode DerivedData · ${dry_run_count} ${project_label}, $(colorize_human_size "${size_human}") ${YELLOW}dry${NC}"
+            local derived_summary=""
+            if [[ $dry_run_count -eq 1 ]]; then
+                derived_summary=$(mole_t clean_derived_data_one "$dry_run_count" "$size_human")
+            else
+                derived_summary=$(mole_t clean_derived_data_many "$dry_run_count" "$size_human")
+            fi
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $derived_summary ${YELLOW}$(mole_t clean_dry_label)${NC}"
             note_activity
             # Large files skips its DerivedData row only when this row holds
             # every project; a kept or skipped one still needs that row.
@@ -319,7 +325,7 @@ clean_xcode_derived_data() {
         fi
         if [[ -n "$dry_run_stopped_reason" ]]; then
             if [[ "$dry_run_stopped_reason" == "process state unknown" ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode DerivedData · stopped (${dry_run_stopped_reason})"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_xcode_derived_data)" "$(mole_display_text "$dry_run_stopped_reason")")"
                 note_activity
             else
                 mole_defer_cleanup_family "Xcode"
@@ -379,7 +385,13 @@ clean_xcode_derived_data() {
         size_human=$(bytes_to_human "$((removed_size_kb * 1024))")
         local line_color
         line_color=$(cleanup_result_color_kb "$removed_size_kb" 2> /dev/null || echo "$GREEN")
-        echo -e "  ${line_color}${ICON_SUCCESS}${NC} Xcode DerivedData · ${removed} ${project_label}, $(colorize_human_size "${size_human}")"
+        local derived_summary=""
+        if [[ $removed -eq 1 ]]; then
+            derived_summary=$(mole_t clean_derived_data_one "$removed" "$size_human")
+        else
+            derived_summary=$(mole_t clean_derived_data_many "$removed" "$size_human")
+        fi
+        echo -e "  ${line_color}${ICON_SUCCESS}${NC} $derived_summary"
         mole_add_cleaned_row "$removed" "$removed_size_kb"
         note_activity
         if [[ -z "$stopped_reason" && $removed -eq $all_count ]]; then
@@ -388,7 +400,7 @@ clean_xcode_derived_data() {
     fi
     if [[ -n "$stopped_reason" ]]; then
         if [[ "$stopped_reason" == "process state unknown" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode DerivedData · stopped (${stopped_reason})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_xcode_derived_data)" "$(mole_display_text "$stopped_reason")")"
             note_activity
         else
             mole_defer_cleanup_family "Xcode"
@@ -461,7 +473,7 @@ clean_xcode_tools() {
             }
         else
             if [[ $simulator_state -eq 2 ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} Simulator caches · skipped (process state unknown)"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_simulator_caches)")"
                 note_activity
             else
                 mole_defer_cleanup_family "Simulator"
@@ -508,7 +520,7 @@ clean_xcode_tools() {
             _xcode_cleanup_process_state || xcode_state=$?
             if [[ $xcode_state -ne 1 ]]; then
                 if [[ $xcode_state -eq 2 ]]; then
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode build products/DerivedData · stopped (process state unknown)"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_xcode_build_products)" "$(mole_t clean_reason_process_unknown)")"
                     note_activity
                 else
                     mole_defer_cleanup_family "Xcode"
@@ -527,7 +539,7 @@ clean_xcode_tools() {
             clean_xcode_derived_data || return $?
         else
             if [[ $xcode_state -eq 2 ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} Xcode cache/build products · skipped (process state unknown)"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_xcode_cache_build_products)")"
                 note_activity
             else
                 mole_defer_cleanup_family "Xcode"
@@ -1234,7 +1246,7 @@ clean_jianying_pro_generated_caches() {
     if [[ $process_state -ne 1 ]]; then
         local skip_reason="JianyingPro running"
         [[ $process_state -eq 2 ]] && skip_reason="process state unknown"
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} JianyingPro generated caches · skipped ($skip_reason)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_jianying_generated_caches)" "$(mole_display_text "$skip_reason")")"
         note_activity
         return 0
     fi
@@ -1698,7 +1710,7 @@ clean_autodesk_fusion_old_bundles() {
 
     local _MOLE_AUTODESK_FUSION_PRODUCTION_ROOT=""
     if ! _autodesk_fusion_trusted_production_root "$production_dir"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk Fusion old versions · skipped (production root not trusted)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_fusion_root_untrusted)"
         note_activity
         return 0
     fi
@@ -1710,13 +1722,13 @@ clean_autodesk_fusion_old_bundles() {
     _autodesk_fusion_resolve_current_version \
         "$production_root" "$cleanup_deadline" || current_rc=$?
     if mole_rc_timeout "$current_rc"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk Fusion old versions · skipped (current version probe timed out)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_fusion_version_timeout)"
         note_activity
         return 0
     elif [[ $current_rc -ge 128 ]]; then
         return "$current_rc"
     elif [[ $current_rc -ne 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk Fusion old versions · skipped (current version unknown)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_fusion_version_unknown)"
         note_activity
         return 0
     fi
@@ -1728,13 +1740,13 @@ clean_autodesk_fusion_old_bundles() {
         "$production_root" "$current_dir" "$current_version" \
         "$cleanup_deadline" || plan_rc=$?
     if mole_rc_timeout "$plan_rc"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk Fusion old versions · skipped (inventory timed out)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_fusion_inventory_timeout)"
         note_activity
         return 0
     elif [[ $plan_rc -ge 128 ]]; then
         return "$plan_rc"
     elif [[ $plan_rc -ne 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk Fusion old versions · skipped (inventory incomplete)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_fusion_inventory_incomplete)"
         note_activity
         return 0
     fi
@@ -1744,7 +1756,7 @@ clean_autodesk_fusion_old_bundles() {
     autodesk_cache_process_state || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk Fusion old versions · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_fusion_process_unknown)"
             note_activity
         else
             mole_defer_cleanup_family "Autodesk Fusion"
@@ -1858,21 +1870,21 @@ clean_autodesk_fusion_old_bundles() {
         local size_human
         size_human=$(bytes_to_human "$((total_size * 1024))")
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Autodesk Fusion old versions${NC} · ${YELLOW}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_fusion_old_versions) · ${YELLOW}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$total_size")
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} Autodesk Fusion old versions${NC} · ${line_color}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "${size_human}")"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_fusion_old_versions)${NC} · ${line_color}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "${size_human}")"
         fi
         mole_add_cleaned_row "$cleaned_count" "$total_size"
         note_activity
     fi
     if [[ $failed_count -gt 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk Fusion old versions · ${failed_count} failed"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_fusion_remove_failed "$failed_count")"
         note_activity
     fi
     if [[ -n "$stopped_reason" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk Fusion old versions · stopped (${stopped_reason})"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_fusion_old_versions)" "$(mole_display_text "$stopped_reason")")"
         note_activity
     fi
 }
@@ -1897,7 +1909,7 @@ clean_3d_tools() {
         autodesk_cache_process_state || process_state=$?
         if [[ $process_state -ne 1 ]]; then
             if [[ $process_state -eq 2 ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} Autodesk cache · skipped (process state unknown)"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_autodesk_cache)")"
                 note_activity
             else
                 mole_defer_cleanup_family "Autodesk"
@@ -2091,11 +2103,11 @@ clean_neatdm_stale_segments() {
         local size_human
         size_human=$(bytes_to_human "$((stale_kb * 1024))")
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} NeatDM stale downloads · $(mole_count_label "${stale_count}" item), $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_neatdm_stale_downloads) · $(mole_count_label "${stale_count}" item), $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$stale_kb")
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} NeatDM stale downloads · $(mole_count_label "${stale_count}" item), $(colorize_human_size "${size_human}")"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_neatdm_stale_downloads) · $(mole_count_label "${stale_count}" item), $(colorize_human_size "${size_human}")"
         fi
         mole_add_cleaned_row "$stale_count" "$stale_kb"
         note_activity

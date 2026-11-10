@@ -113,7 +113,7 @@ trap cleanup_temp_files EXIT INT TERM
 
 # Version and update helpers
 VERSION="1.68.0"
-MOLE_TAGLINE="Deep clean and optimize your Mac."
+MOLE_TAGLINE="$(mole_t main_tagline)"
 
 is_touchid_configured() {
     mole_pam_enables_touchid /etc/pam.d/sudo || mole_pam_enables_touchid /etc/pam.d/sudo_local
@@ -124,6 +124,7 @@ is_touchid_configured() {
 # and the update banner call them in-process.
 source "$SCRIPT_DIR/lib/manage/update.sh"
 source "$SCRIPT_DIR/lib/manage/remove.sh"
+source "$SCRIPT_DIR/lib/manage/config.sh"
 
 # Build the main-menu controls hint line. Pure so the show/hide logic can be
 # tested without a tty (the caller only renders it inside `[[ -t 0 ]]`).
@@ -131,14 +132,14 @@ source "$SCRIPT_DIR/lib/manage/remove.sh"
 _main_menu_controls_line() {
     local touchid_configured="$1"
     local show_update="$2"
-    local controls="${GRAY}↑↓  |  Enter  |  M More  |  V Version"
+    local controls="${GRAY}$(mole_t main_controls_navigation)"
     if [[ "$touchid_configured" != "true" ]]; then
-        controls="${controls}  |  T TouchID"
+        controls="${controls}  |  $(mole_t main_controls_touchid)"
     fi
     if [[ "$show_update" == "true" ]]; then
-        controls="${controls}  |  U Update"
+        controls="${controls}  |  $(mole_t main_controls_update)"
     fi
-    controls="${controls}  |  Q Quit${NC}"
+    controls="${controls}  |  $(mole_t main_controls_quit)${NC}"
     printf '%s' "$controls"
 }
 
@@ -183,11 +184,11 @@ show_main_menu() {
 
     printf '\r\033[2K\n'
 
-    printf '\r\033[2K%s\n' "$(show_menu_option 1 "Clean        Free up disk space" "$([[ $selected -eq 1 ]] && echo true || echo false)")"
-    printf '\r\033[2K%s\n' "$(show_menu_option 2 "Uninstall    Remove apps completely" "$([[ $selected -eq 2 ]] && echo true || echo false)")"
-    printf '\r\033[2K%s\n' "$(show_menu_option 3 "Optimize     Refresh caches and services" "$([[ $selected -eq 3 ]] && echo true || echo false)")"
-    printf '\r\033[2K%s\n' "$(show_menu_option 4 "Analyze      Explore disk usage" "$([[ $selected -eq 4 ]] && echo true || echo false)")"
-    printf '\r\033[2K%s\n' "$(show_menu_option 5 "Status       Monitor system health" "$([[ $selected -eq 5 ]] && echo true || echo false)")"
+    printf '\r\033[2K%s\n' "$(show_menu_option 1 "$(mole_t main_menu_clean)" "$([[ $selected -eq 1 ]] && echo true || echo false)")"
+    printf '\r\033[2K%s\n' "$(show_menu_option 2 "$(mole_t main_menu_uninstall)" "$([[ $selected -eq 2 ]] && echo true || echo false)")"
+    printf '\r\033[2K%s\n' "$(show_menu_option 3 "$(mole_t main_menu_optimize)" "$([[ $selected -eq 3 ]] && echo true || echo false)")"
+    printf '\r\033[2K%s\n' "$(show_menu_option 4 "$(mole_t main_menu_analyze)" "$([[ $selected -eq 4 ]] && echo true || echo false)")"
+    printf '\r\033[2K%s\n' "$(show_menu_option 5 "$(mole_t main_menu_status)" "$([[ $selected -eq 5 ]] && echo true || echo false)")"
 
     if [[ -t 0 ]]; then
         printf '\r\033[2K\n'
@@ -361,21 +362,16 @@ main() {
                     --force | -f) force_update=true ;;
                     --nightly) nightly_update=true ;;
                     --help | -h)
-                        cat << 'EOF'
-Usage: mo update [--force] [--nightly]
-
-Update Mole to the latest release.
-
-Options:
-  -f, --force       Force reinstall latest stable version
-  --nightly         Install latest unreleased main branch build
-  -h, --help        Show this help message
-EOF
+                        printf '%s\n\n' "$(mole_t help_update_usage)" "$(mole_t help_update_description)" "$(mole_t help_options)"
+                        printf '%s\n' \
+                            "  -f, --force       $(mole_t help_update_force)" \
+                            "  --nightly         $(mole_t help_update_nightly)" \
+                            "  -h, --help        $(mole_t help_option_help)"
                         exit 0
                         ;;
                     *)
-                        echo "Unknown update option: $arg" >&2
-                        echo "Use 'mole update [--force] [--nightly]' for supported options." >&2
+                        printf '%s\n' "$(mole_t update_unknown_option "$arg")" >&2
+                        printf '%s\n' "$(mole_t update_help_hint)" >&2
                         exit 1
                         ;;
                 esac
@@ -389,25 +385,25 @@ EOF
                 case "$arg" in
                     "--dry-run" | "-n") dry_run_remove=true ;;
                     "--help" | "-h")
-                        cat << 'EOF'
-Usage: mo remove [--dry-run]
-
-Remove Mole from this Mac. Operation logs in ~/Library/Logs/mole are kept.
-
-Options:
-  -n, --dry-run     Preview Mole removal
-  -h, --help        Show this help message
-EOF
+                        printf '%s\n\n' "$(mole_t help_remove_usage)" "$(mole_t help_remove_description)" "$(mole_t help_remove_keep_logs)"
+                        printf '\n%s\n' "$(mole_t help_options)"
+                        printf '%s\n' \
+                            "  -n, --dry-run     $(mole_t help_remove_dry_run)" \
+                            "  -h, --help        $(mole_t help_option_help)"
                         exit 0
                         ;;
                     *)
-                        echo "Unknown remove option: $arg" >&2
-                        echo "Use 'mole remove [--dry-run]' for supported options." >&2
+                        printf '%s\n' "$(mole_t remove_unknown_option "$arg")" >&2
+                        printf '%s\n' "$(mole_t remove_help_hint)" >&2
                         exit 1
                         ;;
                 esac
             done
             remove_mole "$dry_run_remove"
+            ;;
+        "config")
+            mole_config_command "${args[@]:1}" || return $?
+            exit 0
             ;;
         "help" | "--help" | "-h")
             show_help
@@ -424,8 +420,8 @@ EOF
         *)
             # Errors belong on stderr so `mo $cmd > out` leaves the diagnostic
             # visible instead of burying it in the redirected file.
-            echo "Unknown command: ${args[0]}" >&2
-            echo "Use 'mole --help' for usage information." >&2
+            printf '%s\n' "$(mole_t router_unknown_command "${args[0]}")" >&2
+            printf '%s\n' "$(mole_t router_help_hint)" >&2
             exit 1
             ;;
     esac

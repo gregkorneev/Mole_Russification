@@ -55,7 +55,7 @@ _mole_warn_log_broken() {
     [[ -n "${_MOLE_DELETE_LOG_WARNED:-}" ]] && return 0
     _MOLE_DELETE_LOG_WARNED=1
     export _MOLE_DELETE_LOG_WARNED
-    printf 'Warning: audit log unavailable (%s). Forensic trail incomplete this session.\n' "$1" >&2
+    printf '%s\n' "$(mole_t core_log_audit_unavailable "$1")" >&2
 }
 
 append_log_line() {
@@ -146,7 +146,9 @@ _log_mark_section_activity() {
 
 # Log informational message
 log_info() {
-    echo -e "${BLUE}$1${NC}"
+    local display_message
+    display_message=$(mole_display_text "$1")
+    echo -e "${BLUE}${display_message}${NC}"
     _log_mark_section_activity
     local timestamp
     timestamp=$(get_timestamp)
@@ -158,7 +160,9 @@ log_info() {
 
 # Log success message
 log_success() {
-    echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $1"
+    local display_message
+    display_message=$(mole_display_text "$1")
+    echo -e "  ${GREEN}${ICON_SUCCESS}${NC} ${display_message}"
     _log_mark_section_activity
     local timestamp
     timestamp=$(get_timestamp)
@@ -170,7 +174,9 @@ log_success() {
 
 # shellcheck disable=SC2329
 log_warning() {
-    echo -e "${YELLOW}$1${NC}"
+    local display_message
+    display_message=$(mole_display_text "$1")
+    echo -e "${YELLOW}${display_message}${NC}"
     _log_mark_section_activity
     local timestamp
     timestamp=$(get_timestamp)
@@ -193,7 +199,9 @@ log_warning_to_file() {
 
 # shellcheck disable=SC2329
 log_error() {
-    echo -e "${YELLOW}${ICON_ERROR}${NC} $1" >&2
+    local display_message
+    display_message=$(mole_display_text "$1")
+    echo -e "${YELLOW}${ICON_ERROR}${NC} ${display_message}" >&2
     _log_mark_section_activity
     local timestamp
     timestamp=$(get_timestamp)
@@ -432,7 +440,7 @@ debug_risk_level() {
         esac
 
         # Output to stderr with color
-        echo -e "${GRAY}[DEBUG] Risk Level: ${color}${risk_level}${GRAY}, $reason${NC}" >&2
+        echo -e "${GRAY}[DEBUG] $(mole_display_text "Risk Level:") ${color}${risk_level}${GRAY}, $reason${NC}" >&2
 
         # Also log to file
         echo "Risk Level: $risk_level, $reason" >> "$DEBUG_LOG_FILE" 2> /dev/null || true
@@ -448,7 +456,7 @@ log_system_info() {
     # Reset debug log file for this new session
     ensure_user_file "$DEBUG_LOG_FILE"
     if ! : > "$DEBUG_LOG_FILE" 2> /dev/null; then
-        echo -e "${YELLOW}${ICON_WARNING}${NC} Debug log not writable: $DEBUG_LOG_FILE" >&2
+        echo -e "${YELLOW}${ICON_WARNING}${NC} $(mole_t core_log_debug_unwritable "$DEBUG_LOG_FILE")" >&2
     fi
 
     # Start block in debug log file
@@ -477,7 +485,7 @@ log_system_info() {
     } >> "$DEBUG_LOG_FILE" 2> /dev/null || true
 
     # Notification to stderr
-    echo -e "${GRAY}[DEBUG] Debug logging enabled. Session log: $DEBUG_LOG_FILE${NC}" >&2
+    echo -e "${GRAY}[DEBUG] $(mole_t core_log_debug_enabled "$DEBUG_LOG_FILE")${NC}" >&2
 }
 
 # ============================================================================
@@ -511,19 +519,19 @@ print_summary_block() {
     echo ""
     echo "$divider"
     if [[ -n "$heading" ]]; then
-        echo -e "${BLUE}${heading}${NC}"
+        echo -e "${BLUE}$(mole_display_text "$heading")${NC}"
     fi
 
     # Print details
     for detail in "${details[@]}"; do
         [[ -z "$detail" ]] && continue
-        echo -e "${detail}"
+        echo -e "$(mole_display_text "$detail")"
     done
     echo "$divider"
 
     # If debug mode is on, remind user about the log file location
     if [[ "${MO_DEBUG:-}" == "1" ]]; then
-        echo -e "${GRAY}Debug session log saved to:${NC} ${DEBUG_LOG_FILE}"
+        echo -e "${GRAY}$(mole_t core_log_debug_saved)${NC} ${DEBUG_LOG_FILE}"
     fi
 }
 

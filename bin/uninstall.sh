@@ -1587,7 +1587,7 @@ scan_applications() {
         [[ $cache_source_is_temp == true ]] && rm -f "$cache_source" 2> /dev/null || true
         restore_scan_int_trap
         printf "\r\033[K" >&2
-        echo "No applications found to uninstall." >&2
+        printf '%s\n' "$(mole_t ui_no_apps_to_uninstall_period)" >&2
         return 1
     fi
     # Phase 5: parallel metadata resolution for cold rows.
@@ -1606,7 +1606,7 @@ scan_applications() {
 
     if [[ ! -s "$scan_raw_file" ]]; then
         stop_scan_spinner
-        echo "No applications found to uninstall" >&2
+        printf '%s\n' "$(mole_t ui_no_apps_to_uninstall)" >&2
         rm -f "$scan_inventory_file" "$temp_file" "$scan_raw_file" "$merged_file" "$refresh_file" "$cache_snapshot_file" "$discovered_file" "$cached_rows_file" "$uncached_rows_file" "${temp_file}.sorted" "$spinner_shown_file" 2> /dev/null || true
         [[ $cache_source_is_temp == true ]] && rm -f "$cache_source" 2> /dev/null || true
         restore_scan_int_trap
@@ -1840,7 +1840,7 @@ match_apps_by_name() {
         fi
 
         if [[ "$found" == "false" ]]; then
-            echo -e "${YELLOW}Warning:${NC} No application found matching '$search_term'"
+            echo -e "${YELLOW}$(mole_t ui_warning)${NC} $(mole_t ui_no_matching_application "$search_term")"
         fi
     done
 }
@@ -1953,13 +1953,15 @@ uninstall_list_apps() {
 
     local total=${#apps_data[@]}
     if [[ $total -eq 0 ]]; then
-        echo "No applications found."
+        printf '%s\n' "$(mole_t ui_no_applications_found)"
         [[ -z "$brew_inventory_dir" ]] || rm -rf -- "$brew_inventory_dir" # SAFE: private read-only Homebrew inventory directory created above
         return 0
     fi
 
     printf '\n'
-    printf '%-36s %-30s %-30s %8s\n' 'NAME' 'BUNDLE ID' 'UNINSTALL NAME' 'SIZE'
+    printf '%-36s %-30s %-30s %8s\n' \
+        "$(mole_display_text 'NAME')" "$(mole_display_text 'BUNDLE ID')" \
+        "$(mole_display_text 'UNINSTALL NAME')" "$(mole_display_text 'SIZE')"
     printf -- '-%.0s' $(seq 1 108)
     printf '\n'
 
@@ -2001,7 +2003,7 @@ uninstall_list_apps() {
             "$size_display"
     done
 
-    printf '\n%d application(s)  |  Remove with: mo uninstall <UNINSTALL NAME>\n\n' "$total"
+    printf '\n%s\n\n' "$(mole_display_text "$total application(s)  |  Remove with: mo uninstall <UNINSTALL NAME>")"
     [[ -z "$brew_inventory_dir" ]] || rm -rf -- "$brew_inventory_dir" # SAFE: private read-only Homebrew inventory directory created above
     return 0
 }
@@ -2043,14 +2045,11 @@ main() {
                 list_mode=1
                 ;;
             "--whitelist")
-                echo "Unknown uninstall option: $arg" >&2
-                echo "Whitelist management is currently supported by: mo clean --whitelist / mo optimize --whitelist" >&2
-                echo "Use 'mo uninstall --help' for supported options." >&2
+                printf '%s\n' "$(mole_t uninstall_unknown_option "$arg")" "$(mole_t uninstall_whitelist_hint)" "$(mole_t uninstall_usage_hint)" >&2
                 exit 1
                 ;;
             -*)
-                echo "Unknown uninstall option: $arg" >&2
-                echo "Use 'mo uninstall --help' for supported options." >&2
+                printf '%s\n' "$(mole_t uninstall_unknown_option "$arg")" "$(mole_t uninstall_usage_hint)" >&2
                 exit 1
                 ;;
             *)
@@ -2072,7 +2071,7 @@ main() {
 
     hide_cursor
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        echo -e "${YELLOW}${ICON_DRY_RUN} DRY RUN MODE${NC}, No app files or settings will be modified"
+        echo -e "${YELLOW}${ICON_DRY_RUN} $(mole_t ui_dry_run_uninstall_banner)${NC}"
         printf '\n'
     fi
 
@@ -2098,14 +2097,14 @@ main() {
 
         if [[ ${#selected_apps[@]} -eq 0 ]]; then
             show_cursor
-            echo "No matching applications found."
+            printf '%s\n' "$(mole_t ui_no_matching_applications)"
             return 1
         fi
 
         show_cursor
         clear_screen
         local selection_count=${#selected_apps[@]}
-        echo -e "${BLUE}${ICON_CONFIRM}${NC} Matched ${selection_count} app(s):"
+        echo -e "${BLUE}${ICON_CONFIRM}${NC} $(mole_display_text "Matched ${selection_count} app(s):")"
         local index=1
         for selected_app in "${selected_apps[@]}"; do
             IFS='|' read -r _ app_path app_name _ size last_used _ <<< "$selected_app"
@@ -2115,7 +2114,7 @@ main() {
             size_display=$(uninstall_normalize_size_display "$size" "$app_path")
             local last_display
             last_display=$(uninstall_normalize_last_used_display "$last_used")
-            printf "%d. %s  %s  |  Last: %s\n" "$index" "$safe_name" "$size_display" "$last_display"
+            printf "%d. %s  %s  |  %s\n" "$index" "$safe_name" "$size_display" "$(mole_display_text "Last: $last_display")"
             ((index++))
         done
 
@@ -2142,7 +2141,7 @@ main() {
         start_uninstall_interactive_screen
 
         if [[ $first_scan == false ]]; then
-            echo -e "${GRAY}Checking application list...${NC}" >&2
+            echo -e "${GRAY}$(mole_display_text "Checking application list...")${NC}" >&2
         fi
         first_scan=false
 
@@ -2238,10 +2237,10 @@ main() {
         printf '\033[2J\033[H' >&2
         local selection_count=${#selected_apps[@]}
         if [[ $selection_count -eq 0 ]]; then
-            echo "No apps selected"
+            printf '%s\n' "$(mole_display_text "No apps selected")"
             continue
         fi
-        echo -e "${BLUE}${ICON_CONFIRM}${NC} Selected ${selection_count} apps:"
+        echo -e "${BLUE}${ICON_CONFIRM}${NC} $(mole_display_text "Selected ${selection_count} apps:")"
         local -a summary_rows=()
         local max_name_display_width=0
         local max_size_width=0
@@ -2340,7 +2339,7 @@ main() {
         local _key=""
         local _pressed=false
         while [[ $_countdown -gt 0 ]]; do
-            printf "\r${GRAY}Press Enter to return to the app list, press q to exit (%d)${NC} " "$_countdown"
+            printf "\r${GRAY}%s (%d)${NC} " "$(mole_display_text "Press Enter to return to the app list, press q to exit")" "$_countdown"
             if IFS= read -r -s -n1 -t 1 _key 2> /dev/null; then
                 _pressed=true
                 break

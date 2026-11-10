@@ -1,0 +1,1536 @@
+# Stable key<TAB>English text. Values are single-line printf templates.
+main_tagline	Deep clean and optimize your Mac.
+main_menu_clean	Clean        Free up disk space
+main_menu_uninstall	Uninstall    Remove apps completely
+main_menu_optimize	Optimize     Refresh caches and services
+main_menu_analyze	Analyze      Explore disk usage
+main_menu_status	Status       Monitor system health
+main_controls_navigation	↑↓  |  Enter  |  M More  |  V Version
+main_controls_touchid	T TouchID
+main_controls_update	U Update
+main_controls_quit	Q Quit
+main_help_commands	COMMANDS
+main_help_main_menu	Main menu
+main_help_preview	Preview cleanup
+main_help_clean_whitelist	Manage protected caches
+main_help_optimize_preview	Preview optimization
+main_help_optimize_whitelist	Manage protected items
+main_help_uninstall_preview	Preview app uninstall
+main_help_history_json	Export cleanup history
+main_help_purge_preview	Preview project purge
+main_help_installer_preview	Preview installer cleanup
+main_help_slim_preview	Preview Intel code removal
+main_help_touchid_preview	Preview Touch ID setup
+main_help_completion_preview	Preview shell completion edits
+main_help_purge_paths	Configure scan directories
+main_help_analyze_volumes	Analyze external drives only
+main_help_update_force	Force reinstall latest stable version
+main_help_update_nightly	Install latest unreleased main branch build
+main_help_remove_preview	Preview Mole removal
+main_help_options	OPTIONS
+main_help_debug	Show detailed operation logs
+main_version_title	Mole version %s
+main_version_channel	Channel: Nightly%s
+main_version_macos	macOS: %s
+main_version_architecture	Architecture: %s
+main_version_kernel	Kernel: %s
+main_version_sip	SIP: %s
+main_version_disk_free	Disk Free: %s
+main_version_install	Install: %s
+main_version_shell	Shell: %s
+command_clean_desc	Free up disk space
+command_uninstall_desc	Remove apps completely
+command_optimize_desc	Refresh caches and services
+command_analyze_desc	Explore disk usage
+command_status_desc	Monitor system health
+command_history_desc	Review cleanup activity
+command_purge_desc	Remove old project artifacts
+command_installer_desc	Find and remove installer files
+command_slim_desc	Remove Intel code from universal apps
+command_touchid_desc	Configure Touch ID for sudo
+command_completion_desc	Set up shell tab completion
+command_update_desc	Update to latest version
+command_remove_desc	Remove Mole from system
+command_config_desc	Configure interface language
+command_help_desc	Show help
+command_version_desc	Show version
+help_usage	Usage: mo %s
+help_options	Options:
+help_examples	Examples:
+help_commands	Commands:
+help_clean_description	Clean up disk space by removing caches, logs, temporary files, and app leftovers from already-uninstalled apps.
+help_installer_description	Find and remove installer files (.dmg, .pkg, .iso, .xip, .zip).
+help_optimize_description	Refresh system caches and services, repair safe maintenance issues.
+help_touchid_description	Configure Touch ID for sudo authentication.
+help_touchid_enable	Enable Touch ID for sudo
+help_touchid_disable	Disable Touch ID for sudo
+help_touchid_status	Show current Touch ID status
+help_touchid_interactive	If no command is provided, an interactive menu is shown.
+help_uninstall_description	Interactively remove applications and their leftover files.
+help_uninstall_names	Optionally specify one or more app names to uninstall directly.
+help_uninstall_leftovers	For leftovers from apps that are already gone, use mo clean.
+help_uninstall_slack	Uninstall Slack
+help_uninstall_slack_zoom	Uninstall Slack and Zoom
+help_uninstall_preview_slack	Preview Slack uninstallation
+help_uninstall_with_data_slack	Uninstall Slack with its data selected
+help_uninstall_list_names	Show installed apps and the names mo uninstall accepts
+help_uninstall_recover	By default, uninstalled files go to the macOS Trash so they can be
+help_uninstall_recover_continued	recovered. Use --permanent to skip the Trash step.
+help_option_dry_run	Preview cleanup without making changes
+help_option_external	Clean OS metadata from a mounted external volume
+clean_apps_no_library_permission	Skipped: No permission to access Library folders
+clean_apps_scan_failed	Skipped: Unable to scan installed applications
+clean_orphan_apps_preview	Would clean %s, about %sMB
+clean_orphan_apps_done	Cleaned %s, about %sMB
+clean_orphan_services_auth_timeout	authorization check timed out, skipped cleanup
+clean_orphan_services_scan_incomplete	scan incomplete, skipped cleanup
+clean_orphan_services_time_limit	time limit reached, stopped cleanup
+clean_orphan_services_remove_timeout	removal timed out, stopped cleanup
+clean_orphan_services_preview	Orphaned services · %s found dry
+clean_orphan_services_done	Orphaned services · cleaned %s, %s
+clean_orphan_services_protected	skipped %s protected
+clean_orphan_services_failed	%s failed
+clean_orphan_services_issues	Orphaned services · %s
+clean_container_stubs_preview	Orphaned app container stubs, %s stubs dry
+clean_container_stubs_done	Orphaned app container stubs, %s removed
+clean_container_stubs_failed	Orphaned container stubs: %s could not be removed
+clean_tm_config_timeout	Time Machine cleanup · skipped (configuration check timed out)
+clean_tm_status_unknown	Time Machine cleanup · skipped (status unknown)
+clean_tm_backup_running	Time Machine cleanup · skipped (backup in progress)
+clean_tm_scan_unavailable	scan unavailable, skipped cleanup
+clean_tm_incomplete_backup	Incomplete backup: %s
+clean_tm_backup_tmutil_unavailable	Incomplete backup: %s · skipped (tmutil unavailable)
+clean_tm_backup_remove_failed	Could not delete: %s · try manually with sudo
+clean_tm_incomplete_apfs_backup	Incomplete APFS backup in %s: %s
+clean_tm_bundle_remove_failed	Could not delete from bundle: %s
+clean_tm_scan_incomplete	scan incomplete, skipped remaining cleanup
+clean_tm_snapshot_status_unknown	Snapshot check · skipped (Time Machine status unknown)
+clean_tm_snapshot_backup_running	Snapshot check · skipped (backup in progress)
+clean_deno_root_changed	User app cache · stopped (Deno root changed during cleanup)
+clean_deno_root_unresolved	User app cache · stopped (DENO_DIR unresolved)
+clean_old_versions_current_broken	%s old versions · skipped (Current symlink broken)
+clean_old_versions_process_unknown	%s old versions · skipped (process state unknown)
+clean_old_versions_stopped	%s old versions · stopped (%s)
+clean_edge_updater_process_unknown	Edge updater old versions · skipped (process state unknown)
+clean_sandboxed_caches	Sandboxed app caches
+clean_done_label	cleaned
+clean_handoff_clipboard_cache	Handoff clipboard cache
+clean_group_containers_logs_caches	Group Containers logs/caches
+clean_external_bind_failed	External volume cleanup · could not bind mounted volume, no changes
+clean_external_scan_prepare_failed	External volume cleanup · could not prepare scan, no changes
+clean_external_scan_timeout	External volume cleanup · scan timed out, no changes
+clean_external_scan_interrupted	External volume cleanup · scan interrupted, no changes
+clean_external_scan_failed	External volume cleanup · scan failed, no changes
+clean_support_no_permission	Skipped: No permission to access Application Support
+clean_tart_process_unknown	Tart caches · skipped (process state unknown)
+clean_tart_cache_preview	Tart caches · would prune items older than %s days (%s)
+clean_tart_prune_failed	Tart caches · prune failed
+clean_tart_pruned	Tart caches · pruned, %s reclaimed
+clean_reason_process_unknown	process state unknown
+clean_reason_app_started	%s started
+clean_status_stopped	%s · stopped (%s)
+clean_status_skipped	%s · skipped (%s)
+clean_status_would_clean	%s · would clean
+clean_status_would_skip_whitelist	%s · would skip (whitelist)
+clean_status_skipped_whitelist	%s · skipped (whitelist)
+clean_status_process_unknown	%s · skipped (process state unknown)
+clean_reason_cache_unsafe	cache path unsafe
+clean_reason_timed_out	timed out
+clean_reason_owner_cleanup_failed	owner cleanup failed
+clean_reason_symlinked_module_root	symlinked module root
+clean_reason_cache_path_unknown	cache path state unknown
+clean_reason_cache_leaves_cargo_home	cache path leaves CARGO_HOME
+clean_reason_metadata_unavailable	metadata unavailable
+clean_reason_scan_unavailable	scan unavailable
+clean_reason_reports_in_use	reports in use
+clean_reason_crash_handler_unknown	crash handler state unknown
+purge_paths_save_failed	Could not save purge paths to %s, using discovered paths for this run
+purge_first_run_discovery	First run: discovering project directories...
+purge_discovery_incomplete	Project discovery was incomplete; using completed roots without saving them. Run mo purge --paths to review search paths.
+purge_discovery_saved	Found %s project directories, saved to config
+purge_selected_paths	Selected paths:
+purge_cloud_warning	Cloud-synced artifacts may also be removed from other devices.
+purge_cloud_exclude_hint	Use 'mo purge --paths' to exclude cloud storage roots.
+purge_scan_incomplete_one	Skipped %s project scan root because scanning did not complete:
+purge_scan_incomplete_many	Skipped %s project scan roots because scanning did not complete:
+purge_scan_more	and %s more
+purge_debug_scan_hint	Re-run with 'mo purge --debug' to inspect the scan failure.
+purge_no_old_artifacts	No old project artifacts to clean
+purge_inspect_failed_kept	Could not inspect %s; kept
+purge_no_eligible_artifacts	No eligible project artifacts to purge
+purge_measure_failed_skipped	Could not measure %s; skipped
+purge_no_review_artifacts	No artifacts could be prepared for review
+purge_cloud_noninteractive_skipped_one	Skipped %s cloud-synced artifact in non-interactive mode (confirmation required)
+purge_cloud_noninteractive_skipped_many	Skipped %s cloud-synced artifacts in non-interactive mode (confirmation required)
+purge_no_items_selected	No items selected
+purge_cancelled	Purge cancelled
+purge_candidate_skipped_reason	Skipped %s (%s)
+purge_reason_root_changed	scan root changed after review
+purge_reason_root_target_changed	scan root target changed after review
+purge_reason_path_changed	path changed after review
+purge_reason_contents_unavailable	could not inspect contents; re-run mo purge to review it again
+purge_reason_activity_changed	activity changed after review
+purge_reason_final_check_failed	final removal check failed; re-run mo purge to review it again
+purge_dry_run_prefix	[DRY RUN]
+clean_dry_run_prefix	[DRY RUN]
+clean_reason_pnpm_busy	pnpm busy
+clean_reason_cache_path_changed	cache path changed
+clean_github_cli_cache	GitHub CLI cache
+clean_conda_metadata_caches	conda index/tarball/log caches
+clean_xcode_documentation_cache	Xcode documentation cache
+clean_xcode_doc_protected_skipped	Xcode documentation cache · skipped %s protected items
+clean_xcode_doc_process_unknown	Xcode documentation cache · skipped (process state unknown)
+clean_xcode_doc_sudo_denied	Xcode documentation cache · skipped (sudo denied)
+clean_xcode_doc_removed	Xcode documentation cache · removed %s old indexes
+clean_xcode_doc_remove_failed	Xcode documentation cache · could not remove %s old indexes
+clean_xcode_doc_none_removed	Xcode documentation cache · no items removed
+clean_orphan_system_services	Orphaned system services
+clean_tm_scan_label	Time Machine backups
+clean_tm_backups_label	Time Machine backups
+clean_powerlog_database_label	Power telemetry database
+clean_active_kept	active, kept
+clean_timeout_partial	timed out, cleanup may be partial
+clean_system_cleanup_title	System cleanup
+clean_system_scan_budget_exhausted	time limit reached, skipped remaining slow scans
+clean_permission_setup_title	First-time setup
+clean_permission_setup_explanation	macOS will request permissions to access Library folders.
+clean_permission_setup_dialogs	You may see %s permission dialogs; allow each one so these caches can be cleaned.
+clean_service_worker_result_protected	%s Service Worker · %s, %s protected
+clean_service_worker_result	%s Service Worker · %s
+clean_service_worker_preview	%s Service Worker, would clean %s, %s protected
+clean_service_worker_label	%s Service Worker
+clean_protected_count	%s protected
+clean_python_cache_label	Python bytecode cache
+clean_python_cache_summary	%s, %s
+clean_skipped_count	%s skipped
+clean_project_scan_one	Project caches · skipped %s slow/incomplete root scan
+clean_project_scan_many	Project caches · skipped %s slow/incomplete root scans
+clean_xcode_derived_data	Xcode DerivedData
+clean_simulator_caches	Simulator caches
+clean_xcode_build_products	Xcode build products/DerivedData
+clean_xcode_cache_build_products	Xcode cache/build products
+clean_jianying_generated_caches	JianyingPro generated caches
+clean_derived_data_one	Xcode DerivedData · %s project, %s
+clean_derived_data_many	Xcode DerivedData · %s projects, %s
+clean_fusion_root_untrusted	Autodesk Fusion old versions · skipped (production root not trusted)
+clean_fusion_version_timeout	Autodesk Fusion old versions · skipped (current version probe timed out)
+clean_fusion_version_unknown	Autodesk Fusion old versions · skipped (current version unknown)
+clean_fusion_inventory_timeout	Autodesk Fusion old versions · skipped (inventory timed out)
+clean_fusion_inventory_incomplete	Autodesk Fusion old versions · skipped (inventory incomplete)
+clean_fusion_process_unknown	Autodesk Fusion old versions · skipped (process state unknown)
+clean_fusion_old_versions	Autodesk Fusion old versions
+clean_fusion_remove_failed	Autodesk Fusion old versions · %s failed
+clean_autodesk_cache	Autodesk cache
+clean_neatdm_stale_downloads	NeatDM stale downloads
+clean_edge_updater_old_versions	Edge updater old versions
+clean_external_volume_label	External volume cleanup
+clean_chrome_profile_caches	Chrome profile caches
+clean_dia_app_support_cache	Dia Application Support cache
+clean_firefox_caches	Firefox caches
+clean_dropbox_cache	Dropbox cache
+clean_google_drive_cache	Google Drive cache
+clean_onedrive_cache	OneDrive cache
+clean_tart_caches	Tart caches
+clean_app_support_logs_caches	Application Support logs/caches
+clean_at_least_size	at least %s
+clean_cached_device_firmware	Cached device firmware
+clean_counted_files	%s files, %s
+clean_reason_dia_running	Dia running
+clean_brew_unused_dependencies	Homebrew unused dependencies
+clean_brew_formula_count	%s formulae
+clean_brew_remove_with	remove with
+clean_brew_cleanup	Homebrew cleanup
+clean_brew_links_restored	Homebrew links · restored %s active executable(s)
+clean_brew_links_restore_failed	Homebrew links · %s could not be restored
+clean_brew_run_command	run
+clean_brew_skipped_whitelist	Homebrew · skipped (whitelist)
+clean_brew_preview_timeout	Homebrew cleanup preview timed out
+clean_brew_would_cleanup	Homebrew · would cleanup
+clean_brew_autoremove_preview_timeout	Autoremove preview timed out
+clean_brew_cleanup_timeout	Homebrew cleanup timed out
+clean_brew_autoremove_preview_failed	Autoremove preview failed
+clean_brew_manually	manually
+opt_finder_remove_failed	Failed to remove %s Finder cache target(s)
+opt_finder_rebuild_failed	Failed to rebuild %s Finder cache service(s)
+opt_saved_scan_prepare_failed	Failed to prepare saved state scan
+opt_saved_scan_failed	Failed to scan old saved states
+opt_saved_remove_failed	Failed to remove %s old saved state(s)
+opt_preference_scan_budget	Preference scan hit its time budget, repaired %s so far
+opt_vpn_state_inspect_failed	Failed to inspect active VPN state
+opt_dns_refresh_failed	Failed to refresh DNS cache
+opt_quarantine_sqlite_unavailable	Quarantine cleanup skipped, sqlite3 unavailable
+opt_quarantine_inspect_failed	Failed to inspect quarantine database
+opt_quarantine_cleanup_failed	Failed to clean quarantine database
+opt_database_probe_unavailable	Database optimization unavailable, process probe unavailable
+opt_database_apps_inspect_failed	Failed to inspect active apps before database optimization
+opt_database_apps_busy	Close these apps before database optimization: %s
+opt_database_already_optimal_sqlite_unavailable	Database optimization already optimal, sqlite3 unavailable
+opt_database_incomplete	Database optimization incomplete
+opt_database_timeout_count	Timed out on %s databases
+opt_database_failure_count	Failed on %s databases
+opt_network_check_timeout	Network health check timed out
+opt_network_inspect_failed	Failed to inspect network health
+opt_network_refresh_admin_required	Network stack refresh · skipped (admin access required)
+opt_network_refresh_incomplete	Network stack refresh incomplete (%s operation(s) failed)
+opt_disk_permission_admin_required	Disk permissions repair · skipped (admin access required)
+opt_disk_permission_repair_failed	Failed to repair permissions, may not be needed
+opt_spotlight_inspect_failed	Failed to inspect Spotlight index (exit=%s)
+opt_spotlight_disabled	Spotlight indexing is disabled
+opt_spotlight_speed_check_failed	Spotlight speed check failed (%s probe(s))
+opt_spotlight_rebuild_admin_required	Spotlight index rebuild · skipped (admin access required)
+opt_spotlight_slow_rebuilding	Spotlight search is slow, rebuilding index, may take 1-2 hours
+opt_spotlight_background_continue	Indexing will continue in background
+opt_spotlight_rebuild_failed	Failed to rebuild Spotlight index
+opt_spotlight_rules_inspect_failed	Failed to inspect Spotlight search rules
+opt_spotlight_rules_changed_kept	Spotlight search rules changed or could not be read; kept
+opt_spotlight_orphan_rules_remove_failed	Failed to remove orphan Spotlight rules
+opt_dsstore_prevention_enable_failed	Failed to enable .DS_Store prevention
+opt_dsstore_prevention_types_failed	Failed to enable .DS_Store prevention for %s volume type(s)
+opt_remove_override_preview	Would remove override: %s
+opt_remove_override_failed	Could not remove override: %s
+opt_broken_launch_agents	%s Launch Agent(s) point at a missing program
+opt_periodic_maintenance_failed	Failed to run periodic maintenance (exit=%s)
+opt_shared_lists_prepare_failed	Failed to prepare shared file list scan
+opt_shared_lists_unreadable	Shared file lists not readable (check directory permissions and Full Disk Access)
+opt_shared_lists_scan_failed	Failed to scan shared file lists
+opt_shared_lists_repair_failed	Failed to repair %s corrupted shared file list(s)
+opt_notification_db_unavailable	Notification Center database unavailable (no supported path)
+opt_notification_db_size_failed	Failed to inspect Notification Center database size
+opt_notification_db_busy	Notification Center cleanup skipped (database busy or locked)
+opt_sqlite3_unavailable	sqlite3 not available
+opt_disk_verify_timeout	Disk verification timed out
+opt_disk_verify_failed	Disk verification failed (exit=%s)
+opt_disk_issues_detected	Disk issues detected
+opt_run_command	run:
+opt_disk_verify_unrecognized	Disk verification result was not recognized
+opt_knowledge_db_size_failed	Failed to inspect Knowledge database size
+opt_knowledge_db_busy	Knowledge database cleanup skipped (database busy or locked)
+opt_login_items_snapshot_timeout	Login items unavailable (snapshot timed out)
+opt_login_items_snapshot_interrupted	Failed to inspect login items (snapshot interrupted)
+opt_login_items_inspect_failed	Failed to inspect login items
+opt_login_audit_inventory_prepare_failed	Login items audit incomplete (could not prepare app inventory; no conclusions published)
+opt_login_audit_inventory_timeout	Login items audit incomplete (app inventory timed out; no conclusions published)
+opt_login_audit_inventory_interrupted	Login items audit incomplete (app inventory interrupted; no conclusions published)
+opt_login_audit_inventory_unavailable	Login items audit incomplete (app inventory unavailable; no conclusions published)
+opt_login_audit_time_limit	Login items audit incomplete (time limit reached; no conclusions published)
+opt_login_audit_probe_interrupted	Login items audit incomplete (probe interrupted; no conclusions published)
+opt_login_audit_owner_unknown	Login items audit incomplete (owner state unknown; no conclusions published)
+opt_login_item_broken	Broken login item: %s (app not found)
+opt_broken_login_items	%s broken login item(s)
+opt_login_items_remove_via	remove via
+opt_unknown_action	Unknown action: %s
+opt_missing_handler	Missing optimization handler: %s
+opt_diag_enterprise_agent_pressure	External enterprise agent pressure detected. Mole will not terminate enterprise security processes; restart or policy checks must happen outside Mole.
+opt_diag_gatekeeper_pressure	Gatekeeper and code-signature assessment activity is elevated.
+opt_diag_windowserver_pressure	Desktop composition is busy. When another family is higher, treat this as a likely symptom rather than the root cause.
+opt_diag_spotlight_pressure	Metadata indexing or import work is consuming CPU.
+opt_diag_simulator_images_active	Simulator runtime disk-image services are active.
+opt_diag_missing_launch_agent_program	Launch Agent %s: program missing at %s
+opt_diag_image_detached	Detached %s
+opt_diag_image_detach_failed	Failed to detach %s
+opt_diag_images_detached	Detached %s mounted images
+opt_diag_images_manual_review	%s mounted images still need manual review
+opt_diag_mounted_image_overhead_one	Mounted image adds assessment overhead:
+opt_diag_mounted_image_overhead_many	Mounted images add assessment overhead:
+opt_diag_detach_preview	Would offer detach for %s mounted image(s)
+opt_diag_detach_review_hint	Review these mounted images and detach any you no longer need
+opt_diag_kept_mounted	Kept mounted, whitelist via
+opt_diag_performance_title	Performance diagnosis
+opt_diag_no_cpu_bottleneck	No sustained high-CPU bottleneck detected
+opt_diag_likely_bottleneck	Likely bottleneck: %s (~%s%% CPU sustained)
+opt_diag_additional_pressure	Additional sustained pressure:
+opt_diag_gatekeeper_status	Gatekeeper status: %s
+opt_diag_system_simulator_images_only	Only system-managed CoreSimulator images are mounted, informational only, not a detach target
+opt_diag_memory_pressure	Memory pressure: swap %s of %s used (%s%%), %s%% free
+opt_diag_pressure_many_processes	pressure is spread across many small processes
+opt_diag_vm_without_containers	Virtual machine holding %s with no running containers (likely Docker Desktop)
+opt_diag_vm_quit_hint	If this is Docker Desktop, quitting it reclaims all of it; it reserves memory even when idle
+opt_diag_vm_holding_memory	Virtual machine holding %s
+opt_diag_vm_memory_hint	Check Docker Desktop, UTM, or other virtualization tools for reclaimable memory
+opt_diag_containers_running	%s containers running
+opt_diag_vm_using_memory	Virtual machine using %s (%s)
+opt_diag_runaway_process	%s has burned %sh CPU over %sh of runtime (~%s%% sustained)
+opt_diag_runaway_hint	Sustained for its whole lifetime; if it is not doing real work:
+sudo_touchid_hint_before	Tip: run
+sudo_touchid_hint_after	to use Touch ID instead of the password
+sudo_enter_credentials	Enter your credentials:
+sudo_touchid_or_password	, Touch ID or password
+update_repaired_stale_launcher	Repaired stale launcher, now pointing at the current Homebrew install
+update_updated_latest	Updated to latest version, %s
+sudo_admin_access_required	Admin access required
+sudo_system_cleanup_required	System cleanup requires admin access
+sudo_system_optimization_required	System optimization requires admin access
+sudo_clean_xcode_docs_required	Cleaning Xcode documentation cache requires admin access
+sudo_clean_xcode_simulator_required	Cleaning Xcode Simulator system cache requires admin access
+touchid_enabled_status	Touch ID is enabled for sudo
+touchid_not_configured	Touch ID is not configured for sudo
+touchid_already_enabled_no_changes	Touch ID is already enabled, no changes needed
+touchid_dry_run_prefix	[DRY RUN]
+touchid_would_enable	Would enable Touch ID for sudo
+touchid_target_files	Target files:
+touchid_continue_anyway	Continue anyway? [y/N]
+touchid_already_enabled	Touch ID is already enabled
+touchid_not_currently_enabled	Touch ID is not currently enabled
+touchid_would_disable	Would disable Touch ID for sudo
+touchid_disabled_from_sudo_local	Touch ID disabled, removed from sudo_local
+touchid_disabled	Touch ID disabled
+system_health_line	System  %s/%s GB RAM | %s/%s GB Disk | Uptime %sd
+optimize_missing_dependency_bc	Missing dependency: bc
+optimize_install_with	Install with:
+optimize_missing_system_commands	Check if awk, sysctl, and df commands are available
+optimize_active_whitelist	Active Whitelist:
+optimize_health_finder_cache_refresh	Finder Cache Refresh
+optimize_health_app_state_cleanup	App State Cleanup
+optimize_health_broken_config_repair	Broken Config Repair
+optimize_health_network_cache_refresh	Network Cache Refresh
+optimize_health_database_optimization	Database Optimization
+optimize_health_prevent_finder_dsstore	Prevent Finder .DS_Store
+optimize_health_legacy_overrides	Legacy Overrides
+optimize_health_network_stack_refresh	Network Stack Refresh
+optimize_health_permission_repair	Permission Repair
+optimize_health_spotlight_optimization	Spotlight Optimization
+optimize_health_spotlight_orphan_rules	Spotlight Orphan Rules
+optimize_health_periodic_maintenance	Periodic Maintenance
+optimize_health_shared_file_lists	Shared File Lists
+optimize_health_disk_health	Disk Health
+optimize_health_login_items	Login Items
+optimize_health_quarantine_cleanup	Quarantine Database Cleanup
+optimize_health_launch_agents_cleanup	Launch Agents Cleanup
+optimize_health_notifications	Notifications
+optimize_health_usage_data	Usage Data
+clean_build_artifacts_scan_skipped	Build artifacts · scan skipped
+clean_project_artifact_count	%s dirs
+clean_partial_scan	partial scan
+clean_build_artifacts	Build artifacts
+clean_stale_login_item	Stale login item
+clean_reason_missing_app_helper_target	Missing app/helper target
+clean_reason_program_not_executable	Program target is not executable
+clean_reason_associated_app_missing	Associated app not found
+clean_review_before_removing	review before removing
+help_option_whitelist_paths	Manage protected paths
+help_option_whitelist_items	Manage protected items
+help_option_debug	Show detailed operation logs
+help_option_help	Show this help message
+help_option_dry_run_installer	Preview installer cleanup without making changes
+help_option_dry_run_optimize	Preview optimization without making changes
+help_option_dry_run_touchid	Preview Touch ID changes without modifying sudo config
+help_option_dry_run_uninstall	Preview app uninstallation without making changes
+help_option_permanent	Bypass macOS Trash and rm -rf immediately
+help_option_with_data	Start with personal data selected; press D to keep any
+help_option_uninstall_whitelist	Not supported for uninstall (use clean/optimize)
+help_config_language	Set the interface language to English or Russian
+config_current	Current interface language: %s
+config_saved	Interface language saved: %s
+config_invalid_language	Unsupported language "%s". Choose "en" or "ru".
+config_usage	Usage: mo config language [en|ru]
+config_write_failed	Could not save the language setting at %s
+language_english	English
+language_russian	Russian
+main_unknown	Unknown
+help_uninstall_example_selector	Open interactive app selector
+help_option_list	List installed apps with the exact name mo uninstall accepts
+go_analyze_missing	Bundled analyzer binary not found. Please reinstall Mole or run mo update to restore it.
+go_status_missing	Bundled status binary not found. Please reinstall Mole or run mo update to restore it.
+analyze_title	Analyze Disk
+analyze_free	(%s free)
+analyze_local_snapshots	%d Time Machine local snapshots · snapshot-only space is not listed below
+analyze_select_location	Select a location to explore:
+analyze_analyzing_usage	Analyzing disk usage...
+analyze_total	Total: %s
+analyze_scanning	Scanning
+analyze_files	files
+analyze_directories	dirs
+analyze_moving_count	Moving to Trash: %s items moved, please wait...
+analyze_moving	Moving to Trash, please wait...
+analyze_cached_refresh	Showing cached results while refreshing...
+analyze_filter	Filter:
+analyze_matches	(%d matches)
+analyze_no_matches	No matches for %q
+analyze_no_large_files	No large files found
+analyze_empty_directory	Empty directory
+analyze_scanning_size	scanning
+analyze_progress_left	Scanning %s..., %d left
+analyze_directories_left	Scanning %d directories..., %d left
+analyze_scan_path	Scanning %s...
+analyze_moved_some_failed	Moved %d items to Trash, some failed: %v
+analyze_moved_count	Moved %d items to Trash
+analyze_move_failed	Failed to move to Trash: %v
+analyze_scan_failed	Scan failed: %v
+analyze_cache_refresh_path	Loaded cached data for %s, refreshing...
+analyze_size_unavailable	Size unavailable
+analyze_partial_size	Partial size
+analyze_size_status	%s: %s (%s)
+analyze_move_progress	Moving to Trash... %s items
+analyze_nothing_to_move	Nothing to move to Trash
+analyze_move_path	Moving %s to Trash...
+analyze_move_items	Moving %d items to Trash...
+analyze_cancelled	Cancelled
+analyze_refreshing	Refreshing...
+analyze_top_after_scan	Top files are available after the scan finishes
+analyze_filter_help	Filter: type to match, Enter to apply, Esc to clear
+analyze_live_sort	Live sort: %s
+analyze_too_many_open	Too many items to open, max %d, selected %d
+analyze_open_items	Opening %d items...
+analyze_open_path	Opening %s...
+analyze_too_many_reveal	Too many items to reveal, max %d, selected %d
+analyze_reveal_items	Showing %d items in Finder...
+analyze_reveal_path	Showing %s in Finder...
+analyze_preview_path	Previewing %s...
+analyze_selection_after_scan	Selection is available after the scan finishes
+analyze_selected_count	%d selected, %s
+analyze_cannot_select_unknown	Cannot select %s, size unknown
+analyze_delete_after_scan	Move to Trash is available after the scan finishes
+analyze_cannot_move_unknown	Cannot move %s to Trash, size unknown
+analyze_filter_count	Filter %q, %d matches
+analyze_cached_view	Cached view for %s
+analyze_file_size	File: %s, %s
+analyze_help_description	Explore disk usage. Without PATH, scans a machine-wide overview.
+analyze_help_json	Output the analysis as JSON instead of the interactive TUI
+analyze_example_overview	Machine-wide overview
+analyze_example_directory	Scan one directory
+analyze_example_json	Machine-readable output
+analyze_error_hint	Use 'mo analyze --help' for usage information
+analyze_error_prefix	analyzer error: %v
+analyze_prepare	Preparing scan...
+analyze_checking_system	Checking system folders...
+analyze_ready	Ready
+analyze_home	Home
+analyze_user_library	User Library
+analyze_applications	Applications
+analyze_system_library	System Library
+analyze_measure_timeout	timed out
+analyze_measure_cancelled	cancelled
+analyze_measure_denied	access denied
+analyze_measure_read_error	read error
+analyze_measure_unknown	unknown
+analyze_partial_scan	Partial scan · %s
+analyze_scanned	Scanned %s
+analyze_controls_overview	↑↓←→ | Enter | R Refresh | O Open | P Preview | F File | Esc Back | Q/Ctrl+C Quit
+analyze_controls_overview_short	↑↓→ | Enter | R Refresh | O Open | P Preview | F File | Esc/Q Quit
+analyze_controls_filter	Type to filter  |  Enter Apply  |  Esc Clear  |  Ctrl+C Quit
+analyze_controls_large_filtered	↑↓← Move | Space Select | / Edit | Esc Clear filter | O Open | P Preview | F File | ⌫ Del | Q Quit
+analyze_controls_large	↑↓← | Space Select | / Filter | R Refresh | O Open | P Preview | F File | ⌫ Del %d | Esc Back | Q/Ctrl+C Quit
+analyze_controls_large_plain	↑↓← | Space Select | / Filter | R Refresh | O Open | P Preview | F File | ⌫ Del | Esc Back | Q/Ctrl+C Quit
+analyze_controls_entry_filtered	↑↓←→ | Enter | Space Select | / Edit | Esc Clear filter | O Open | P Preview | F File | ⌫ Del | Q Quit
+analyze_controls_entries	↑↓←→ | Space Select | Enter | / Filter | R Refresh | O Open | P Preview | F File | ⌫ Del %d | T Top %d | Esc Back | Q/Ctrl+C Quit
+analyze_controls_entries_no_top	↑↓←→ | Space Select | Enter | / Filter | R Refresh | O Open | P Preview | F File | ⌫ Del %d | Esc Back | Q/Ctrl+C Quit
+analyze_controls_entries_plain	↑↓←→ | Space Select | Enter | / Filter | R Refresh | O Open | P Preview | F File | ⌫ Del | T Top %d | Esc Back | Q/Ctrl+C Quit
+analyze_controls_entries_plain_no_top	↑↓←→ | Space Select | Enter | / Filter | R Refresh | O Open | P Preview | F File | ⌫ Del | Esc Back | Q/Ctrl+C Quit
+analyze_confirm_many	Move to Trash: %d items, %s  Press Enter to confirm | ESC cancel
+analyze_confirm_one	Move to Trash: %s, %s  Press Enter to confirm | ESC cancel
+analyze_app_bundle_many	Only the app bundle moves to Trash. Use mo uninstall <App> to also remove support files.
+analyze_app_bundle_one	App bundle: only the bundle moves to Trash. Use %s to also remove its support files.
+analyze_live_sort_continuous	continuous
+analyze_live_sort_freeze	freeze-on-move
+status_small_terminal	Terminal too small. Enlarge the window to view status.
+status_title	Status
+status_health	Health
+status_uptime	up %s
+status_error	ERROR: %s
+status_alert	ALERT
+status_last_alert	LAST ALERT
+status_old	OLD
+status_alert_detail	%s at %.1f%% for %s (threshold %.1f%%)
+status_alert_more	 · +%d more
+status_stale	STALE
+status_unknown	UNKNOWN
+status_cpu_title	CPU
+status_memory_title	Memory
+status_disk_title	Disk
+status_process_title	Processes
+status_network_title	Network
+status_power_title	Power
+status_total	Total
+status_used	Used
+status_free	Free
+status_free_short	Free
+status_swap	Swap
+status_cache	Cache
+status_available	Avail
+status_status	Status
+status_pressure_normal	normal
+status_pressure_warn	warn
+status_pressure_critical	critical
+status_cpu_core	Core%-2d
+status_cpu_core_estimated	Per-core data unavailable, using averaged load
+status_cpu_load	Load
+status_cpu_cores	%d cores
+status_collecting	Collecting...
+status_no_disks	No disks detected
+status_disk_label	DISK
+status_disk_usage	%s used, %s free
+status_purgeable	purgeable
+status_disk_failing	Failing
+status_disk_fail	FAIL
+status_back_up_now	Back up now
+status_smart_failing	SMART failing, back up now
+status_smart	SMART
+status_io	I/O
+status_alert_label	ALERT
+status_process_no_activity	No process activity
+status_process_no_rows_alert	No process rows · active alert above
+status_process_no_retained	no retained process activity
+status_process_sample_unavailable	process sample unavailable
+status_down	Down
+status_up	Up
+status_tunnel	Tunnel
+status_proxy	Proxy %s
+status_level	Level
+status_battery_health	Health
+status_input	Input
+status_watts_max	%.0fW max
+status_no_battery	No battery
+status_cycles	%d cycles
+status_unknown_battery	Unknown
+status_charged	Charged
+status_charging	Charging
+status_discharging	Discharging
+status_battery_health_good	Healthy
+status_battery_health_fair	Fair
+status_battery_health_service	Service Soon
+status_cpu_high	CPU load high
+status_memory_high	Memory pressure high
+status_disk_low	Disk low, %s free
+status_battery_low	Battery health low
+status_battery_cycles_high	Battery cycles high
+status_temperature_high	CPU temperature high
+status_disk_io_busy	Disk I/O busy
+status_all_clear	All clear
+status_flag_cpu_threshold	alert when a process stays above this CPU percent
+status_flag_cpu_window	continuous duration a process must exceed the CPU threshold
+status_flag_cpu_alerts	enable persistent high-CPU process alerts
+status_flag_watch	stream metrics continuously as newline-delimited JSON instead of the one-shot TUI/JSON
+status_flag_interval	with --watch, collection interval (e.g. 1s, 2s); defaults to 1s
+status_invalid_cpu_threshold	--proc-cpu-threshold must be >= 0
+status_invalid_cpu_window	--proc-cpu-window must be > 0
+status_collection_failed	status: collect failed: no metrics collected
+status_invalid_interval	invalid --interval %q (want e.g. 1s, 2s): %w
+status_interval_positive	invalid --interval %q (must be > 0)
+status_error_hint	Use 'mo status --help' for usage information
+status_help_description	Monitor system health. Without options it opens the interactive dashboard, and switches to a single JSON snapshot when stdout is not a terminal.
+status_help_json	Output one metrics snapshot as JSON
+status_help_watch	Stream snapshots as newline-delimited JSON
+status_help_interval	With --watch, collection interval (default 1s)
+status_help_cpu_alerts	Enable high-CPU process alerts (default true)
+status_help_cpu_threshold	Alert above this CPU percent (default 100)
+status_help_cpu_window	Time above the threshold before alerting (default 5m)
+status_example_dashboard	Interactive dashboard
+status_example_snapshot	One machine-readable snapshot
+status_example_stream	Continuous NDJSON stream
+status_system_error	system status error: %v
+status_process_cpu_high	%s high CPU
+status_process_memory_pressure	%s memory pressure
+status_unknown_flag	flag provided but not defined: %s
+analyze_unknown_flag	flag provided but not defined: %s
+analyze_cannot_resolve	cannot resolve %q: %v
+analyze_not_macos	analyze is only supported on macOS
+analyze_time_years	>%dyr
+analyze_time_one_year	>1yr
+analyze_time_months	>%dmo
+analyze_unknown_size	unknown
+analyze_error_read	read error
+status_collect_error	status: collect failed: %v
+status_json_error	error encoding JSON: %v
+status_ram_label	RAM
+status_disk_spec_label	Disk
+status_flag_json	output metrics as JSON instead of TUI
+status_uptime_days	%sd
+status_uptime_hours	%sh
+status_uptime_minutes	%sm
+status_score_excellent	Excellent
+status_score_good	Good
+status_score_fair	Fair
+status_score_attention	Needs Attention
+status_issue_high_memory	High Memory
+status_issue_memory_pressure	Memory Pressure
+status_issue_critical_memory	Critical Memory
+status_issue_disk_almost_full	Disk Almost Full
+status_issue_disk_smart_failing	Disk SMART Failing
+status_issue_overheating	Overheating
+status_issue_heavy_disk_io	Heavy Disk IO
+status_issue_battery_service	Battery Service Soon
+status_issue_restart_recommended	Restart Recommended
+analyze_flag_json	output analysis as JSON instead of TUI
+analyze_local_snapshot	%d Time Machine local snapshot · snapshot-only space is not listed below
+analyze_snapshot_stale	last successful check
+help_usage_label	Usage:
+help_purge_title	Mole Purge
+help_purge_description	Clean old project build artifacts
+help_purge_paths	Edit custom scan directories
+help_purge_dry_run	Preview purge actions without making changes
+help_purge_include_empty	Show zero-size project artifact directories
+help_purge_yes	Confirm unattended cleanup of eligible artifacts
+help_purge_default_paths	Default Paths:
+help_slim_usage	Usage: mo slim [OPTIONS]
+help_slim_description	Remove the Intel code from universal apps on Apple Silicon.
+help_slim_copy	Each app is slimmed on a copy that must pass code signing and Gatekeeper
+help_slim_trash	checks before it replaces the original, which moves to the Trash.
+help_slim_updates	App updates bring the Intel code back.
+help_slim_whitelist	Apps protected by ~/.config/mole/whitelist are skipped.
+help_slim_dry_run	List apps and reclaimable space without changes
+help_slim_debug	Show why apps were skipped
+help_history_usage	Usage: mo history [OPTIONS]
+help_history_description	Review recent Mole operation and deletion activity.
+help_history_json	Output history as JSON
+help_history_limit	Show the most recent N entries, 1-200
+history_missing_limit	Missing value for --limit
+history_invalid_limit	Invalid value for --limit: %s
+history_unknown_option	Unknown option for mo history: %s
+history_unexpected_argument	Unexpected argument for mo history: %s
+history_help_hint	Run 'mo history --help' for usage.
+help_update_usage	Usage: mo update [--force] [--nightly]
+help_update_description	Update Mole to the latest release.
+help_update_force	Force reinstall latest stable version
+help_update_nightly	Install latest unreleased main branch build
+update_unknown_option	Unknown update option: %s
+update_help_hint	Use 'mole update [--force] [--nightly]' for supported options.
+help_remove_usage	Usage: mo remove [--dry-run]
+help_remove_description	Remove Mole from this Mac.
+help_remove_keep_logs	Operation logs in ~/Library/Logs/mole are kept.
+help_remove_dry_run	Preview Mole removal
+remove_unknown_option	Unknown remove option: %s
+remove_help_hint	Use 'mole remove [--dry-run]' for supported options.
+router_unknown_command	Unknown command: %s
+router_help_hint	Use 'mole --help' for usage information.
+history_title	Mole History
+history_recent_sessions	Recent sessions
+history_no_operations	No operation history yet.
+history_count_removed	removed %s
+history_count_trashed	trashed %s
+history_count_skipped	skipped %s
+history_count_failed	failed %s
+history_count_rebuilt	rebuilt %s
+history_count_other	other %s
+history_no_file_actions	no file actions
+history_failed_optimize_tasks	%s optimize tasks failed
+history_legacy_uncertain	legacy run attribution uncertain
+history_not_ended	not ended
+history_items	items
+history_ended	ended
+history_deletion_audit	Deletion audit
+history_no_deletions	No deletion audit entries yet.
+history_logs	Logs
+history_operations	operations
+history_deletions	deletions
+history_event_trash	TRASH
+history_event_permanent	PERMANENT
+history_event_trashed	TRASHED
+history_event_removed	REMOVED
+history_event_skipped	SKIPPED
+history_event_failed	FAILED
+clean_nothing_to_clean	Nothing to clean
+clean_nothing_to_tidy	Nothing to tidy
+ui_section_external_volume	External volume
+ui_section_system	System
+ui_section_user_essentials	User essentials
+ui_section_app_caches	App caches
+ui_section_browsers	Browsers
+ui_section_cloud_office	Cloud & Office
+ui_section_developer_tools	Developer tools
+ui_section_apps_utilities	Apps & utilities
+ui_section_virtualization	Virtualization
+ui_section_application_support	Application Support
+ui_section_app_leftovers	App leftovers
+ui_section_backups_firmware	Device backups & firmware
+ui_section_time_machine	Time Machine
+ui_section_large_files	Large files
+ui_section_project_artifacts	Project artifacts
+ui_summary_cleanup_complete	Cleanup complete
+ui_summary_cleanup_cancelled	Cleanup cancelled
+ui_summary_cleanup_interrupted	Cleanup interrupted
+ui_summary_cleanup_incomplete	Cleanup incomplete
+ui_summary_dry_run_cancelled	Dry run cancelled
+ui_summary_dry_run_interrupted	Dry run interrupted
+ui_summary_dry_run_incomplete	Dry run incomplete
+ui_summary_dry_run_complete	Dry run complete - no changes made
+ui_summary_test_mode	Test mode complete
+ui_summary_no_reclaimable	No additional reclaimable space detected.
+ui_summary_no_space_freed	No additional space freed.
+ui_summary_already_clean	System was already clean; no additional space freed.
+ui_summary_clean_reclaimable	No significant reclaimable space detected, system already clean.
+ui_summary_preview_file	Detailed file list: %s
+ui_summary_preview_failed	Cleanup preview file could not be written safely
+ui_summary_no_artifacts	No artifacts were removed.
+ui_summary_partial_artifacts	Some artifacts were skipped or could not be processed.
+ui_log_system_caches	System caches
+ui_log_system_crash_reports	System crash reports
+ui_log_system_logs	System logs
+ui_log_third_party_system_logs	Third-party system logs
+ui_log_memory_exception_reports	Memory exception reports
+ui_log_wallpaper_downloads	Stale wallpaper downloads
+ui_log_system_diagnostic_logs	System diagnostic logs
+ui_log_power_logs	Power logs
+ui_log_no_apps_uninstall	No applications found for uninstallation
+ui_log_no_apps_available_uninstall	No applications available for uninstallation
+ui_log_no_apps_selected_uninstall	No applications selected for uninstallation
+ui_log_touchid_unsupported	This Mac may not support Touch ID
+ui_log_touchid_migrated	Touch ID migrated to sudo_local
+ui_log_touchid_enabled_sudo_local	Touch ID enabled, via sudo_local, try: sudo ls
+ui_log_touchid_enabled	Touch ID enabled, try: sudo ls
+ui_log_touchid_write_failed	Failed to write to sudo_local
+ui_log_touchid_backup_failed	Failed to create backup
+ui_log_touchid_config_failed	Failed to modify configuration
+ui_log_touchid_enable_failed	Failed to enable Touch ID
+ui_log_touchid_disable_sudo_local_failed	Failed to disable Touch ID from sudo_local
+ui_log_touchid_disable_failed	Failed to disable Touch ID
+ui_log_touchid_config_missing	Could not find Touch ID configuration to disable
+ui_log_invalid_key	Invalid key
+ui_log_touchid_once	Only one touchid command is supported per run
+ui_log_health_collection_failed	Failed to collect system health data
+ui_log_health_format_invalid	Invalid system health data format
+ui_log_optimize_outcomes_incomplete	Optimize task outcomes are incomplete
+ui_log_homebrew_upgrade_failed	Homebrew upgrade failed
+ui_log_homebrew_removed_launcher	Launcher still points at a removed Homebrew version
+ui_log_touchid_homebrew_attempt	Attempting to uninstall Mole via Homebrew...
+ui_log_nix_remove_disabled	Mole was installed via Nix. Self-removal is disabled.
+ui_log_nix_update_disabled	Mole was installed via Nix. Self-update is disabled.
+ui_log_update_network_failed	Unable to check for updates. Check network connection.
+ui_log_update_path_failed	Unable to resolve current Mole path
+ui_log_update_dir_failed	Unable to resolve current Mole install directory
+ui_log_update_nightly_failed	Unable to resolve latest nightly commit. No update was installed.
+ui_log_update_failed	Update failed
+ui_log_nightly_failed	Nightly update failed
+ui_log_update_admin_denied	Update aborted, admin access denied
+ui_log_update_wget_failed	Update failed, wget error
+ui_log_download_tool_required	curl or wget required
+ui_log_remove_homebrew_missing	Homebrew command not found. Please ensure Homebrew is installed and in your PATH.
+ui_log_remove_manual_step	Manual step: brew uninstall --force mole
+ui_log_remove_homebrew_failed	Homebrew uninstallation failed:
+ui_log_remove_homebrew_success	Mole uninstalled via Homebrew.
+ui_log_remove_confirmation_missing	Could not read the removal confirmation; Mole was not removed.
+ui_log_remove_confirmation_tty	Removal confirmation needs an interactive terminal; Mole was not removed.
+ui_log_remove_confirmation_hint	Run mo remove from an interactive terminal; nothing was changed
+ui_log_uninstall_confirmation_missing	Could not read the uninstall confirmation; no apps were removed.
+ui_log_uninstall_confirmation_tty	Uninstall confirmation needs an interactive terminal; no apps were removed.
+ui_log_uninstall_confirmation_hint	Run mo uninstall from an interactive terminal; nothing was changed
+ui_log_uninstall_scan_timeout	The uninstall scan timed out before finishing; nothing was removed
+ui_log_uninstall_scan_hint	Run mo uninstall --debug to see which scan failed
+ui_log_uninstall_step_hint	Run mo uninstall --debug to see which step failed
+ui_log_uninstall_protected_data	Move it to Trash in Finder; Mole left protected containers and app data untouched
+ui_log_uninstall_dry_run_complete	Dry run complete; the list above is the plan and no apps were removed.
+ui_log_uninstall_brew_failed	Homebrew command failed. Check the Homebrew installation and try again.
+ui_log_uninstall_admin_denied	Admin access denied
+ui_log_completion_missing_mole	mole not found in PATH, install Mole before enabling completion
+completion_path_desc	Path to analyze
+completion_generate_bash	Generate bash completion script
+completion_generate_zsh	Generate zsh completion script
+completion_generate_fish	Generate fish completion script
+help_completion_usage	Usage: mole completion [bash|zsh|fish]
+help_completion_description	Set up shell tab completion for mole and mo commands.
+help_completion_auto_install	Auto-install:
+help_completion_auto_detect	Auto-detect shell and install
+help_completion_preview	Preview config changes without writing files
+help_completion_manual_install	Manual install:
+help_completion_recommended	Auto-install (recommended)
+help_completion_manual_bash	Manual install - Bash
+help_completion_manual_zsh	Manual install - Zsh
+help_completion_manual_fish	Manual install - Fish
+completion_dry_run_mode	DRY RUN MODE, shell config files will not be modified
+completion_dry_run_write_fish	[DRY RUN] Would write Fish completions to:
+completion_dry_run_complete	Dry run complete, no changes made
+completion_write_fish	Will write Fish completions to:
+completion_enable_prompt	Enable completion for %s?
+completion_confirm_cancel	Enter confirm / Q cancel
+completion_cancelled	Cancelled
+completion_fish_written	Fish completions written to %s
+completion_dry_run_remove_stale	[DRY RUN] Would remove stale completion entries from %s
+completion_removed_stale	Removed stale completion entries from %s
+completion_dry_run_normalize	[DRY RUN] Would normalize completion entry in %s
+completion_updated	Shell completion updated in %s
+completion_will_add	Will add to %s:
+completion_added	Completion added to %s
+completion_activate_now	To activate now:
+completion_remove_old_config	Removed stale completion entries from config.fish
+completion_remove_old_source	Removed stale source-based entries from config.fish
+ui_log_empty_path	Path validation failed: empty path
+ui_msg_path_absolute	Path validation failed: path must be absolute: %s
+ui_msg_path_traversal	Path validation failed: path traversal not allowed: %s
+ui_msg_path_control	Path validation failed: contains control characters: %s
+ui_msg_symlink_unreadable	Cannot read symlink: %s
+ui_msg_symlink_protected	Symlink points to protected system path: %s -> %s
+ui_msg_path_critical_resolved	Path validation failed: resolves into a critical system path: %s -> %s
+ui_msg_path_protected_resolved	Path validation: resolves into a protected path: %s -> %s
+ui_msg_endpoint_cache_skipped	Path validation: endpoint-security agent cache skipped: %s
+ui_msg_path_critical	Path validation failed: critical system path: %s
+ui_msg_path_protected_skipped	Path validation: protected path skipped: %s
+ui_msg_remove_failed	Failed to remove: %s
+ui_msg_sudo_remove_validation	Path validation failed for sudo remove: %s
+ui_msg_sudo_remove_symlink	Refusing to sudo remove symlink: %s
+ui_msg_dry_sudo_remove	[DRY-RUN] Would sudo remove: %s
+ui_msg_dry_sudo_remove_typed	[DRY-RUN] Would sudo remove: %s %s
+ui_msg_dry_size	  Size: %s
+ui_msg_dry_age	  Age: %s
+ui_msg_sudo_remove_failed	Failed to remove, sudo: %s
+ui_msg_trash_interrupted	Trash move interrupted; item preserved for recovery at: %s
+ui_msg_trash_failed	Trash move failed; item preserved for recovery at: %s
+ui_msg_directory_missing	Directory does not exist: %s
+ui_msg_directory_symlink_refused	Refusing to search symlinked directory: %s
+ui_msg_invalid_type_filter	Invalid type filter: %s, must be 'f' or 'd'
+ui_msg_invalid_age	Invalid age: %s, must be a non-negative integer
+ui_msg_invalid_depth	Invalid max depth: %s, must be between 1 and 5
+ui_msg_invalid_deadline	Invalid cleanup deadline: %s
+ui_msg_uninstall_aborted	Uninstall aborted: %s
+ui_msg_touchid_unknown_command	Unknown command: %s
+ui_msg_cloud_cleanup_failed	Cloud & Office cleanup failed with exit code %s
+ui_msg_purge_outcome_unknown	Unknown purge outcome: %s
+ui_msg_completion_link_error	Could not follow the shell config link %s, so it was left unchanged. Fix or remove that link, then rerun mo completion
+ui_msg_update_version_invalid	Invalid version response: %s
+ui_msg_update_repair_needed	Mole installation needs repair: %s
+ui_msg_update_curl_failed	Update failed, curl error: %s
+ui_msg_remove_completion_resolve	Could not resolve shell completion file: %s
+ui_msg_remove_completion_prepare	Could not prepare a temporary file to clean shell completion in %s
+ui_msg_remove_completion_read	Could not read shell completion entries from %s
+ui_msg_remove_completion_failed	Could not remove shell completion from %s
+ui_msg_remove_completion_success	Removed shell completion from %s
+ui_msg_remove_fish_success	Removed Fish completions: %s
+ui_msg_remove_fish_failed	Could not remove Fish completions: %s
+ui_msg_remove_install_failed	Could not remove %s
+ui_msg_remove_trash_failed	Could not move %s to Trash; left in place
+ui_msg_uninstall_scan_failed	Could not finish the uninstall scan (%s, exit %s); nothing was removed
+ui_msg_uninstall_brew_failed	Homebrew itself failed: %s; fix Homebrew, then retry mo uninstall
+ui_msg_uninstall_brew_unreadable	%s matches a Homebrew cask brew cannot read; run brew info --cask <cask>, fix or untap it, then retry mo uninstall --debug
+ui_msg_uninstall_stopped_timeout	Uninstall stopped at %s: %s timed out; apps after it were not touched
+ui_msg_uninstall_stopped_failed	Uninstall stopped at %s during %s (exit %s); apps after it were not touched
+ui_msg_dry_refresh_launch_services	[DRY RUN] Would refresh LaunchServices and update Dock entries
+ui_dry_run_purge_banner	DRY RUN MODE, No project artifacts will be removed
+ui_dry_run_slim_banner	DRY RUN MODE, No apps will be changed
+ui_dry_run_remove_banner	DRY RUN MODE, no files will be removed
+ui_dry_run_touchid_banner	DRY RUN MODE, No sudo authentication files will be modified
+ui_dry_run_optimize_banner	DRY RUN MODE, No files will be modified
+ui_dry_run_uninstall_banner	DRY RUN MODE, No app files or settings will be modified
+ui_dry_run_installer_banner	DRY RUN MODE, No installer files will be removed
+ui_summary_dry_run_incomplete_no_changes	Dry run incomplete - no changes made
+ui_summary_purge_complete	Purge complete
+ui_summary_purge_incomplete	Purge incomplete
+ui_summary_optimize_complete	Optimization Complete
+ui_summary_optimize_dry_run	Dry Run Complete, No Changes Made
+ui_summary_optimize_pass_complete	Optimization pass complete
+ui_summary_review_warnings	Review the warnings above
+ui_outcome_unchanged	unchanged
+ui_outcome_skipped	skipped
+ui_outcome_unavailable	unavailable
+ui_outcome_attention	require attention
+ui_outcome_failed	failed
+ui_summary_would_apply	Would apply %s optimizations
+ui_summary_run_without_dry_run	Run without %s to apply these changes
+ui_cache_cleaned	cache cleaned
+ui_databases_optimized	databases optimized
+ui_configs_repaired	configurations repaired
+ui_summary_applied_with_stat	Applied %s optimizations, %s
+ui_summary_applied	Applied %s optimizations
+whitelist_cancelled	Cancelled, no changes saved
+spinner_calculating_sizes	Calculating sizes...
+spinner_checking_homebrew_dependencies	Checking Homebrew dependencies...
+spinner_checking_spotlight_speed	Checking Spotlight speed...
+spinner_checking_time_machine_configuration	Checking Time Machine configuration...
+spinner_checking_time_machine_status	Checking Time Machine status...
+spinner_checking_xcode_deriveddata	Checking Xcode DerivedData...
+spinner_checking_xcode_simulators	Checking Xcode simulators...
+spinner_checking_backup_volumes	Checking backup volumes...
+spinner_checking_bun_cache_path	Checking bun cache path...
+spinner_checking_local_snapshots	Checking local snapshots...
+spinner_checking_login_items	Checking login items...
+spinner_checking_npm_cache_path	Checking npm cache path...
+spinner_checking_orphaned_system_services	Checking orphaned system services...
+spinner_checking_pnpm_store_path	Checking pnpm store path...
+spinner_checking_preferences	Checking preferences...
+spinner_checking_project_caches	Checking project caches...
+spinner_checking_recent_activity	Checking recent activity...
+spinner_checking_simulator_runtimes	Checking simulator runtimes...
+spinner_checking_unavailable_simulators	Checking unavailable simulators...
+spinner_cleaning_finder_metadata	Cleaning Finder metadata...
+spinner_cleaning_github_cli_cache	Cleaning GitHub CLI cache...
+spinner_cleaning_memory_exception_reports	Cleaning memory exception reports...
+spinner_cleaning_old_mail_attachments	Cleaning old Mail attachments...
+spinner_cleaning_power_logs	Cleaning power logs...
+spinner_cleaning_rebuildable_system_service_caches	Cleaning rebuildable system service caches...
+spinner_cleaning_system_caches	Cleaning system caches...
+spinner_cleaning_system_crash_reports	Cleaning system crash reports...
+spinner_cleaning_system_diagnostic_logs	Cleaning system diagnostic logs...
+spinner_cleaning_system_logs	Cleaning system logs...
+spinner_cleaning_third_party_system_logs	Cleaning third-party system logs...
+spinner_cleaning	Cleaning...
+spinner_collecting_system_info	Collecting system info...
+spinner_detecting_mole_installations	Detecting Mole installations...
+spinner_emptying_trash	Emptying trash...
+spinner_homebrew_cleanup	Homebrew cleanup...
+spinner_measuring_trash	Measuring Trash...
+spinner_optimizing_databases	Optimizing databases...
+spinner_preparing_app_list	Preparing app list...
+spinner_preparing_artifacts	Preparing artifacts...
+spinner_preparing_summary	Preparing summary...
+spinner_pruning_tart_caches	Pruning Tart caches...
+spinner_removing_installers	Removing installers...
+spinner_repairing_disk_permissions	Repairing disk permissions...
+spinner_requesting_permissions	Requesting permissions...
+spinner_scanning_application_support	Scanning Application Support...
+spinner_scanning_gradle_caches	Scanning Gradle caches...
+spinner_scanning_group_containers	Scanning Group Containers...
+spinner_scanning_accessible_rebuildable_gpu_caches	Scanning accessible rebuildable GPU caches...
+spinner_scanning_app_caches	Scanning app caches...
+spinner_scanning_apps	Scanning apps...
+spinner_scanning_backup_volumes	Scanning backup volumes...
+spinner_scanning_browser_service_worker_caches	Scanning browser Service Worker caches...
+spinner_scanning_browser_code_signature_caches	Scanning browser code signature caches...
+spinner_scanning_caches	Scanning caches...
+spinner_scanning_external_volume	Scanning external volume...
+spinner_scanning_files	Scanning files...
+spinner_scanning_for_installers	Scanning for installers...
+spinner_scanning_installed_apps	Scanning installed apps...
+spinner_scanning_large_files	Scanning large files...
+spinner_scanning_macos_installer_files	Scanning macOS installer files...
+spinner_scanning_orphaned_app_resources	Scanning orphaned app resources...
+spinner_scanning_orphaned_containers	Scanning orphaned containers...
+spinner_scanning_orphaned_system_services	Scanning orphaned system services...
+spinner_scanning_project_artifacts	Scanning project artifacts...
+spinner_scanning_sandboxed_apps	Scanning sandboxed apps...
+spinner_scanning_stale_wallpaper_downloads	Scanning stale wallpaper downloads...
+spinner_searching_project_caches	Searching project caches...
+spinner_updating_homebrew	Updating Homebrew...
+spinner_upgrading_mole	Upgrading Mole...
+spinner_verifying_disk_filesystem	Verifying disk filesystem...
+spinner_scanning_description	Scanning %s...
+spinner_checking_description	Checking %s...
+spinner_cleaning_description	Cleaning %s...
+spinner_removing_description	Removing %s...
+spinner_measuring_description	Measuring %s...
+spinner_slimming_app	Slimming %s...
+spinner_uninstalling_app	Uninstalling %s...
+spinner_scanning_target_count	Scanning %s items...
+spinner_scanning_items_progress	Scanning items... %s/%s
+spinner_scanning_label_progress	Scanning %s, %s/%s...
+spinner_scanning_project_path	Scanning project · %s
+spinner_scanning_app_support_bulk	Scanning Application Support... %s/%s [%s, bulk clean]
+spinner_scanning_app_support_items	Scanning Application Support... %s/%s [%s items]
+spinner_scanning_group_bulk	Scanning Application Support... group [%s, bulk clean]
+spinner_scanning_group_items	Scanning Application Support... group [%s, %s items]
+spinner_measuring_derived_data	Measuring Xcode DerivedData, %s/%s...
+spinner_removing_derived_data	Removing Xcode DerivedData, %s/%s...
+spinner_removing_sized_target	Removing %s (%s)...
+spinner_cleaning_app_files	Cleaning files for %s...
+spinner_cleaning_app_system_files	Cleaning system files for %s...
+spinner_emptying_trash_progress	Emptying trash... %s/%s
+ui_msg_unsupported_shell	Unsupported shell: %s
+spinner_scan_project_roots	Scanning projects · %s
+ui_clean_cancelled_section	%s Section: %s.
+ui_external_metadata_scan_stopped	External volume metadata cleanup stopped (exit %s).
+ui_browser_signature_cache_count	Browser code signature caches, %s items
+ui_rebuildable_system_cache_one	Rebuildable system caches, %s item
+ui_rebuildable_system_cache_many	Rebuildable system caches, %s items
+ui_rebuildable_gpu_cache_one	Accessible rebuildable GPU caches, %s item
+ui_rebuildable_gpu_cache_many	Accessible rebuildable GPU caches, %s items
+ui_dry_remove_memory_reports_with_size	[DRY-RUN] Would remove %s old memory exception reports (%s KB)
+ui_dry_remove_memory_reports	[DRY-RUN] Would remove %s old memory exception reports
+ui_uninstall_temp_file_list_create_failed	Failed to create temporary file for file list %s
+ui_uninstall_file_list_decode_failed	Failed to decode file list for %s
+ui_uninstall_file_list_null_bytes	File list for %s contains null bytes, rejecting
+ui_uninstall_file_list_read_failed	Failed to read decoded file list for %s
+ui_uninstall_file_list_path_invalid	Invalid path in file list for %s: %s
+ui_uninstall_temp_helper_list_create_failed	Failed to create temporary file for helper id list %s
+ui_uninstall_helper_list_decode_failed	Failed to decode helper id list for %s
+ui_uninstall_helper_list_null_bytes	Helper id list for %s contains null bytes, rejecting
+ui_uninstall_helper_list_read_failed	Failed to read decoded helper id list for %s
+ui_uninstall_interactive_list_hint	Run mo uninstall from an interactive terminal, or use mo uninstall --list to inspect apps
+ui_uninstall_homebrew_cask_unreadable_quoted	'%s' matches a Homebrew cask brew cannot read; run brew info --cask <cask>, fix or untap it, then retry mo uninstall --debug
+ui_nightly_update_channel	Nightly update is only available for script installations. Homebrew installs follow stable releases.
+ui_admin_access_transfer_unavailable	Admin access cannot be handed to the installer in this environment
+ui_manual_homebrew_uninstall	Manual step: %s
+ui_remove_interactive_hint	Run mo remove from an interactive terminal, or use mo remove --dry-run to preview
+spinner_indexed_slimming	[%s/%s] Slimming %s...
+spinner_indexed_uninstalling	[%s/%s] Uninstalling %s%s...
+spinner_uninstalling	Uninstalling %s%s...
+spinner_indexed_removing_app	[%s/%s] Removing %s (%s)...
+spinner_removing_app	Removing %s (%s)...
+spinner_indexed_cleaning_app_files	[%s/%s] Cleaning files for %s...
+spinner_cleaning_app_files_indexed	Cleaning files for %s...
+spinner_indexed_cleaning_app_system_files	[%s/%s] Cleaning system files for %s...
+section_apple_silicon_updates	Apple Silicon updates
+ui_menu_no_items	No items available
+ui_menu_no_matches	No matches
+ui_menu_quit	Quit
+ui_menu_selected_count	%s/%s selected
+ui_menu_filtered_count	(%s/%s; %s selected)
+ui_menu_search_prompt	Search: %s%s
+ui_menu_search_label	Search
+ui_menu_search_empty	Search: _
+ui_menu_type_to_search	(type to search)
+ui_menu_space_select	Space Select
+ui_menu_all_select	A All
+ui_menu_enter_save	Enter Save
+ui_menu_q_cancel	Q Cancel
+ui_menu_hl_page	h/l Page
+ui_menu_enter_apply	Enter Apply
+ui_menu_ctrl_u_clear	Ctrl+U Clear
+ui_menu_esc_clear	Esc Clear
+ui_menu_date	Date
+ui_menu_name	Name
+ui_menu_size	Size
+ui_menu_simple_controls	Space | Enter Save | Q Cancel
+ui_prompt_press	Press
+ui_prompt_confirm	to confirm
+ui_prompt_cancel	to cancel
+ui_prompt_enable	to enable
+ui_prompt_disable	to disable
+ui_prompt_clean_continue_skip	Press Enter to continue, or Space to skip
+ui_title_clean_external	Clean External Volume
+ui_title_clean_mac	Clean Your Mac
+ui_title_optimize	Optimize
+ui_title_purge_artifacts	Select Artifacts to Purge
+ui_title_purge_paths	Purge Paths Configuration
+ui_title_files_removed	Files to be removed:
+ui_cleanup_legacy_config	Cleanup legacy configuration
+ui_prompt_return_app_list	Press Enter to return to the app list, press q to exit
+ui_footer_projects_find	Projects / Find
+ui_footer_enter_confirm	Enter Confirm
+ui_footer_all	A All
+ui_footer_invert	I Invert
+ui_footer_skip_project	X Skip Project
+ui_footer_skip	X Skip
+ui_title_select_slim_apps	Select apps to slim
+ui_title_select_apps_remove	Select Apps to Remove
+ui_title_personal_data_remove	Personal data to remove
+ui_whitelist_title_optimize	Whitelist Manager, Select optimize tasks to ignore
+ui_whitelist_title_clean	Whitelist Manager, Select caches to protect
+ui_whitelist_edit_file	Edit: %s
+ui_whitelist_edit_file_extra	Edit: %s, any path added there is protected too
+ui_menu_footer_invert	I Invert
+ui_menu_footer_skip_project	X Skip Project
+ui_menu_footer_skip	X Skip
+ui_menu_footer_projects_find	Projects / Find
+ui_menu_footer_enter_confirm	Enter Confirm
+ui_menu_footer_q_quit	Q Quit
+ui_update_spinner_check	Checking for updates...
+ui_update_spinner_download_latest	Downloading latest version...
+ui_update_spinner_install	Installing update...
+ui_update_spinner_download_nightly	Downloading nightly installer...
+ui_update_spinner_install_nightly	Installing nightly update...
+ui_update_spinner_switch_stable	Switching to stable channel...
+ui_update_spinner_download_repair	Downloading repair installer...
+ui_update_spinner_repair	Repairing Mole installation...
+ui_update_nix_instruction	To update Mole: nix profile upgrade mole, or update the Mole input in your Nix configuration
+ui_update_try_main	To try main: %s
+ui_update_github_retry	Check GitHub access and try again.
+ui_update_force_nightly	To explicitly reinstall anyway:
+ui_update_already_nightly	Already on latest nightly, %s
+ui_update_github_url	Check if you can access GitHub, https://github.com
+ui_update_try_with	Try again with:
+ui_update_try_nightly	Try again later or use:
+ui_update_already_latest	Already on latest version, %s
+ui_update_dns_retry	Could not resolve host. Check DNS or network connection.
+ui_update_connect_retry	Failed to connect. Check network or proxy settings.
+ui_update_404_retry	HTTP 404 Not Found. The installer may have moved.
+ui_update_timeout_retry	Connection timed out. Try again or check firewall.
+ui_update_tls_retry	TLS connection reset. A local proxy or VPN is likely blocking GitHub.
+ui_update_network_retry	Check network connection and try again.
+ui_update_url_label	URL: %s
+ui_update_install_curl	Install curl with:
+ui_update_run	Run
+ui_update_from_terminal	from a terminal, or cache credentials first:
+ui_remove_none_found	No Mole installation detected
+ui_remove_dry_preview_title	Remove Mole, would delete the following:
+ui_remove_preview_title	Remove Mole, will delete the following:
+ui_remove_preview_homebrew_run	Would run: brew uninstall --force mole
+ui_remove_preview_item	Would remove: %s
+ui_remove_preview_completion	Would remove: Mole shell completion from %s
+ui_remove_preview_fish	Would remove: %s
+ui_remove_preview_trash	Would move to Trash: %s
+ui_remove_kept_manual	%s (kept for manual review)
+ui_remove_kept_history	%s (kept, operation history)
+ui_remove_nix_instruction	To remove Mole: nix profile remove mole or remove from your Nix configuration
+ui_remove_homebrew	Mole via Homebrew
+ui_remove_completion_in	Mole shell completion in %s
+ui_remove_config_trash	~/.config/mole (to Trash)
+ui_remove_logs_kept	~/Library/Logs/mole (kept, operation history)
+ui_menu_no_items_provided	No items provided
+ui_prompt_confirm_lower	confirm
+ui_prompt_cancel_lower	cancel
+ui_remove_title	Remove Mole
+ui_remove_intro_dry	would delete the following:
+ui_remove_intro_live	will delete the following:
+ui_slim_apps_heading	Apps to slim:
+ui_slim_originals_note	Originals move to the Trash. App updates bring the Intel code back.
+ui_slim_running_note	Running apps are skipped, quit them before you confirm.
+ui_slim_confirm_one	Slim %s app, %s
+ui_slim_confirm_many	Slim %s apps, %s
+ui_prompt_enter_confirm	confirm
+ui_slim_quit_instruction	Quit %s, then run mo slim again
+ui_uninstall_matched_apps	Matched %s app(s):
+ui_uninstall_selected_apps	Selected %s apps:
+ui_uninstall_no_apps_selected	No apps selected
+ui_uninstall_list_name	NAME
+ui_uninstall_list_bundle_id	BUNDLE ID
+ui_uninstall_list_uninstall_name	UNINSTALL NAME
+ui_uninstall_list_size	SIZE
+ui_uninstall_list_count	%s application(s)  |  Remove with: mo uninstall <UNINSTALL NAME>
+ui_uninstall_last_label	Last: %s
+ui_uninstall_selected_count	Selected %s apps:
+ui_uninstall_summary_running	Still running during uninstall, files removed but process kept alive: %s
+ui_uninstall_quit_note	Quit the app to free its in-memory copy; reinstalling before quitting may behave oddly
+ui_uninstall_summary_complete	Uninstall complete
+ui_uninstall_summary_incomplete	Uninstall incomplete
+ui_uninstall_summary_dry	Uninstall dry run complete
+ui_slim_quit_them	Quit them, then run mo slim again
+ui_slim_quit_it	Quit it, then run mo slim again
+ui_prompt_to_continue	to continue
+ui_prompt_including_personal_data	including personal data
+ui_prompt_choose_personal_data	choose personal data
+ui_prompt_running_tag	[Running]
+ui_remove_intro	Remove Mole
+ui_remove_preview_would	would delete the following:
+ui_remove_preview_will	will delete the following:
+ui_uninstall_remove_one	Remove %s app
+ui_uninstall_remove_many	Remove %s apps
+ui_installer_delete_prompt	Delete %s installers, %s
+ui_whitelist_config_file	Config File:
+ui_whitelist_open_editor	Opening in %s...
+ui_whitelist_save_editor	Save and exit to apply changes. Leave empty to use defaults.
+ui_whitelist_updated	Configuration updated
+ui_last_used_label	Last: %s
+ui_uninstall_list_name_upper	NAME
+ui_uninstall_list_bundle_id_upper	BUNDLE ID
+ui_uninstall_list_uninstall_upper	UNINSTALL NAME
+ui_uninstall_list_size_upper	SIZE
+ui_update_check_plain	Checking for updates
+ui_update_download_latest_plain	Downloading latest version
+ui_update_install_plain	Installing update
+ui_update_download_nightly_plain	Downloading nightly installer
+ui_update_install_nightly_plain	Installing nightly update
+ui_update_switch_stable_plain	Switching to stable channel
+ui_update_download_repair_plain	Downloading repair installer
+ui_update_repair_plain	Repairing Mole installation
+ui_summary_remaining_cleanup_skipped	Remaining cleanup was skipped.
+ui_summary_cancel_timeout	Cancelled: %s timed out (exit %s).
+ui_summary_cancel_interrupted	Cancelled: %s was interrupted (exit %s).
+ui_summary_cancel_unknown_timeout	Cancelled: a scan or size check timed out (exit %s).
+ui_summary_cancel_unknown_interrupt	Cancelled: a cleanup step was interrupted (exit %s).
+ui_summary_cleanup_step_failed	A required cleanup step failed (exit %s).
+ui_summary_potential_space	Potential space: %s
+ui_summary_removed_size	Removed: %s
+ui_summary_free_space	Free space: %s%s
+ui_summary_test_mode_detail	Test mode - no actual cleanup performed
+ui_installer_summary_heading	Installers cleaned
+ui_installer_summary_incomplete	Installer cleanup incomplete
+ui_installer_summary_would_remove	Would remove %s installers, free %s
+ui_installer_summary_removed	Removed %s installers, freed %s
+ui_installer_summary_cleaner	Your Mac is cleaner now!
+ui_installer_summary_none	No installers were removed
+ui_installer_summary_failed	Failed to remove %s %s
+ui_installer_summary_more_failed	%s more failed
+ui_installer_no_files	No installer files to clean
+ui_uninstall_success_one	Removed %s app
+ui_uninstall_success_many	Removed %s apps
+ui_uninstall_dry_one	Would remove %s app
+ui_uninstall_dry_many	Would remove %s apps
+ui_uninstall_no_success_or_failure	No applications were uninstalled.
+ui_uninstall_failed_summary	Failed: %s %s
+ui_uninstall_kept_system_paths	Kept %s system-level %s, which Mole never removes
+ui_uninstall_extensions_remain	System extensions may remain after removal: %s
+ui_uninstall_extensions_settings	Check System Settings > General > Login Items & Extensions to remove leftover extensions
+ui_uninstall_background_item	Background item still running for %s, turn it off in System Settings > Login Items & Extensions
+ui_uninstall_remove_note	including personal data
+opt_msg_quicklook_refreshed	QuickLook thumbnails refreshed
+opt_msg_icon_services_rebuilt	Icon services cache rebuilt
+opt_msg_saved_states_optimized	App saved states optimized
+opt_msg_saved_states_removed	Removed %s old saved state(s)
+opt_msg_preferences_repaired	Repaired %s corrupted preference files
+opt_msg_preferences_valid	All preference files valid
+opt_msg_network_admin_required	Network cache refresh skipped (admin access required)
+opt_msg_dns_refreshed	DNS cache refreshed
+opt_msg_dns_vpn_skipped	DNS cache refresh skipped, active VPN detected
+opt_msg_dns_signal_skipped	DNS cache refresh skipped, macOS does not allow signaling mDNSResponder
+opt_msg_quarantine_clean	Quarantine database already clean
+opt_msg_quarantine_cleared	Quarantine history cleared (%s entries)
+opt_msg_databases_optimized	Optimized %s databases for Mail, Safari, Messages
+opt_msg_no_databases_compacted	No databases compacted
+opt_msg_databases_optimal	All databases already optimized
+opt_msg_no_databases_found	No databases found to optimize
+opt_msg_databases_already_optimal	Already optimal for %s databases
+opt_msg_databases_policy_skipped	Skipped %s databases over the 100 MB safety limit
+opt_msg_network_vpn_skipped	Network stack refresh skipped, active VPN detected
+opt_msg_network_optimal	Network stack already optimal
+opt_msg_routing_refreshed	Network routing table refreshed
+opt_msg_arp_cleared	ARP cache cleared
+opt_msg_permissions_optimal	User directory permissions already optimal
+opt_msg_permissions_repaired	User directory permissions repaired
+opt_msg_access_resolved	File access issues resolved
+opt_msg_spotlight_optimal	Spotlight index already optimal
+opt_msg_spotlight_rebuild_started	Spotlight index rebuild started
+opt_msg_spotlight_verified	Spotlight index verified
+opt_msg_spotlight_rules_clean	Spotlight search rules already clean
+opt_msg_spotlight_rules_would_remove	Would remove %s orphan Spotlight rule(s)
+opt_msg_spotlight_rules_removed	Removed %s orphan Spotlight rule(s)
+opt_msg_dsstore_prevent_enabled	.DS_Store prevention already enabled on network & USB volumes
+opt_msg_dsstore_enabled	.DS_Store prevention enabled on network & USB volumes
+opt_msg_no_legacy_overrides	No legacy App Nap or disk-image overrides found
+opt_msg_whitelist_skipped	Skipped (whitelisted): %s
+opt_msg_override_removed	Removed override: %s
+opt_msg_launch_agents_healthy	Launch Agents all healthy
+opt_msg_maintenance_unavailable	Periodic maintenance skipped (not available on this macOS version)
+opt_msg_maintenance_current	Periodic maintenance already current (%s ago)
+opt_msg_maintenance_sudo	Periodic maintenance skipped (requires sudo)
+opt_msg_maintenance_triggered	Periodic maintenance triggered
+opt_msg_shared_lists_missing	Shared file lists directory not found
+opt_msg_shared_lists_repaired	Repaired %s corrupted shared file list(s)
+opt_msg_shared_lists_healthy	Shared file lists all healthy
+opt_msg_notification_db_healthy	Notification Center database is healthy (%s)
+opt_msg_notification_db_cleaned	Notification Center database cleaned (was %s)
+opt_msg_disk_verify_skipped	Disk verify skipped
+opt_msg_disk_verify_dry_skipped	Disk verify · skipped in dry-run
+opt_msg_disk_verified	Disk filesystem verified OK
+opt_msg_knowledge_db_missing	Knowledge database not found
+opt_msg_knowledge_db_healthy	Knowledge database is healthy (%s)
+opt_msg_knowledge_db_cleaned	Knowledge database cleaned (was %s)
+opt_msg_login_audit_skipped	Login items audit · skipped in test mode
+opt_msg_login_items_missing	No login items found
+opt_msg_login_items_healthy	Login items all healthy (%s checked)
+opt_msg_spotlight_rule_skip	Skipped (whitelisted): %s
+ui_no_apps_to_uninstall_period	No applications found to uninstall.
+ui_no_apps_to_uninstall	No applications found to uninstall
+ui_warning	Warning:
+ui_no_matching_application	No application found matching '%s'
+ui_no_applications_found	No applications found.
+ui_no_matching_applications	No matching applications found.
+ui_no_artifacts_completed_scans	No artifacts found in the completed project scans
+ui_no_artifacts_to_purge	No artifacts found to purge
+clean_missing_external_path	Missing path for --external
+clean_removed_option	mo clean %s was removed in this release.
+clean_removed_option_help	Use 'mo clean --dry-run' to preview cleanup and 'mo clean --whitelist' to protect paths.
+clean_unknown_option	Unknown option for mo clean: %s
+clean_unexpected_argument	Unexpected argument for mo clean: %s
+clean_usage_hint	Run 'mo clean --help' for usage.
+cli_unknown_option	Unknown option: %s
+purge_usage_hint	Use 'mo purge --help' for usage information
+slim_usage_hint	Use 'mo slim --help' for supported options.
+optimize_unknown_option	Unknown optimize option: %s
+optimize_usage_hint	Use 'mo optimize --help' for supported options.
+clean_noninteractive	Running in non-interactive mode
+clean_system_enabled	System-level cleanup enabled, sudo session active
+clean_system_skipped	System-level cleanup skipped, requires sudo
+clean_user_automatic	User-level cleanup will proceed automatically
+remove_detecting_installations	Detecting installations...
+update_retry_direct	Retrying with a direct reinstall from GitHub...
+clean_space_unknown	Unknown
+uninstall_unknown_option	Unknown uninstall option: %s
+uninstall_whitelist_hint	Whitelist management is currently supported by: mo clean --whitelist / mo optimize --whitelist
+uninstall_usage_hint	Use 'mo uninstall --help' for supported options.
+slim_requires_apple_silicon	mo slim needs an Apple Silicon Mac; on an Intel Mac the Intel code is the code that runs.
+slim_terminal_required	Run mo slim in a terminal to choose apps.
+slim_reason_whitelisted	whitelisted
+slim_reason_symlink	symlink
+slim_reason_not_bundle	not an app bundle
+slim_reason_app_store	App Store app
+slim_reason_not_owned	not owned by you
+slim_reason_not_writable	folder not writable
+slim_reason_other_owner	contains files owned by another user
+slim_reason_no_bundle_id	no bundle identifier
+slim_reason_apple	Apple app
+slim_reason_protected	protected app
+slim_reason_rosetta	set to open using Rosetta
+slim_reason_running	still running
+slim_reason_arm_missing	Apple Silicon code missing
+slim_reason_signature_failed	code signature check failed
+slim_reason_team_changed	signing team changed
+slim_reason_gatekeeper	Gatekeeper check failed
+slim_reason_whitelist_unavailable	whitelist unavailable
+slim_reason_changed	changed since scan
+slim_reason_signature_invalid	code signature already invalid
+slim_reason_no_stage	no staging folder
+slim_reason_copy_failed	copy failed
+slim_reason_thin_failed	could not remove Intel code from %s
+slim_reason_trash_failed	could not move the original to Trash
+slim_reason_restore	original is in the Trash, drag it back to %s
+clean_sudo_required	System caches need sudo.
+clean_continue	continue
+clean_skip	skip
+clean_cancelled	Canceled
+clean_skipped	Skipped
+clean_admin_granted	Admin access granted
+clean_auth_failed	Authentication failed
+clean_continue_user	continuing with user-level cleanup
+clean_preview_file_failed	Unable to create a safe cleanup preview file
+clean_dry_run_mode	Dry Run Mode
+clean_preview_only	Preview only, no deletions
+clean_flags_hint	Use --dry-run to preview, --whitelist to manage protected paths
+clean_admin_preview	Admin access available, system preview included
+clean_sudo_preview_prefix	System caches need sudo, run
+clean_sudo_preview_suffix	for full preview
+clean_admin_available	Admin access already available
+clean_user_app_cache	User app cache
+installer_file_check_timeout	A file check timed out, so later selections were left in place. Retry mo installer.
+slim_no_intel_apps	No apps with Intel code to remove
+clean_whitelist_core	%s core
+clean_whitelist_custom	%s custom
+clean_whitelist_active	patterns active
+clean_whitelist_label	Whitelist
+clean_dry_label	dry
+clean_items_one	%s item
+clean_items_many	%s items
+clean_would_clean	would clean
+clean_docker_review	Docker unused data · review with docker system df -v
+clean_brew_would_free	Homebrew cleanup · would free %s
+clean_npm_cache	npm cache
+clean_npm_logs	npm logs
+clean_pnpm_cache	pnpm cache
+clean_pip_cache	pip cache
+clean_trash_no_access	Trash · skipped, grant Full Disk Access to your terminal
+clean_trash_preview	Trash · would empty, %s
+clean_trash_partial	Trash · removed %s, %s could not be removed
+clean_trash_emptied	Trash · emptied, %s
+clean_trash_failed	Trash · %s could not be removed
+clean_download_active	Skipping active download: %s
+clean_download_unknown	Skipping incomplete download (open-file check unavailable): %s
+clean_download_final_check	Skipping incomplete download after final open-file check: %s
+clean_mail_size_unknown	Mail Downloads · skipped (sizing unavailable)
+clean_mail_preview	Would clean %s mail attachments older than %sd, about %sMB
+clean_mail_done	Cleaned %s mail attachments older than %sd, about %sMB
+clean_owner_cache_freed	%s · %s
+clean_rust_dependency_cache	Rust dependency cache
+clean_mise_cache	mise cache
+clean_orbstack_container_data	OrbStack container data
+clean_xcode_xctest_devices	Xcode XCTestDevices
+clean_xcode_simulator_system_cache	Xcode Simulator system cache
+clean_xcode_unavailable_simulators	Xcode unavailable simulators
+clean_gradle_targets	Gradle targets
+clean_claude_desktop_bundled_code	Claude Desktop bundled Claude Code
+clean_codex_desktop_caches	Codex Desktop caches
+clean_codex_desktop_update_staging	Codex Desktop update staging
+clean_codex_daemon_old_releases	Codex daemon old releases
+clean_codex_runtimes	Codex runtimes
+clean_codex_marketplace_staging	Codex marketplace staging
+clean_antigravity_gemini_caches	Antigravity/Gemini caches
+clean_chrome_devtools_mcp_caches	Chrome DevTools MCP caches
+clean_leaked_automation_browsers	Leaked automation browsers
+clean_orphaned_simulator_runtime	Orphaned simulator runtime
+clean_reason_open_file_check_unavailable	open-file check unavailable
+clean_reason_updater_state_unknown	updater state unknown
+clean_reason_sudo_denied	sudo denied
+clean_reason_simctl_probe_timed_out	simctl probe timed out
+clean_reason_simctl_probe_failed	simctl probe failed (exit=%s)
+clean_reason_simctl_unresolved	simctl could not be resolved
+clean_reason_cleanup_unverified	cleanup completed, unable to verify remaining devices
+clean_reason_cleanup_timed_out	cleanup timed out
+clean_reason_cleanup_failed	cleanup failed
+clean_orbstack_review	%s · %sreview with
+clean_xcode_simulator_would_remove	%s · would remove %s entries (%s)
+clean_xcode_simulator_removed_protected	%s · removed %s (%s), skipped %s protected
+clean_xcode_simulator_removed	%s · removed %s (%s)
+clean_xcode_simulator_remove_failed	%s · could not remove %s entries
+clean_xcode_simulator_skip_protected	%s · skipped %s protected
+clean_xcode_simulator_skip_protected_none	%s · skipped %s protected, none removed
+clean_old_versions_would_remove	%s · would remove %s old versions (%s), keeping %s most recent
+clean_old_versions_removed	%s · removed %s old versions, %s
+clean_orphaned_simulator_runtime_review	%s · %s %s%s%s · no devices · remove with %s
+clean_xcode_unavailable_multiple	Unavailable simulators · multiple Xcode apps found; set DEVELOPER_DIR
+clean_xcode_unavailable_no_simctl	Unavailable simulators · DEVELOPER_DIR has no simctl
+clean_xcode_unavailable_would_clean	%s · would clean %s, %s
+clean_xcode_unavailable_removed	%s · removed %s, %s
+clean_xcode_unavailable_completed	%s · cleanup completed, %s
+clean_xcode_unavailable_failed	%s cleanup failed%s
+clean_leaked_browsers_would_stop	%s · would stop %s processes
+clean_leaked_browsers_stopped	%s · stopped %s processes
+clean_codex_crash_would_clean	Would clean %s stale Codex crash reports older than %sd, about %sMB
+clean_codex_crash_cleaned	Cleaned %s stale Codex crash reports older than %sd, about %sMB
+clean_codex_manual_review	%s · manual review%s
+purge_paths_init_failed	Could not initialize %s
+purge_paths_current_scan	Current Scan Paths:
+purge_paths_not_found	, not found
+purge_paths_using_custom	Using custom config with %s paths
+purge_paths_using_default	Using %s default paths
+purge_paths_default_title	Default Paths:
+purge_paths_opening	Opening in %s...
+purge_paths_apply_hint	Run 'mo purge' to clean with new paths
+purge_requires_confirmation	Purge requires confirmation. Run mo purge in a terminal, or use --dry-run to preview and --yes to confirm unattended cleanup.
+purge_unknown_size_one	, %s unknown size
+purge_unknown_size_many	, %s unknown sizes
+purge_confirm_remove_one	Remove %s artifact, %s%s
+purge_confirm_remove_many	Remove %s artifacts, %s%s
+purge_resize_hint	Resize to 30 columns, 13 rows
+purge_size_unknown_count	+ %s unmeasured
+purge_menu_selection	%s selected · %s
+purge_project_label	Project:
+purge_project_summary	 · %s · %s
+purge_group_summary	Group: %s · %s
+purge_path_label	Path:
+whitelist_error_directory	Cannot access your %s directory: %s
+whitelist_repair_directory	Mole stops so nothing you protected is cleaned by mistake. Run: chmod u+rx %q
+whitelist_error_invalid	Cannot read your %s: invalid path or broken link: %s
+whitelist_repair_invalid	Mole stops so nothing you protected is cleaned by mistake. Restore this path or its link target before retrying.
+whitelist_error_unknown	Cannot inspect your %s path: %s
+whitelist_repair_unknown	Mole stops because absence could not be verified. Check access to this path before retrying.
+whitelist_error_read	Cannot read your %s: %s
+whitelist_repair_read	Mole stops so nothing you protected is cleaned by mistake. Run: chmod u+r %q
+whitelist_perl_unavailable	Cannot inspect your %s: the system Perl runtime is unavailable.
+whitelist_perl_repair	Mole stops so nothing you protected is cleaned by mistake. Restore /usr/bin/perl before retrying.
+core_log_audit_unavailable	Warning: audit log unavailable (%s). Forensic trail incomplete this session.
+core_log_debug_unwritable	Debug log not writable: %s
+core_log_debug_enabled	Debug logging enabled. Session log: %s
+core_log_debug_saved	Debug session log saved to:
+clean_protected_items_found	Protected items found
+clean_full_disk_access_hint	Grant Full Disk Access to your terminal in System Settings for best results
+clean_cloud_office_timeout	Cloud & Office · time limit reached, skipped remaining items
+clean_old_versions_summary	%s old versions · %s, %s
+clean_docker_storage	Docker storage
+ui_uninstall_steam_managed	N/A (Steam-managed)
+ui_uninstall_steam_launcher_only	Steam launcher only; game files managed by Steam are not included
+ui_uninstall_review_only	Review only
+ui_uninstall_personal_data_kept	Personal data kept
+ui_uninstall_kept_paths_many	%s: %s paths
+ui_uninstall_app_failed_one	%s failed: %s
+ui_uninstall_app_failed_many	[%s/%s] %s, %s
+ui_uninstall_leftovers_unreadable	Shared leftovers kept (%s)
+ui_uninstall_leftovers_owners_unchecked	Shared leftovers kept (other copies unchecked)
+ui_uninstall_leftovers_scan_timeout	Leftovers kept (scan timed out)
+ui_uninstall_kept_could_not_remove	Could not remove
+ui_uninstall_kept_protected	Kept (protected by Mole)
+ui_uninstall_kept_active	Kept (app may be active)
+ui_uninstall_kept_access_denied	macOS denied access
+ui_uninstall_kept_owner_unverified	Kept (agent ownership unverified; review the plist)
+ui_uninstall_kept_app_reappeared	Kept (selected app path exists again; select the app again)
+ui_uninstall_kept_shared_owner	Kept (shared with another installed app)
+ui_uninstall_kept_owner_unknown	Kept (other copies of the app could not be checked)
+ui_uninstall_suggestion_review	Select the app again and review the new removal plan
+ui_uninstall_suggestion_check_paths	Check mounted volumes and application folders, then try again
+ui_uninstall_suggestion_brew	Run brew uninstall --cask %s
+ui_uninstall_official_uninstaller	%s requires the official %s uninstaller
+ui_uninstall_cannot_remove_safely	%s cannot be removed safely by Mole from this location
+ui_remove_could_not_remove_admin_test	Could not remove %s: admin access is unavailable in test mode
+update_brew_link_manual	Run manually: brew link --overwrite mole
+update_whats_new	What's new in %s
+update_success	Updated to %s
+update_success_detail	Updated to %s, %s
+update_brew_upgrade_failed	Homebrew upgrade failed with status %s
+update_manual_reinstall	Reinstall manually: curl -fsSL https://raw.githubusercontent.com/tw93/mole/main/install.sh | MOLE_VERSION=%s bash -s -- --prefix %s --config %s
+opt_diag_detach_prompt	Detach now?
+opt_diag_vm_using_memory_without_count	Virtual machine using %s
+clean_xcode_unavailable_probe_timed_out	%s · simctl probe timed out
+clean_xcode_unavailable_probe_failed	%s · simctl probe failed (exit=%s)
+clean_xcode_unavailable_cleanup_timed_out	%s · cleanup timed out
+opt_diag_detach_keys	Enter confirm / Space cancel
+ui_and_more	and %s more
+core_log_risk_level	Risk Level:
+clean_external_path_missing	Missing external volume path
+clean_external_path_not_absolute	External volume path must be absolute: %s
+clean_external_refuse_root	Refusing to clean the volumes root directly: %s
+clean_external_refuse_symlink	Refusing to clean symlinked volume path: %s
+clean_external_path_not_found	External volume path does not exist: %s
+clean_external_path_outside_root	External volume path must be under %s: %s
+clean_external_path_not_direct_child	External cleanup only supports mounted paths directly under %s: %s
+clean_external_refuse_undescribed	Refusing to clean a volume diskutil could not describe: %s
+clean_external_check_mounted	Check that it is still mounted with diskutil info -plist "%s", then retry
+clean_external_refuse_internal	Refusing to clean an internal volume: %s
+clean_external_refuse_network	Refusing to clean network volume protocol %s: %s
+analyze_insight_ios_backups	iOS Backups
+analyze_insight_old_downloads	Old Downloads (90d+)
+analyze_insight_system_logs	System Logs
+analyze_insight_homebrew_cache	Homebrew Cache
+analyze_insight_xcode_derived_data	Xcode DerivedData
+analyze_insight_xcode_simulators	Xcode Simulators
+analyze_insight_xcode_archives	Xcode Archives
+analyze_insight_spotify_cache	Spotify Cache
+analyze_insight_jetbrains_cache	JetBrains Cache
+analyze_insight_docker_data	Docker Data
+analyze_insight_pip_cache	pip Cache
+analyze_insight_uv_cache	uv Cache
+analyze_insight_gradle_cache	Gradle Cache
+analyze_insight_cocoapods_cache	CocoaPods Cache
+analyze_insight_orbstack_data	OrbStack Data

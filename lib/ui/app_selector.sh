@@ -220,7 +220,7 @@ select_apps_for_uninstall() {
     fi
 
     if [[ -z "$MOLE_SELECTION_RESULT" ]]; then
-        echo "No apps selected"
+        printf '%s\n' "$(mole_display_text "No apps selected")"
         return 1
     fi
 

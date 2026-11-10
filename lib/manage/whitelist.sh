@@ -360,8 +360,8 @@ manage_whitelist_categories() {
         items_source=$(get_optimize_whitelist_items)
         active_config_file="$WHITELIST_CONFIG_OPTIMIZE"
         local display_config="${active_config_file/#$HOME/~}"
-        menu_title="Whitelist Manager, Select optimize tasks to ignore
-${GRAY}Edit: ${display_config}${NC}"
+        menu_title="$(mole_t ui_whitelist_title_optimize)
+${GRAY}$(mole_t ui_whitelist_edit_file "$display_config")${NC}"
     else
         items_source=$(get_all_cache_items)
         active_config_file="$WHITELIST_CONFIG_CLEAN"
@@ -370,8 +370,8 @@ ${GRAY}Edit: ${display_config}${NC}"
         # whole feature and did not know the file also takes arbitrary paths,
         # so a cache Mole cleans but does not list looked unprotectable
         # (discussion #1436). Say what the file accepts, not just where it is.
-        menu_title="Whitelist Manager, Select caches to protect
-${GRAY}Edit: ${display_config}, any path added there is protected too${NC}"
+        menu_title="$(mole_t ui_whitelist_title_clean)
+${GRAY}$(mole_t ui_whitelist_edit_file_extra "$display_config")${NC}"
     fi
 
     while IFS='|' read -r display_name pattern _; do
@@ -468,7 +468,7 @@ ${GRAY}Edit: ${display_config}, any path added there is protected too${NC}"
     unset MOLE_PRESELECTED_INDICES
 
     if [[ $exit_code -ne 0 ]]; then
-        echo -e "${GRAY}Cancelled, no changes saved${NC}"
+        echo -e "${GRAY}$(mole_t whitelist_cancelled)${NC}"
         return 0
     fi
 

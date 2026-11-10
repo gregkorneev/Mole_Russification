@@ -224,38 +224,7 @@ EOF
     # after five seconds and starting another opened the dialog twice and
     # discarded the password typed into the first one. A pseudo-terminal gives
     # the dialog sudo a real /dev/tty, which Bats does not have.
-    # shellcheck disable=SC2016 # The inner bash expands these, not this one.
-    run python3 -c 'import pty, sys; pty.spawn(sys.argv[1:])' /bin/bash -c '
-        unset MOLE_TEST_MODE MOLE_TEST_NO_AUTH
-        source "'"$PROJECT_ROOT"'/lib/core/common.sh"
-        source "'"$PROJECT_ROOT"'/lib/core/sudo.sh"
-
-        calls="$(mktemp)"
-        authed="$(mktemp)"
-        rm -f "$authed"
-
-        sudo() {
-            case "$1" in
-                -n) [[ -e "$authed" ]] ;;
-                -k) return 0 ;;
-                -v)
-                    echo v >> "$calls"
-                    # The user takes longer than the old five-second window.
-                    sleep 6
-                    : > "$authed"
-                    ;;
-                *) return 1 ;;
-            esac
-        }
-        is_clamshell_mode() { return 1; }
-        check_touchid_support() { return 0; }
-        safe_clear_lines() { printf "CLEAR:%s\n" "$1"; }
-        safe_clear_line() { :; }
-
-        rc=0
-        request_sudo_access "Admin access required" || rc=$?
-        printf "RC=%s V_CALLS=%s\n" "$rc" "$(grep -c . "$calls")"
-    ' < /dev/null
+    run python3 "$PROJECT_ROOT/tests/sudo_tty_pty.py" single-sudo
 
     [ "$status" -eq 0 ] || { echo "$output"; return 1; }
     [[ "$output" == *"RC=0 V_CALLS=1"* ]] || { echo "$output"; return 1; }

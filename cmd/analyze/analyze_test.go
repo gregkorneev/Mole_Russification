@@ -3447,6 +3447,9 @@ func TestSystemOverviewRootsDefaultsToRealSystemPaths(t *testing.T) {
 	if roots[0].Path != "/Applications" || roots[1].Path != "/Library" {
 		t.Fatalf("unexpected default system roots: %q, %q", roots[0].Path, roots[1].Path)
 	}
+	if roots[0].Name != "Applications" || roots[1].Name != "System Library" {
+		t.Fatalf("overview machine names changed: %q, %q", roots[0].Name, roots[1].Name)
+	}
 	for _, root := range roots {
 		if root.Size != -1 || !root.IsDir {
 			t.Fatalf("default root %q must start pending and be a dir, got size=%d isDir=%v",

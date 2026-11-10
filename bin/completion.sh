@@ -24,7 +24,7 @@ purge_option_words="--paths --dry-run -n --yes --include-empty --debug --help -h
 
 emit_zsh_subcommands() {
     for entry in "${MOLE_COMMANDS[@]}"; do
-        printf "        '%s:%s'\n" "${entry%%:*}" "${entry#*:}"
+        printf "        '%s:%s'\n" "${entry%%:*}" "$(mole_t "${entry#*:}")"
     done
 }
 
@@ -32,32 +32,33 @@ emit_fish_completions() {
     local cmd="$1"
     for entry in "${MOLE_COMMANDS[@]}"; do
         local name="${entry%%:*}"
-        local desc="${entry#*:}"
+        local desc
+        desc="$(mole_t "${entry#*:}")"
         printf 'complete -f -c %s -n "__fish_mole_no_subcommand" -a %s -d "%s"\n' "$cmd" "$name" "$desc"
     done
 
     printf '\n'
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from clean" -l dry-run -s n -d "Preview cleanup without making changes"\n' "$cmd"
-    printf 'complete -c %s -n "__fish_seen_subcommand_from clean" -l external -r -a "(__fish_complete_directories)" -d "Clean OS metadata from an external volume"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from clean" -l whitelist -d "Manage protected paths"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from clean" -l debug -d "Show detailed logs"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from clean" -l help -s h -d "Show help"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from analyze analyse" -l json -d "Output analysis as JSON"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from analyze analyse" -l help -s h -d "Show help"\n' "$cmd"
-    printf 'complete -c %s -n "__fish_seen_subcommand_from analyze analyse; and not __fish_seen_argument -l json -l help -s h" -a "(__fish_complete_directories)" -d "Path to analyze"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from history" -l json -d "Output history as JSON"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from history" -l limit -r -d "Limit recent entries"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from history" -l help -s h -d "Show help"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l paths -d "Edit custom scan directories"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l dry-run -s n -d "Preview purge actions without making changes"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l include-empty -d "Show zero-size project artifact directories"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l yes -d "Confirm unattended cleanup of eligible artifacts"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l debug -d "Show detailed logs"\n' "$cmd"
-    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l help -s h -d "Show help"\n' "$cmd"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from clean" -l dry-run -s n -d "%s"\n' "$cmd" "$(mole_t help_option_dry_run)"
+    printf 'complete -c %s -n "__fish_seen_subcommand_from clean" -l external -r -a "(__fish_complete_directories)" -d "%s"\n' "$cmd" "$(mole_t help_option_external)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from clean" -l whitelist -d "%s"\n' "$cmd" "$(mole_t help_option_whitelist_paths)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from clean" -l debug -d "%s"\n' "$cmd" "$(mole_t help_option_debug)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from clean" -l help -s h -d "%s"\n' "$cmd" "$(mole_t help_option_help)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from analyze analyse" -l json -d "%s"\n' "$cmd" "$(mole_t analyze_help_json)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from analyze analyse" -l help -s h -d "%s"\n' "$cmd" "$(mole_t help_option_help)"
+    printf 'complete -c %s -n "__fish_seen_subcommand_from analyze analyse; and not __fish_seen_argument -l json -l help -s h" -a "(__fish_complete_directories)" -d "%s"\n' "$cmd" "$(mole_t completion_path_desc)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from history" -l json -d "%s"\n' "$cmd" "$(mole_t help_history_json)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from history" -l limit -r -d "%s"\n' "$cmd" "$(mole_t help_history_limit)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from history" -l help -s h -d "%s"\n' "$cmd" "$(mole_t help_option_help)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l paths -d "%s"\n' "$cmd" "$(mole_t help_purge_paths)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l dry-run -s n -d "%s"\n' "$cmd" "$(mole_t help_purge_dry_run)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l include-empty -d "%s"\n' "$cmd" "$(mole_t help_purge_include_empty)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l yes -d "%s"\n' "$cmd" "$(mole_t help_purge_yes)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l debug -d "%s"\n' "$cmd" "$(mole_t help_option_debug)"
+    printf 'complete -f -c %s -n "__fish_seen_subcommand_from purge" -l help -s h -d "%s"\n' "$cmd" "$(mole_t help_option_help)"
     printf '\n'
-    printf 'complete -f -c %s -n "not __fish_mole_no_subcommand" -a bash -d "generate bash completion" -n "__fish_see_subcommand_path completion"\n' "$cmd"
-    printf 'complete -f -c %s -n "not __fish_mole_no_subcommand" -a zsh -d "generate zsh completion" -n "__fish_see_subcommand_path completion"\n' "$cmd"
-    printf 'complete -f -c %s -n "not __fish_mole_no_subcommand" -a fish -d "generate fish completion" -n "__fish_see_subcommand_path completion"\n' "$cmd"
+    printf 'complete -f -c %s -n "not __fish_mole_no_subcommand" -a bash -d "%s" -n "__fish_see_subcommand_path completion"\n' "$cmd" "$(mole_t completion_generate_bash)"
+    printf 'complete -f -c %s -n "not __fish_mole_no_subcommand" -a zsh -d "%s" -n "__fish_see_subcommand_path completion"\n' "$cmd" "$(mole_t completion_generate_zsh)"
+    printf 'complete -f -c %s -n "not __fish_mole_no_subcommand" -a fish -d "%s" -n "__fish_see_subcommand_path completion"\n' "$cmd" "$(mole_t completion_generate_fish)"
 }
 
 # A dotfile chain is followed to its final file; a broken link or a cycle
@@ -83,7 +84,7 @@ remove_stale_completion_entries() {
     grep -Ev "$MOLE_COMPLETION_LINE_PATTERN" "$target" > "$temp_file" || true
     mv "$temp_file" "$target"
     [[ -n "$original_mode" ]] && chmod "$original_mode" "$target" 2> /dev/null || true
-    [[ -n "$success_message" ]] && echo -e "${GREEN}${ICON_SUCCESS}${NC} $success_message"
+    [[ -n "$success_message" ]] && echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_display_text "$success_message")"
     return 0
 }
 
@@ -109,7 +110,7 @@ fi
 # Auto-install mode when run without arguments
 if [[ $# -eq 0 ]]; then
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        echo -e "${YELLOW}${ICON_DRY_RUN} DRY RUN MODE${NC}, shell config files will not be modified"
+        echo -e "${YELLOW}${ICON_DRY_RUN} $(mole_t completion_dry_run_mode)${NC}"
         echo ""
     fi
 
@@ -144,11 +145,11 @@ if [[ $# -eq 0 ]]; then
         fi
 
         if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-            echo -e "${GRAY}${ICON_REVIEW} [DRY RUN] Would write Fish completions to:${NC}"
+            echo -e "${GRAY}${ICON_REVIEW} $(mole_t completion_dry_run_write_fish)${NC}"
             echo "  $mole_file"
             echo "  $mo_file"
             echo ""
-            echo -e "${GREEN}${ICON_SUCCESS}${NC} Dry run complete, no changes made"
+            echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t completion_dry_run_complete)"
             exit 0
         fi
 
@@ -160,14 +161,14 @@ if [[ $# -eq 0 ]]; then
         # Prompt only on first install; silently update if files exist
         if [[ ! -f "$mole_file" ]]; then
             echo ""
-            echo -e "${GRAY}Will write Fish completions to:${NC}"
+            echo -e "${GRAY}$(mole_t completion_write_fish)${NC}"
             echo "  $mole_file"
             echo "  $mo_file"
             echo ""
-            echo -ne "${PURPLE}${ICON_ARROW}${NC} Enable completion for ${GREEN}fish${NC}? ${GRAY}Enter confirm / Q cancel${NC}: "
+            echo -ne "${PURPLE}${ICON_ARROW}${NC} $(mole_t completion_enable_prompt "${GREEN}fish${NC}") ${GRAY}$(mole_t completion_confirm_cancel)${NC}: "
             if ! IFS= read -r -s -n1 key; then
                 echo ""
-                echo -e "${YELLOW}Cancelled${NC}"
+                echo -e "${YELLOW}$(mole_t completion_cancelled)${NC}"
                 exit 1
             fi
             drain_pending_input
@@ -175,7 +176,7 @@ if [[ $# -eq 0 ]]; then
 
             case "$key" in
                 $'\e' | [Qq] | [Nn])
-                    echo -e "${YELLOW}Cancelled${NC}"
+                    echo -e "${YELLOW}$(mole_t completion_cancelled)${NC}"
                     exit 0
                     ;;
                 "" | $'\n' | $'\r' | [Yy]) ;;
@@ -193,7 +194,7 @@ if [[ $# -eq 0 ]]; then
         printf 'source %s\n' "$mole_file" >> "$mo_file"
 
         if [[ -f "$mole_file" ]]; then
-            echo -e "${GREEN}${ICON_SUCCESS}${NC} Fish completions written to $fish_dir"
+            echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t completion_fish_written "$fish_dir")"
         fi
         echo ""
         exit 0
@@ -221,7 +222,7 @@ if [[ $# -eq 0 ]]; then
     if [[ -z "$completion_name" ]]; then
         if [[ -f "$config_file" ]] && grep -Eq "$MOLE_COMPLETION_LINE_PATTERN" "$config_file" 2> /dev/null; then
             if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-                echo -e "${GRAY}${ICON_REVIEW} [DRY RUN] Would remove stale completion entries from $config_file${NC}"
+                echo -e "${GRAY}${ICON_REVIEW} $(mole_t completion_dry_run_remove_stale "$config_file")${NC}"
                 echo ""
             else
                 original_mode=""
@@ -233,7 +234,7 @@ if [[ $# -eq 0 ]]; then
                 if [[ -n "$original_mode" ]]; then
                     chmod "$original_mode" "$target" 2> /dev/null || true
                 fi
-                echo -e "${GREEN}${ICON_SUCCESS}${NC} Removed stale completion entries from $config_file"
+                echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t completion_removed_stale "$config_file")"
                 echo ""
             fi
         fi
@@ -244,7 +245,7 @@ if [[ $# -eq 0 ]]; then
     # Check if already installed and normalize to latest line
     if [[ -f "$config_file" ]] && grep -Eq "$MOLE_COMPLETION_LINE_PATTERN" "$config_file" 2> /dev/null; then
         if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-            echo -e "${GRAY}${ICON_REVIEW} [DRY RUN] Would normalize completion entry in $config_file${NC}"
+            echo -e "${GRAY}${ICON_REVIEW} $(mole_t completion_dry_run_normalize "$config_file")${NC}"
             echo ""
             exit 0
         fi
@@ -264,25 +265,25 @@ if [[ $# -eq 0 ]]; then
             echo "$completion_line"
         } >> "$config_file"
         echo ""
-        echo -e "${GREEN}${ICON_SUCCESS}${NC} Shell completion updated in $config_file"
+        echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t completion_updated "$config_file")"
         echo ""
         exit 0
     fi
 
     # Prompt user for installation
     echo ""
-    echo -e "${GRAY}Will add to ${config_file}:${NC}"
+    echo -e "${GRAY}$(mole_t completion_will_add "$config_file")${NC}"
     echo "  $completion_line"
     echo ""
     if [[ "${MOLE_DRY_RUN:-0}" == "1" ]]; then
-        echo -e "${GREEN}${ICON_SUCCESS}${NC} Dry run complete, no changes made"
+        echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t completion_dry_run_complete)"
         exit 0
     fi
 
-    echo -ne "${PURPLE}${ICON_ARROW}${NC} Enable completion for ${GREEN}${current_shell}${NC}? ${GRAY}Enter confirm / Q cancel${NC}: "
+    echo -ne "${PURPLE}${ICON_ARROW}${NC} $(mole_t completion_enable_prompt "${GREEN}${current_shell}${NC}") ${GRAY}$(mole_t completion_confirm_cancel)${NC}: "
     if ! IFS= read -r -s -n1 key; then
         echo ""
-        echo -e "${YELLOW}Cancelled${NC}"
+        echo -e "${YELLOW}$(mole_t completion_cancelled)${NC}"
         exit 1
     fi
     drain_pending_input
@@ -290,7 +291,7 @@ if [[ $# -eq 0 ]]; then
 
     case "$key" in
         $'\e' | [Qq] | [Nn])
-            echo -e "${YELLOW}Cancelled${NC}"
+            echo -e "${YELLOW}$(mole_t completion_cancelled)${NC}"
             exit 0
             ;;
         "" | $'\n' | $'\r' | [Yy]) ;;
@@ -326,10 +327,10 @@ if [[ $# -eq 0 ]]; then
         echo "$completion_line"
     } >> "$config_file"
 
-    echo -e "${GREEN}${ICON_SUCCESS}${NC} Completion added to $config_file"
+    echo -e "${GREEN}${ICON_SUCCESS}${NC} $(mole_t completion_added "$config_file")"
     echo ""
     echo ""
-    echo -e "${GRAY}To activate now:${NC}"
+    echo -e "${GRAY}$(mole_t completion_activate_now)${NC}"
     echo -e "  ${GREEN}source $config_file${NC}"
     exit 0
 fi
@@ -398,34 +399,34 @@ EOF
         printf "    case \"\$words[2]\" in\n"
         printf '        clean)\n'
         printf '            _arguments \\\n'
-        printf "                '--dry-run[Preview cleanup without making changes]' \\\\\n"
-        printf "                '-n[Preview cleanup without making changes]' \\\\\n"
-        printf "                '--external[Clean OS metadata from an external volume]:path:_files -/' \\\\\n"
-        printf "                '--whitelist[Manage protected paths]' \\\\\n"
-        printf "                '--debug[Show detailed logs]' \\\\\n"
-        printf "                '(-h --help)'{-h,--help}'[Show help]'\n"
+        printf "                '--dry-run[%s]' \\\\\n" "$(mole_t help_option_dry_run)"
+        printf "                '-n[%s]' \\\\\n" "$(mole_t help_option_dry_run)"
+        printf "                '--external[%s]:path:_files -/' \\\\\n" "$(mole_t help_option_external)"
+        printf "                '--whitelist[%s]' \\\\\n" "$(mole_t help_option_whitelist_paths)"
+        printf "                '--debug[%s]' \\\\\n" "$(mole_t help_option_debug)"
+        printf "                '(-h --help)'{-h,--help}'[%s]'\n" "$(mole_t help_option_help)"
         printf '            ;;\n'
         printf '        analyze|analyse)\n'
         printf '            _arguments \\\n'
-        printf "                '--json[Output analysis as JSON]' \\\\\n"
-        printf "                '(-h --help)'{-h,--help}'[Show help]' \\\\\n"
+        printf "                '--json[%s]' \\\\\n" "$(mole_t analyze_help_json)"
+        printf "                '(-h --help)'{-h,--help}'[%s]' \\\\\n" "$(mole_t help_option_help)"
         printf "                '*:path:_files'\n"
         printf '            ;;\n'
         printf '        history)\n'
         printf '            _arguments \\\n'
-        printf "                '--json[Output history as JSON]' \\\\\n"
-        printf "                '--limit[Limit recent entries]:limit:' \\\\\n"
-        printf "                '(-h --help)'{-h,--help}'[Show help]'\n"
+        printf "                '--json[%s]' \\\\\n" "$(mole_t help_history_json)"
+        printf "                '--limit[%s]:limit:' \\\\\n" "$(mole_t help_history_limit)"
+        printf "                '(-h --help)'{-h,--help}'[%s]'\n" "$(mole_t help_option_help)"
         printf '            ;;\n'
         printf '        purge)\n'
         printf '            _arguments \\\n'
-        printf "                '--paths[Edit custom scan directories]' \\\\\n"
-        printf "                '--dry-run[Preview purge actions without making changes]' \\\\\n"
-        printf "                '-n[Preview purge actions without making changes]' \\\\\n"
-        printf "                '--include-empty[Show zero-size project artifact directories]' \\\\\n"
-        printf "                '--yes[Confirm unattended cleanup of eligible artifacts]' \\\\\n"
-        printf "                '--debug[Show detailed logs]' \\\\\n"
-        printf "                '(-h --help)'{-h,--help}'[Show help]'\n"
+        printf "                '--paths[%s]' \\\\\n" "$(mole_t help_purge_paths)"
+        printf "                '--dry-run[%s]' \\\\\n" "$(mole_t help_purge_dry_run)"
+        printf "                '-n[%s]' \\\\\n" "$(mole_t help_purge_dry_run)"
+        printf "                '--include-empty[%s]' \\\\\n" "$(mole_t help_purge_include_empty)"
+        printf "                '--yes[%s]' \\\\\n" "$(mole_t help_purge_yes)"
+        printf "                '--debug[%s]' \\\\\n" "$(mole_t help_option_debug)"
+        printf "                '(-h --help)'{-h,--help}'[%s]'\n" "$(mole_t help_option_help)"
         printf '            ;;\n'
         printf '        completion)\n'
         printf "            _arguments '1:shell:(bash zsh fish)'\n"
@@ -456,33 +457,21 @@ EOF
         printf 'end\n'
         ;;
     *)
-        cat << 'EOF'
-Usage: mole completion [bash|zsh|fish]
-
-Setup shell tab completion for mole and mo commands.
-
-Auto-install:
-  mole completion              # Auto-detect shell and install
-  mole completion --dry-run    # Preview config changes without writing files
-
-Manual install:
-  mole completion bash         # Generate bash completion script
-  mole completion zsh          # Generate zsh completion script
-  mole completion fish         # Generate fish completion script
-
-Examples:
-  # Auto-install (recommended)
-  mole completion
-
-  # Manual install - Bash
-  eval "$(mole completion bash)"
-
-  # Manual install - Zsh
-  eval "$(mole completion zsh)"
-
-  # Manual install - Fish
-  mole completion fish | source
-EOF
+        printf '%s\n\n' "$(mole_t help_completion_usage)" "$(mole_t help_completion_description)"
+        printf '%s\n' "$(mole_t help_completion_auto_install)"
+        printf '  mole completion              # %s\n' "$(mole_t help_completion_auto_detect)"
+        printf '  mole completion --dry-run    # %s\n' "$(mole_t help_completion_preview)"
+        printf '\n%s\n' "$(mole_t help_completion_manual_install)"
+        printf '  mole completion bash         # %s\n' "$(mole_t completion_generate_bash)"
+        printf '  mole completion zsh          # %s\n' "$(mole_t completion_generate_zsh)"
+        printf '  mole completion fish         # %s\n' "$(mole_t completion_generate_fish)"
+        printf '\n%s\n' "$(mole_t help_examples)"
+        printf '  # %s\n  mole completion\n\n' "$(mole_t help_completion_recommended)"
+        # shellcheck disable=SC2016 # Preserve the command substitution as user instructions.
+        printf '  # %s\n  eval "$(mole completion bash)"\n\n' "$(mole_t help_completion_manual_bash)"
+        # shellcheck disable=SC2016 # Preserve the command substitution as user instructions.
+        printf '  # %s\n  eval "$(mole completion zsh)"\n\n' "$(mole_t help_completion_manual_zsh)"
+        printf '  # %s\n  mole completion fish | source\n' "$(mole_t help_completion_manual_fish)"
         [[ "$1" == "--help" || "$1" == "-h" ]] && exit 0
         exit 1
         ;;

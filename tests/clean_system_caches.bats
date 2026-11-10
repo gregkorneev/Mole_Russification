@@ -1679,7 +1679,7 @@ exit 0
 EOF
     chmod +x "$fake_bin/find"
 
-    run /usr/bin/perl -e 'alarm 5; exec @ARGV' env -i HOME="$HOME" PROJECT_ROOT="$PROJECT_ROOT" PATH="$fake_bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin" TERM="${TERM:-xterm-256color}" /bin/bash --noprofile --norc <<'EOF'
+    run /usr/bin/perl -e 'alarm 5; exec @ARGV' env -i HOME="$HOME" PROJECT_ROOT="$PROJECT_ROOT" MOLE_LANG=en PATH="$fake_bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin" TERM="${TERM:-xterm-256color}" /bin/bash --noprofile --norc <<'EOF'
 set -euo pipefail
 source "$PROJECT_ROOT/lib/core/common.sh"
 source "$PROJECT_ROOT/lib/clean/caches.sh"

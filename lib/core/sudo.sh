@@ -94,7 +94,7 @@ _mole_touchid_hint() {
     local enrolled=""
     enrolled=$(run_with_timeout "$MOLE_TIMEOUT_QUICK_DETECT_SEC" bioutil -c 2> /dev/null) || return 0
     [[ "$enrolled" =~ [1-9][0-9]*\ biometric\ template ]] || return 0
-    echo -e "${GRAY}Tip: run ${NC}mo touchid${GRAY} to use Touch ID instead of the password${NC}"
+    echo -e "${GRAY}$(mole_t sudo_touchid_hint_before)${NC} mo touchid${GRAY} $(mole_t sudo_touchid_hint_after)${NC}"
 }
 
 _request_password() {
@@ -106,7 +106,7 @@ _request_password() {
     stty_orig=$(stty -g < "$tty_path" 2> /dev/null || echo "")
     trap '[[ -n "${stty_orig:-}" ]] && stty "${stty_orig:-}" < "$tty_path" 2> /dev/null || true' RETURN
 
-    echo -e "${PURPLE}${ICON_ARROW}${NC} Enter your credentials:" > "$tty_path"
+    echo -e "${PURPLE}${ICON_ARROW}${NC} $(mole_t sudo_enter_credentials)" > "$tty_path"
 
     # shellcheck disable=SC2024,SC2094
     # Intentionally route sudo's native prompt to the same TTY device it reads from.
@@ -177,7 +177,7 @@ request_sudo_access() {
 
     # Check if in clamshell mode - if yes, skip Touch ID entirely
     if is_clamshell_mode; then
-        echo -e "${PURPLE}${ICON_ARROW}${NC} ${prompt_msg}"
+        echo -e "${PURPLE}${ICON_ARROW}${NC} $(mole_display_text "$prompt_msg")"
         if _request_password "$tty_path"; then
             # Clear all prompt lines (use safe clearing method)
             safe_clear_lines 3 "$tty_path"
@@ -189,7 +189,7 @@ request_sudo_access() {
 
     # Not in clamshell mode - try Touch ID if configured
     if ! check_touchid_support; then
-        echo -e "${PURPLE}${ICON_ARROW}${NC} ${prompt_msg}"
+        echo -e "${PURPLE}${ICON_ARROW}${NC} $(mole_display_text "$prompt_msg")"
         if _request_password "$tty_path"; then
             # Clear all prompt lines (use safe clearing method)
             safe_clear_lines 3 "$tty_path"
@@ -204,7 +204,7 @@ request_sudo_access() {
     # the password; Cancel there falls back to sudo's own terminal prompt.
     # Killing it after a few seconds and starting another sudo opened the
     # same dialog twice and threw away a password typed into the first.
-    echo -e "${PURPLE}${ICON_ARROW}${NC} ${prompt_msg} ${GRAY}, Touch ID or password${NC}"
+    echo -e "${PURPLE}${ICON_ARROW}${NC} $(mole_display_text "$prompt_msg") ${GRAY}$(mole_t sudo_touchid_or_password)${NC}"
 
     # Text typed into the terminal while the dialog is up stays off the screen.
     # shellcheck disable=SC2024,SC2094

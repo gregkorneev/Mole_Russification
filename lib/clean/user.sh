@@ -47,7 +47,7 @@ clean_trash() {
     # would read zero and Trash would be skipped without a word. Listing is the
     # only reliable probe: stat and -r both succeed under that block.
     if [[ -d "$HOME/.Trash" ]] && ! command ls -A "$HOME/.Trash" > /dev/null 2>&1; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Trash · skipped, grant Full Disk Access to your terminal"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_trash_no_access)"
         note_activity
         return 0
     fi
@@ -114,7 +114,7 @@ clean_trash() {
             done < <(command find "$HOME/.Trash" -mindepth 1 -maxdepth 1 -print0 2> /dev/null || true)
             stop_section_spinner
             if [[ $preview_count -gt 0 ]]; then
-                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Trash · would empty, $(mole_count_label "$preview_count" item)"
+                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_trash_preview "$(mole_t_items "$preview_count")")"
                 note_activity
             fi
         fi
@@ -153,13 +153,13 @@ clean_trash() {
 
     if [[ $cleaned_count -gt 0 ]]; then
         if [[ $skipped_count -gt 0 ]]; then
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} Trash · removed $(mole_count_label "$cleaned_count" item), $skipped_count could not be removed"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_trash_partial "$(mole_t_items "$cleaned_count")" "$skipped_count")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Trash · emptied, $(mole_count_label "$cleaned_count" item)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_trash_emptied "$(mole_t_items "$cleaned_count")")"
         fi
         note_activity
     elif [[ $skipped_count -gt 0 ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Trash · $(mole_count_label "$skipped_count" item) could not be removed"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_trash_failed "$(mole_t_items "$skipped_count")")"
         note_activity
     fi
 }
@@ -309,14 +309,14 @@ clean_user_essentials() {
         safe_clean_guarded _user_cache_deno_delete_guard \
             "${user_cache_targets[@]}" "User app cache" || user_cache_rc=$?
         if [[ $user_cache_rc -eq 75 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} User app cache · stopped (Deno root changed during cleanup)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_deno_root_changed)"
             note_activity
         fi
     elif [[ "$deno_cache_root_valid" != "true" ]]; then
         # Refusing here is right, but staying silent about it is not: the whole
         # category would just be missing from the section. Name the cause the
         # way every other guard in this file does.
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} User app cache · stopped (DENO_DIR unresolved)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_deno_root_unresolved)"
         note_activity
     fi
     stop_section_spinner
@@ -399,12 +399,12 @@ _clean_incomplete_downloads() {
                 return 0
             fi
             if [[ $open_state -eq 0 ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} Skipping active download: $(basename "$f")"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_download_active "$(basename "$f")")"
                 note_activity
                 continue
             fi
             if [[ $open_state -eq 2 ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} Skipping incomplete download (open-file check unavailable): $(basename "$f")"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_download_unknown "$(basename "$f")")"
                 note_activity
                 continue
             fi
@@ -416,7 +416,7 @@ _clean_incomplete_downloads() {
                 return 0
             fi
             if [[ $guarded_rc -eq 75 ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} Skipping incomplete download after final open-file check: $(basename "$f")"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_download_final_check "$(basename "$f")")"
                 note_activity
             fi
         done
@@ -513,7 +513,7 @@ _clean_mail_downloads() {
                     # signal keeps its cancellation semantics.
                     [[ "$spinner_active" == "true" ]] && stop_section_spinner
                     spinner_active=false
-                    echo -e "  ${GRAY}${ICON_WARNING}${NC} Mail Downloads · skipped (sizing unavailable)"
+                    echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_mail_size_unknown)"
                     note_activity
                     continue
                 fi
@@ -577,9 +577,9 @@ _clean_mail_downloads() {
         local cleaned_mb
         cleaned_mb=$(echo "$cleaned_kb" | awk '{printf "%.1f", $1/1024}' || echo "0.0")
         if [[ "$dry_run_mode" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Would clean $count mail attachments older than ${mail_age_days}d, about ${cleaned_mb}MB"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_mail_preview "$count" "$mail_age_days" "$cleaned_mb")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Cleaned $count mail attachments older than ${mail_age_days}d, about ${cleaned_mb}MB"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_mail_done "$count" "$mail_age_days" "$cleaned_mb")"
         fi
         note_activity
     fi
@@ -634,7 +634,7 @@ _clean_chromium_old_versions() {
         # Verify the Current symlink target exists. If broken, skip to avoid
         # accidentally deleting the active browser version.
         if [[ ! -d "$versions_dir/$current_version" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} ${label} old versions · skipped (Current symlink broken)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_old_versions_current_broken "$label")"
             note_activity
             continue
         fi
@@ -687,7 +687,7 @@ _clean_chromium_old_versions() {
         "$running_probe" || process_state=$?
         if [[ $process_state -ne 1 ]]; then
             if [[ $process_state -eq 2 ]]; then
-                echo -e "  ${GRAY}${ICON_WARNING}${NC} ${label} old versions · skipped (process state unknown)"
+                echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_old_versions_process_unknown "$label")"
                 note_activity
             else
                 mole_defer_cleanup_family "$label"
@@ -748,18 +748,18 @@ _clean_chromium_old_versions() {
         local size_human
         size_human=$(bytes_to_human "$((total_size * 1024))")
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} ${label} old versions${NC} · ${YELLOW}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_old_versions_summary "$(mole_display_text "$label")" "$(mole_count_label "${cleaned_count}" dir)" "$(colorize_human_size "$size_human")") ${YELLOW}$(mole_t clean_dry_label)${NC}"
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$total_size")
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} ${label} old versions${NC} · ${line_color}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "${size_human}")"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_old_versions_summary "$(mole_display_text "$label")" "$(mole_count_label "${cleaned_count}" dir)" "$(colorize_human_size "${size_human}")")"
         fi
         mole_add_cleaned_row "$cleaned_count" "$total_size"
         note_activity
     fi
     if [[ -n "$stopped_reason" ]]; then
         if [[ "$stopped_reason" == "process state unknown" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} ${label} old versions · stopped (${stopped_reason})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_old_versions_stopped "$label" "$(mole_display_text "$stopped_reason")")"
             note_activity
         else
             mole_defer_cleanup_family "$label"
@@ -968,7 +968,7 @@ clean_edge_updater_old_versions() {
     is_microsoft_edge_running || process_state=$?
     if [[ $process_state -ne 1 ]]; then
         if [[ $process_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Edge updater old versions · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_edge_updater_process_unknown)"
             note_activity
         else
             mole_defer_cleanup_family "Edge"
@@ -1016,18 +1016,18 @@ clean_edge_updater_old_versions() {
         local size_human
         size_human=$(bytes_to_human "$((total_size * 1024))")
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Edge updater old versions${NC} · ${YELLOW}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_edge_updater_old_versions)${NC} · ${YELLOW}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$total_size")
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} Edge updater old versions${NC} · ${line_color}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "${size_human}")"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_edge_updater_old_versions)${NC} · ${line_color}$(mole_count_label "${cleaned_count}" dir), $(colorize_human_size "${size_human}")"
         fi
         mole_add_cleaned_row "$cleaned_count" "$total_size"
         note_activity
     fi
     if [[ -n "$stopped_reason" ]]; then
         if [[ "$stopped_reason" == "process state unknown" ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Edge updater old versions · stopped (${stopped_reason})"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_stopped "$(mole_t clean_edge_updater_old_versions)" "$(mole_display_text "$stopped_reason")")"
             note_activity
         else
             mole_defer_cleanup_family "Edge"
@@ -1328,21 +1328,21 @@ clean_app_caches() {
     if [[ "$found_any" == "true" ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
             if [[ "$total_size_partial" == "true" ]]; then
-                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Sandboxed app caches${NC} · ${YELLOW}dry${NC}"
+                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_sandboxed_caches)${NC} · ${YELLOW}$(mole_t clean_dry_label)${NC}"
             else
                 local size_human
                 size_human=$(bytes_to_human "$((total_size * 1024))")
-                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Sandboxed app caches${NC} · $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_sandboxed_caches)${NC} · $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
             fi
         else
             if [[ "$total_size_partial" == "true" ]]; then
-                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Sandboxed app caches${NC} · ${GREEN}cleaned${NC}"
+                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_sandboxed_caches)${NC} · ${GREEN}$(mole_t clean_done_label)${NC}"
             else
                 local size_human
                 size_human=$(bytes_to_human "$((total_size * 1024))")
                 local line_color
                 line_color=$(cleanup_result_color_kb "$total_size")
-                echo -e "  ${line_color}${ICON_SUCCESS}${NC} Sandboxed app caches${NC} · $(colorize_human_size "${size_human}")"
+                echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_sandboxed_caches)${NC} · $(colorize_human_size "${size_human}")"
             fi
         fi
         mole_add_cleaned_row "$cleaned_count" "$total_size"
@@ -1400,11 +1400,11 @@ clean_handoff_pasteboard_cache() {
     local size_human
     size_human=$(bytes_to_human "$((total_kb * 1024))")
     if [[ "$DRY_RUN" == "true" ]]; then
-        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Handoff clipboard cache${NC} · $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_handoff_clipboard_cache)${NC} · $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
     else
         local line_color
         line_color=$(cleanup_result_color_kb "$total_kb")
-        echo -e "  ${line_color}${ICON_SUCCESS}${NC} Handoff clipboard cache${NC} · $(colorize_human_size "${size_human}")"
+        echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_handoff_clipboard_cache)${NC} · $(colorize_human_size "${size_human}")"
     fi
     mole_add_cleaned_row "$cleaned_count" "$total_kb"
     note_activity
@@ -1685,21 +1685,21 @@ clean_group_container_caches() {
     if [[ "$found_any" == "true" ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
             if [[ "$total_size_partial" == "true" ]]; then
-                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Group Containers logs/caches${NC} · ${YELLOW}dry${NC}"
+                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_group_containers_logs_caches)${NC} · ${YELLOW}$(mole_t clean_dry_label)${NC}"
             else
                 local size_human
                 size_human=$(bytes_to_human "$((total_size * 1024))")
-                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Group Containers logs/caches${NC} · $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_group_containers_logs_caches)${NC} · $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
             fi
         else
             if [[ "$total_size_partial" == "true" ]]; then
-                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Group Containers logs/caches${NC} · ${GREEN}cleaned${NC}"
+                echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_group_containers_logs_caches)${NC} · ${GREEN}$(mole_t clean_done_label)${NC}"
             else
                 local size_human
                 size_human=$(bytes_to_human "$((total_size * 1024))")
                 local line_color
                 line_color=$(cleanup_result_color_kb "$total_size")
-                echo -e "  ${line_color}${ICON_SUCCESS}${NC} Group Containers logs/caches${NC} · $(colorize_human_size "${size_human}")"
+                echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_group_containers_logs_caches)${NC} · $(colorize_human_size "${size_human}")"
             fi
         fi
         mole_add_cleaned_row "$cleaned_count" "$total_size"
@@ -1736,36 +1736,36 @@ validate_external_volume_target() {
     resolved_root="${resolved_root%/}"
 
     if [[ -z "$target" ]]; then
-        echo "Missing external volume path" >&2
+        printf '%s\n' "$(mole_t clean_external_path_missing)" >&2
         return 1
     fi
     if [[ "$target" != /* ]]; then
-        echo "External volume path must be absolute: $target" >&2
+        printf '%s\n' "$(mole_t clean_external_path_not_absolute "$target")" >&2
         return 1
     fi
     if [[ "$target" == "$root" || "$target" == "$resolved_root" ]]; then
-        echo "Refusing to clean the volumes root directly: $resolved_root" >&2
+        printf '%s\n' "$(mole_t clean_external_refuse_root "$resolved_root")" >&2
         return 1
     fi
     if [[ -L "$target" ]]; then
-        echo "Refusing to clean symlinked volume path: $target" >&2
+        printf '%s\n' "$(mole_t clean_external_refuse_symlink "$target")" >&2
         return 1
     fi
 
     local resolved
     resolved=$(resolve_existing_path "$target") || {
-        echo "External volume path does not exist: $target" >&2
+        printf '%s\n' "$(mole_t clean_external_path_not_found "$target")" >&2
         return 1
     }
 
     if [[ "$resolved" != "$resolved_root/"* ]]; then
-        echo "External volume path must be under $resolved_root: $resolved" >&2
+        printf '%s\n' "$(mole_t clean_external_path_outside_root "$resolved_root" "$resolved")" >&2
         return 1
     fi
 
     local relative_path="${resolved#"$resolved_root"/}"
     if [[ -z "$relative_path" || "$relative_path" == "$resolved" || "$relative_path" == */* ]]; then
-        echo "External cleanup only supports mounted paths directly under $resolved_root: $resolved" >&2
+        printf '%s\n' "$(mole_t clean_external_path_not_direct_child "$resolved_root" "$resolved")" >&2
         return 1
     fi
 
@@ -1778,18 +1778,18 @@ validate_external_volume_target() {
         ! internal=$(printf '%s' "$disk_info" | /usr/bin/plutil -extract Internal raw -expect bool -o - - 2> /dev/null) ||
         ! protocol=$(printf '%s' "$disk_info" | /usr/bin/plutil -extract BusProtocol raw -expect string -o - - 2> /dev/null) ||
         [[ -z "$protocol" ]]; then
-        echo "Refusing to clean a volume diskutil could not describe: $resolved" >&2
-        echo "Check that it is still mounted with diskutil info -plist \"$resolved\", then retry" >&2
+        printf '%s\n' "$(mole_t clean_external_refuse_undescribed "$resolved")" >&2
+        printf '%s\n' "$(mole_t clean_external_check_mounted "$resolved")" >&2
         return 1
     fi
     if [[ "$internal" != "false" ]]; then
-        echo "Refusing to clean an internal volume: $resolved" >&2
+        printf '%s\n' "$(mole_t clean_external_refuse_internal "$resolved")" >&2
         return 1
     fi
 
     case "$protocol" in
         SMB | NFS | AFP | CIFS | WebDAV)
-            echo "Refusing to clean network volume protocol $protocol: $resolved" >&2
+            printf '%s\n' "$(mole_t clean_external_refuse_network "$protocol" "$resolved")" >&2
             return 1
             ;;
     esac
@@ -1851,7 +1851,7 @@ clean_external_volume_target() {
     [[ -L "$volume" ]] && return 1
 
     if ! _mole_snapshot_path_identity "$volume"; then
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} External volume cleanup · ${GRAY}could not bind mounted volume, no changes${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_external_bind_failed)"
         note_activity
         return 1
     fi
@@ -1885,7 +1885,7 @@ clean_external_volume_target() {
     if ! metadata_scan_file=$(mktemp_file "external-volume-metadata") ||
         ! metadata_scan_errors=$(create_temp_file); then
         stop_section_spinner
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} External volume cleanup · ${GRAY}could not prepare scan, no changes${NC}"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_external_scan_prepare_failed)"
         note_activity
         return 1
     fi
@@ -1915,11 +1915,11 @@ clean_external_volume_target() {
         : > "$metadata_scan_file" || true
         stop_section_spinner
         if mole_rc_timeout "$metadata_scan_rc"; then
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} External volume cleanup · ${GRAY}scan timed out, no changes${NC}"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_external_scan_timeout)"
         elif [[ $metadata_scan_rc -ge 128 ]]; then
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} External volume cleanup · ${GRAY}scan interrupted, no changes${NC}"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_external_scan_interrupted)"
         else
-            echo -e "  ${YELLOW}${ICON_WARNING}${NC} External volume cleanup · ${GRAY}scan failed, no changes${NC}"
+            echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t clean_external_scan_failed)"
         fi
         _report_external_metadata_failure "$metadata_scan_errors" "$metadata_scan_rc"
         note_activity
@@ -2034,11 +2034,11 @@ clean_external_volume_target() {
         local size_human
         size_human=$(bytes_to_human "$((total_size * 1024))")
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} External volume cleanup${NC} · ${YELLOW}${volume_name}, $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_external_volume_label)${NC} · ${YELLOW}${volume_name}, $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$total_size")
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} External volume cleanup${NC} · ${line_color}${volume_name}, $(colorize_human_size "${size_human}")"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_external_volume_label)${NC} · ${line_color}${volume_name}, $(colorize_human_size "${size_human}")"
         fi
         mole_add_cleaned_row "$cleaned_count" "$total_size"
         note_activity
@@ -2091,7 +2091,7 @@ clean_browsers() {
     elif [[ $chrome_state -eq 0 && "$chrome_support_has_targets" == "true" ]]; then
         mole_defer_cleanup_family "Chrome"
     elif [[ "$chrome_support_has_targets" == "true" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Chrome profile caches · skipped (process state unknown)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_chrome_profile_caches)")"
         note_activity
     fi
     local _chrome_profile
@@ -2168,7 +2168,7 @@ clean_browsers() {
         else
             local _dia_skip_reason="Dia running"
             [[ $_dia_process_state -gt 1 ]] && _dia_skip_reason="process state unknown"
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Dia Application Support cache · skipped ($_dia_skip_reason)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_skipped "$(mole_t clean_dia_app_support_cache)" "$(mole_display_text "$_dia_skip_reason")")"
             note_activity
         fi
         for _dia_profile in "$HOME/Library/Application Support/Dia/User Data"/*/; do
@@ -2233,7 +2233,7 @@ clean_browsers() {
     elif [[ $firefox_state -eq 1 ]]; then
         _clean_firefox_caches_guarded || true
     elif [[ "$firefox_cache_targets" == "true" || "$firefox_profile_cache_targets" == "true" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Firefox caches · skipped (process state unknown)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_firefox_caches)")"
         note_activity
     fi
     safe_clean ~/Library/Caches/com.operasoftware.Opera/* "Opera cache"
@@ -2318,7 +2318,7 @@ clean_cloud_storage() {
     elif mole_cleanup_targets_exist \
         "$HOME/Library/Caches/com.getdropbox.dropbox" \
         "$HOME/Library/Caches"/com.dropbox.*; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Dropbox cache · skipped (process state unknown)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_dropbox_cache)")"
         note_activity
     fi
     local google_drive_state=0
@@ -2335,7 +2335,7 @@ clean_cloud_storage() {
             ~/Library/Caches/com.google.GoogleDrive \
             "Google Drive cache" || true
     elif mole_cleanup_targets_exist "$HOME/Library/Caches/com.google.GoogleDrive"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Google Drive cache · skipped (process state unknown)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_google_drive_cache)")"
         note_activity
     fi
     safe_clean ~/Library/Caches/com.baidu.netdisk "Baidu Netdisk cache"
@@ -2355,7 +2355,7 @@ clean_cloud_storage() {
             ~/Library/Caches/com.microsoft.OneDrive \
             "OneDrive cache" || true
     elif mole_cleanup_targets_exist "$HOME/Library/Caches/com.microsoft.OneDrive"; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} OneDrive cache · skipped (process state unknown)"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_status_process_unknown "$(mole_t clean_onedrive_cache)")"
         note_activity
     fi
 }
@@ -2423,9 +2423,9 @@ clean_tart_caches() {
 
     if is_path_whitelisted "$cache_root"; then
         if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Tart caches · would skip (whitelist)"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_status_would_skip_whitelist "$(mole_t clean_tart_caches)")"
         else
-            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Tart caches · skipped (whitelist)"
+            echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_status_skipped_whitelist "$(mole_t clean_tart_caches)")"
         fi
         note_activity
         return 0
@@ -2435,7 +2435,7 @@ clean_tart_caches() {
     mole_pgrep_any -x "tart" || tart_state=$?
     if [[ $tart_state -ne 1 ]]; then
         if [[ $tart_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Tart caches · skipped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_tart_process_unknown)"
             note_activity
         else
             mole_defer_cleanup_family "Tart"
@@ -2446,7 +2446,7 @@ clean_tart_caches() {
     local cache_size_human
     cache_size_human=$(bytes_to_human "$((cache_size_kb * 1024))")
     if [[ "${DRY_RUN:-false}" == "true" ]]; then
-        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Tart caches · would prune items older than ${MOLE_ORPHAN_AGE_DAYS} days (${cache_size_human})"
+        echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_tart_cache_preview "$MOLE_ORPHAN_AGE_DAYS" "$cache_size_human")"
         echo -e "    ${GRAY}tart prune --entries caches --older-than ${MOLE_ORPHAN_AGE_DAYS}${NC}"
         note_activity
         return 0
@@ -2462,7 +2462,7 @@ clean_tart_caches() {
     if [[ $tart_state -ne 1 ]]; then
         [[ -t 1 ]] && stop_section_spinner
         if [[ $tart_state -eq 2 ]]; then
-            echo -e "  ${GRAY}${ICON_WARNING}${NC} Tart caches · stopped (process state unknown)"
+            echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_tart_process_unknown)"
             note_activity
         else
             mole_defer_cleanup_family "Tart"
@@ -2484,7 +2484,7 @@ clean_tart_caches() {
     fi
 
     if [[ "$prune_succeeded" != "true" ]]; then
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Tart caches · prune failed"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_tart_prune_failed)"
         debug_log "tart prune failed for cache-only ${MOLE_ORPHAN_AGE_DAYS}-day policy"
         note_activity
         return 0
@@ -2499,7 +2499,7 @@ clean_tart_caches() {
     local reclaimed_kb=$((cache_size_kb - remaining_kb))
     [[ "$reclaimed_kb" -ge 0 ]] || reclaimed_kb=0
 
-    echo -e "  ${GREEN}${ICON_SUCCESS}${NC} Tart caches · pruned, $(bytes_to_human "$((reclaimed_kb * 1024))") reclaimed"
+    echo -e "  ${GREEN}${ICON_SUCCESS}${NC} $(mole_t clean_tart_pruned "$(bytes_to_human "$((reclaimed_kb * 1024))")")"
     note_activity
 }
 
@@ -2593,7 +2593,7 @@ app_support_dir_has_regenerable_cache_markers() {
 clean_application_support_logs() {
     if [[ ! -d "$HOME/Library/Application Support" ]] || ! ls "$HOME/Library/Application Support" > /dev/null 2>&1; then
         note_activity
-        echo -e "  ${GRAY}${ICON_WARNING}${NC} Skipped: No permission to access Application Support"
+        echo -e "  ${GRAY}${ICON_WARNING}${NC} $(mole_t clean_support_no_permission)"
         return 0
     fi
     start_section_spinner "Scanning Application Support..."
@@ -2861,17 +2861,17 @@ clean_application_support_logs() {
         local total_size_kb=$(((total_size_bytes + 1023) / 1024))
         if [[ "$DRY_RUN" == "true" ]]; then
             if [[ "$total_size_partial" == "true" ]]; then
-                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Application Support logs/caches${NC} · ${YELLOW}at least $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_app_support_logs_caches)${NC} · ${YELLOW}$(mole_t clean_at_least_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
             else
-                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Application Support logs/caches${NC} · $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+                echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_app_support_logs_caches)${NC} · $(colorize_human_size "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
             fi
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$total_size_kb")
             if [[ "$total_size_partial" == "true" ]]; then
-                echo -e "  ${line_color}${ICON_SUCCESS}${NC} Application Support logs/caches${NC} · ${line_color}at least $(colorize_human_size "${size_human}")"
+                echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_app_support_logs_caches)${NC} · ${line_color}$(mole_t clean_at_least_size "$size_human")"
             else
-                echo -e "  ${line_color}${ICON_SUCCESS}${NC} Application Support logs/caches${NC} · $(colorize_human_size "${size_human}")"
+                echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_app_support_logs_caches)${NC} · $(colorize_human_size "${size_human}")"
             fi
         fi
         mole_add_cleaned_row "$cleaned_count" "$total_size_kb"
@@ -3007,11 +3007,11 @@ clean_cached_device_firmware() {
         local size_human
         size_human=$(bytes_to_human "$((total_size_kb * 1024))")
         if [[ "$DRY_RUN" == "true" ]]; then
-            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} Cached device firmware${NC} · ${YELLOW}${cleaned_count} files, $(colorize_human_size "$size_human") ${YELLOW}dry${NC}"
+            echo -e "  ${YELLOW}${ICON_DRY_RUN}${NC} $(mole_t clean_cached_device_firmware)${NC} · ${YELLOW}$(mole_t clean_counted_files "$cleaned_count" "$size_human") ${YELLOW}$(mole_t clean_dry_label)${NC}"
         else
             local line_color
             line_color=$(cleanup_result_color_kb "$total_size_kb")
-            echo -e "  ${line_color}${ICON_SUCCESS}${NC} Cached device firmware${NC} · ${line_color}${cleaned_count} files, $(colorize_human_size "${size_human}")"
+            echo -e "  ${line_color}${ICON_SUCCESS}${NC} $(mole_t clean_cached_device_firmware)${NC} · ${line_color}$(mole_t clean_counted_files "$cleaned_count" "$size_human")"
         fi
         mole_add_cleaned_row "$cleaned_count" "$total_size_kb"
         note_activity
@@ -3641,7 +3641,7 @@ _check_large_file_candidates_body() {
             docker_output=$(run_with_timeout "$MOLE_TIMEOUT_SHORT_QUERY_SEC" docker system df 2> /dev/null || true)
             if [[ -n "$docker_output" ]]; then
                 stop_section_spinner
-                echo -e "  ${YELLOW}${ICON_REVIEW}${NC} Docker storage · ${GRAY}docker system df${NC}"
+                echo -e "  ${YELLOW}${ICON_REVIEW}${NC} $(mole_display_text "Docker storage") · ${GRAY}docker system df${NC}"
                 found_any=true
                 docker_reported=true
                 start_section_spinner "Scanning large files..."

@@ -12,6 +12,8 @@
 # needs a sibling sets its own root.
 export MOLE_TEST_APP_FAMILY_ROOT="${MOLE_TEST_APP_FAMILY_ROOT:-${BATS_RUN_TMPDIR:-/tmp}/mole-test-no-app-family}"
 
+export MOLE_LANG=en
+
 # PROJECT_ROOT for files that need nothing else from the shared setup.
 mole_test_setup_project_root() {
 	PROJECT_ROOT="$(cd "${BATS_TEST_DIRNAME}/.." && pwd)"

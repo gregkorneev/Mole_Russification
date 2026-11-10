@@ -12,7 +12,42 @@ import time
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
-script = r'''
+single_sudo = sys.argv[1:] == ['single-sudo']
+if single_sudo:
+    script = r'''
+unset MOLE_TEST_MODE MOLE_TEST_NO_AUTH
+source "$TEST_ROOT/lib/core/common.sh"
+source "$TEST_ROOT/lib/core/sudo.sh"
+
+tmp_dir="$(mktemp -d)"
+calls="$tmp_dir/calls"
+authed="$tmp_dir/authed"
+trap 'rm -rf -- "$tmp_dir" # SAFE: exact temporary directory created above' EXIT
+
+sudo() {
+    case "$1" in
+        -n) [[ -e "$authed" ]] ;;
+        -k) return 0 ;;
+        -v)
+            echo v >> "$calls"
+            # The user takes longer than the old five-second window.
+            sleep 6
+            : > "$authed"
+            ;;
+        *) return 1 ;;
+    esac
+}
+is_clamshell_mode() { return 1; }
+check_touchid_support() { return 0; }
+safe_clear_lines() { printf "CLEAR:%s\\n" "$1"; }
+safe_clear_line() { :; }
+
+rc=0
+request_sudo_access "Admin access required" || rc=$?
+printf "RC=%s V_CALLS=%s\\n" "$rc" "$(grep -c . "$calls")"
+'''
+else:
+    script = r'''
 source "$TEST_ROOT/lib/core/sudo.sh"
 probe() { if stty -a < /dev/tty | grep -q -- '-echo '; then echo off; else echo on; fi; }
 echo "BEFORE=$(probe)"
@@ -65,6 +100,11 @@ finally:
     os.close(slave)
 
 text = output.decode(errors='replace').replace('\r', '')
+if single_sudo:
+    sys.stdout.write(text)
+    if process.returncode != 0:
+        sys.exit(process.returncode)
+    sys.exit(0)
 assert 'BEFORE=on' in text, text
 assert 'INSIDE=off' in text, text
 assert 'AFTER=on' in text, text

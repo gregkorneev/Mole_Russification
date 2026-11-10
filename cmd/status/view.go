@@ -8,6 +8,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
+	"github.com/tw93/mole/internal/i18n"
 	"github.com/tw93/mole/internal/units"
 )
 
@@ -18,7 +19,7 @@ func renderTerminalTooSmall(width, height int) string {
 		Width(width).
 		MaxWidth(width).
 		MaxHeight(height).
-		Render("Terminal too small. Enlarge the window to view status.")
+		Render(i18n.T("status_small_terminal"))
 }
 
 var (
@@ -161,10 +162,10 @@ func renderHeader(m MetricsSnapshot, errMsg string, animFrame int, termWidth int
 	}
 	compactHeader := termWidth <= 80
 
-	title := titleStyle.Render("Status")
+	title := titleStyle.Render(i18n.T("status_title"))
 
 	scoreStyle := getScoreStyle(m.HealthScore)
-	scoreText := subtleStyle.Render("Health ") + scoreStyle.Render(fmt.Sprintf("● %d", m.HealthScore))
+	scoreText := subtleStyle.Render(i18n.T("status_health")+" ") + scoreStyle.Render(fmt.Sprintf("● %d", m.HealthScore))
 	if errMsg == "" {
 		diagnosis := statusDiagnosisLine(m)
 		scoreText += " " + subtleStyle.Render(diagnosis)
@@ -185,14 +186,14 @@ func renderHeader(m MetricsSnapshot, errMsg string, animFrame int, termWidth int
 	}
 	specParts := []string{}
 	if m.Hardware.TotalRAM != "" {
-		specParts = append(specParts, "RAM "+m.Hardware.TotalRAM)
+		specParts = append(specParts, i18n.T("status_ram_label")+" "+m.Hardware.TotalRAM)
 	} else if m.Memory.Total > 0 {
-		specParts = append(specParts, "RAM "+humanBytes(m.Memory.Total))
+		specParts = append(specParts, i18n.T("status_ram_label")+" "+humanBytes(m.Memory.Total))
 	}
 	if m.Hardware.DiskSize != "" {
-		specParts = append(specParts, "Disk "+m.Hardware.DiskSize)
+		specParts = append(specParts, i18n.T("status_disk_spec_label")+" "+m.Hardware.DiskSize)
 	} else if disk, ok := rootDisk(m.Disks); ok && disk.Total > 0 {
-		specParts = append(specParts, "Disk "+humanBytes(disk.Total))
+		specParts = append(specParts, i18n.T("status_disk_spec_label")+" "+humanBytes(disk.Total))
 	}
 	refreshParts := []string{}
 	if m.Hardware.RefreshRate != "" {
@@ -203,7 +204,7 @@ func renderHeader(m MetricsSnapshot, errMsg string, animFrame int, termWidth int
 		optionalInfoParts = append(optionalInfoParts, m.Hardware.OSVersion)
 	}
 	if !compactHeader && m.Uptime != "" {
-		uptimeText := "up " + m.Uptime
+		uptimeText := i18n.T("status_uptime", localizeUptime(m.Uptime))
 		switch uptimeSeverity(m.UptimeSeconds) {
 		case "danger":
 			uptimeText = dangerStyle.Render(uptimeText + " ↻")
@@ -276,9 +277,9 @@ func renderHeader(m MetricsSnapshot, errMsg string, animFrame int, termWidth int
 
 	if errMsg != "" {
 		if mole == "" {
-			return lipgloss.JoinVertical(lipgloss.Left, headerLine, "", dangerStyle.Render("ERROR: "+errMsg)), ""
+			return lipgloss.JoinVertical(lipgloss.Left, headerLine, "", dangerStyle.Render(i18n.T("status_error", errMsg))), ""
 		}
-		return lipgloss.JoinVertical(lipgloss.Left, headerLine, "", mole, dangerStyle.Render("ERROR: "+errMsg)), ""
+		return lipgloss.JoinVertical(lipgloss.Left, headerLine, "", mole, dangerStyle.Render(i18n.T("status_error", errMsg))), ""
 	}
 	if mole == "" {
 		return headerLine, ""
@@ -306,18 +307,18 @@ func renderProcessAlertBar(alerts []ProcessAlert, processStale *bool, processCol
 	}
 
 	focus := active[0]
-	prefix := "ALERT"
+	prefix := i18n.T("status_alert")
 	historical := !processSnapshotFresh(processStale)
 	if historical {
-		prefix = "LAST ALERT"
+		prefix = i18n.T("status_last_alert")
 		available := max(width-2, 0)
 		if width > 0 && lipgloss.Width(prefix) > available {
-			prefix = "OLD"
+			prefix = i18n.T("status_old")
 		}
 	}
 
 	detail := fmt.Sprintf(
-		"%s at %.1f%% for %s (threshold %.1f%%)",
+		i18n.T("status_alert_detail"),
 		formatProcessLabel(ProcessInfo{PID: focus.PID, Name: focus.Name}),
 		focus.CPU,
 		focus.Window,
@@ -325,7 +326,7 @@ func renderProcessAlertBar(alerts []ProcessAlert, processStale *bool, processCol
 	)
 	text := prefix + " " + detail
 	if len(active) > 1 {
-		text += fmt.Sprintf(" · +%d more", len(active)-1)
+		text += i18n.T("status_alert_more", len(active)-1)
 	}
 	if historical {
 		freshnessWidth := -1
@@ -352,9 +353,9 @@ func processFreshnessLabel(stale *bool, collectedAt *time.Time, maxWidth int) st
 	if processSnapshotFresh(stale) {
 		return ""
 	}
-	base := "STALE"
+	base := i18n.T("status_stale")
 	if stale == nil {
-		base = "UNKNOWN"
+		base = i18n.T("status_unknown")
 	}
 	if maxWidth >= 0 && lipgloss.Width(base) > maxWidth {
 		return ""
@@ -387,10 +388,10 @@ func renderCPUCard(cpu CPUStatus, thermal ThermalStatus, cpuCores int) cardData 
 		headerText += fmt.Sprintf(" @ %s°C", colorizeTemp(thermal.CPUTemp))
 	}
 
-	lines = append(lines, fmt.Sprintf("Total  %s  %s", usageBar, headerText))
+	lines = append(lines, fmt.Sprintf("%-6s %s  %s", i18n.T("status_total"), usageBar, headerText))
 
 	if cpu.PerCoreEstimated {
-		lines = append(lines, subtleStyle.Render("Per-core data unavailable, using averaged load"))
+		lines = append(lines, subtleStyle.Render(i18n.T("status_cpu_core_estimated")))
 	} else if len(cpu.PerCore) > 0 {
 		type coreUsage struct {
 			idx int
@@ -410,20 +411,20 @@ func renderCPUCard(cpu CPUStatus, thermal ThermalStatus, cpuCores int) cardData 
 		}
 		for i := range maxCores {
 			c := cores[i]
-			lines = append(lines, fmt.Sprintf("Core%-2d %s  %5.1f%%", c.idx+1, progressBar(c.val), c.val))
+			lines = append(lines, fmt.Sprintf(i18n.T("status_cpu_core")+" %s  %5.1f%%", c.idx+1, progressBar(c.val), c.val))
 		}
 	}
 
 	// Load line at the end
 	if cpu.PCoreCount > 0 && cpu.ECoreCount > 0 {
-		lines = append(lines, fmt.Sprintf("Load   %.2f / %.2f / %.2f, %dP+%dE",
+		lines = append(lines, fmt.Sprintf("%-6s %.2f / %.2f / %.2f, %dP+%dE", i18n.T("status_cpu_load"),
 			cpu.Load1, cpu.Load5, cpu.Load15, cpu.PCoreCount, cpu.ECoreCount))
 	} else {
-		lines = append(lines, fmt.Sprintf("Load   %.2f / %.2f / %.2f, %d cores",
+		lines = append(lines, fmt.Sprintf("%-6s %.2f / %.2f / %.2f, "+i18n.T("status_cpu_cores"), i18n.T("status_cpu_load"),
 			cpu.Load1, cpu.Load5, cpu.Load15, cpu.LogicalCPU))
 	}
 
-	return cardData{icon: iconCPU, title: "CPU", lines: lines}
+	return cardData{icon: iconCPU, title: i18n.T("status_cpu_title"), lines: lines}
 }
 
 func renderMemoryCard(mem MemoryStatus, cardWidth int) cardData {
@@ -432,14 +433,14 @@ func renderMemoryCard(mem MemoryStatus, cardWidth int) cardData {
 
 	var lines []string
 	// Line 1: Used
-	lines = append(lines, fmt.Sprintf("Used   %s  %5.1f%%", progressBar(mem.UsedPercent), mem.UsedPercent))
+	lines = append(lines, fmt.Sprintf("%-6s %s  %5.1f%%", i18n.T("status_used"), progressBar(mem.UsedPercent), mem.UsedPercent))
 
 	// Line 2: Free
 	var freePercent float64
 	if mem.Total > 0 {
 		freePercent = (float64(mem.Available) / float64(mem.Total)) * 100.0
 	}
-	lines = append(lines, fmt.Sprintf("Free   %s  %5.1f%%", progressBar(freePercent), freePercent))
+	lines = append(lines, fmt.Sprintf("%-6s %s  %5.1f%%", i18n.T("status_free_short"), progressBar(freePercent), freePercent))
 
 	if hasSwap {
 		// Layout with Swap:
@@ -449,7 +450,7 @@ func renderMemoryCard(mem MemoryStatus, cardWidth int) cardData {
 		if mem.SwapTotal > 0 {
 			swapPercent = (float64(mem.SwapUsed) / float64(mem.SwapTotal)) * 100.0
 		}
-		swapLine := fmt.Sprintf("Swap   %s  %5.1f%%", progressBar(swapPercent), swapPercent)
+		swapLine := fmt.Sprintf("%-6s %s  %5.1f%%", i18n.T("status_swap"), progressBar(swapPercent), swapPercent)
 		swapText := fmt.Sprintf("%s/%s", humanBytesCompact(mem.SwapUsed), humanBytesCompact(mem.SwapTotal))
 		swapLineWithText := swapLine + " " + swapText
 		if cardWidth > 0 && lipgloss.Width(swapLineWithText) <= cardWidth {
@@ -460,23 +461,23 @@ func renderMemoryCard(mem MemoryStatus, cardWidth int) cardData {
 			lines = append(lines, swapLine)
 		}
 
-		lines = append(lines, formatMemoryDetailLine("Total", humanBytes(mem.Used)+" / "+humanBytes(mem.Total), mem.Available, cardWidth))
+		lines = append(lines, formatMemoryDetailLine(i18n.T("status_total"), humanBytes(mem.Used)+" / "+humanBytes(mem.Total), mem.Available, cardWidth))
 	} else {
 		// Layout without Swap:
 		// 3. Total
 		// 4. Cache + Avail
-		lines = append(lines, fmt.Sprintf("Total  %s / %s", humanBytes(mem.Used), humanBytes(mem.Total)))
+		lines = append(lines, fmt.Sprintf("%-6s %s / %s", i18n.T("status_total"), humanBytes(mem.Used), humanBytes(mem.Total)))
 
 		if mem.Cached > 0 {
-			lines = append(lines, formatMemoryDetailLine("Cache", humanBytes(mem.Cached), mem.Available, cardWidth))
+			lines = append(lines, formatMemoryDetailLine(i18n.T("status_cache"), humanBytes(mem.Cached), mem.Available, cardWidth))
 		} else {
-			lines = append(lines, fmt.Sprintf("Avail  %s", humanBytes(mem.Available)))
+			lines = append(lines, fmt.Sprintf("%-6s %s", i18n.T("status_available"), humanBytes(mem.Available)))
 		}
 	}
 	// Memory pressure status.
 	if mem.Pressure != "" {
 		pressureStyle := okStyle
-		pressureText := "Status " + mem.Pressure
+		pressureText := i18n.T("status_status") + " " + memoryPressureLabel(mem.Pressure)
 		switch mem.Pressure {
 		case "warn":
 			pressureStyle = warnStyle
@@ -485,21 +486,34 @@ func renderMemoryCard(mem MemoryStatus, cardWidth int) cardData {
 		}
 		lines = append(lines, pressureStyle.Render(pressureText))
 	}
-	return cardData{icon: iconMemory, title: "Memory", lines: lines}
+	return cardData{icon: iconMemory, title: i18n.T("status_memory_title"), lines: lines}
+}
+
+func memoryPressureLabel(pressure string) string {
+	switch pressure {
+	case "normal":
+		return i18n.T("status_pressure_normal")
+	case "warn":
+		return i18n.T("status_pressure_warn")
+	case "critical":
+		return i18n.T("status_pressure_critical")
+	default:
+		return pressure
+	}
 }
 
 func formatMemoryDetailLine(label string, value string, available uint64, cardWidth int) string {
-	line := fmt.Sprintf("%-6s %s · Avail %s", label, value, humanBytes(available))
+	line := fmt.Sprintf("%-6s %s · %s %s", label, value, i18n.T("status_available"), humanBytes(available))
 	if cardWidth <= 0 || lipgloss.Width(line) <= cardWidth {
 		return line
 	}
-	return fmt.Sprintf("%-6s %s · Avail %s", label, value, humanBytesCompact(available))
+	return fmt.Sprintf("%-6s %s · %s %s", label, value, i18n.T("status_available"), humanBytesCompact(available))
 }
 
 func renderDiskCard(disks []DiskStatus, io DiskIOStatus, _ uint64, _ bool) cardData {
 	var lines []string
 	if len(disks) == 0 {
-		lines = append(lines, subtleStyle.Render("Collecting..."))
+		lines = append(lines, subtleStyle.Render(i18n.T("status_collecting")))
 	} else {
 		internal, external := splitDisks(disks)
 		addGroup := func(prefix string, list []DiskStatus) {
@@ -514,7 +528,7 @@ func renderDiskCard(disks []DiskStatus, io DiskIOStatus, _ uint64, _ bool) cardD
 		addGroup("INTR", internal)
 		addGroup("EXTR", external)
 		if len(lines) == 0 {
-			lines = append(lines, subtleStyle.Render("No disks detected"))
+			lines = append(lines, subtleStyle.Render(i18n.T("status_no_disks")))
 		} else if len(disks) == 1 {
 			lines = append(lines, formatDiskMetaLine(disks[0]))
 		}
@@ -523,7 +537,7 @@ func renderDiskCard(disks []DiskStatus, io DiskIOStatus, _ uint64, _ bool) cardD
 		}
 	}
 	lines = append(lines, formatDiskIOLine(io))
-	return cardData{icon: iconDisk, title: "Disk", lines: lines}
+	return cardData{icon: iconDisk, title: i18n.T("status_disk_title"), lines: lines}
 }
 
 func splitDisks(disks []DiskStatus) (internal, external []DiskStatus) {
@@ -546,7 +560,7 @@ func diskLabel(prefix string, index int, total int) string {
 
 func formatDiskLine(label string, d DiskStatus) string {
 	if label == "" {
-		label = "DISK"
+		label = i18n.T("status_disk_label")
 	}
 	bar := progressBar(d.UsedPercent)
 	used := humanBytesShort(d.Used)
@@ -562,7 +576,7 @@ func formatDiskLine(label string, d DiskStatus) string {
 	} else {
 		free = 0
 	}
-	return fmt.Sprintf("%-6s %s  %s used, %s free", label, bar, used, humanBytesShort(free))
+	return fmt.Sprintf("%-6s %s  "+i18n.T("status_disk_usage"), label, bar, used, humanBytesShort(free))
 }
 
 func formatDiskMetaLine(d DiskStatus) string {
@@ -571,9 +585,9 @@ func formatDiskMetaLine(d DiskStatus) string {
 		parts = append(parts, strings.ToUpper(d.Fstype))
 	}
 	if d.Purgeable > 0 {
-		parts = append(parts, humanBytesShort(d.Purgeable)+" purgeable")
+		parts = append(parts, humanBytesShort(d.Purgeable)+" "+i18n.T("status_purgeable"))
 	}
-	return fmt.Sprintf("Total  %s", strings.Join(parts, " · "))
+	return fmt.Sprintf("%-6s %s", i18n.T("status_total"), strings.Join(parts, " · "))
 }
 
 // formatDiskSMARTLine returns "" unless a disk is actually failing.
@@ -594,11 +608,11 @@ func formatDiskSMARTLine(disks []DiskStatus) string {
 				continue
 			}
 			if len(disks) == 1 {
-				failingLabels = append(failingLabels, dangerStyle.Render("Failing"))
+				failingLabels = append(failingLabels, dangerStyle.Render(i18n.T("status_disk_failing")))
 				continue
 			}
 			failingLabels = append(failingLabels,
-				diskLabel(prefix, index, len(list))+" "+dangerStyle.Render("FAIL"))
+				diskLabel(prefix, index, len(list))+" "+dangerStyle.Render(i18n.T("status_disk_fail")))
 		}
 	}
 	collectFailing("INTR", internal)
@@ -607,8 +621,8 @@ func formatDiskSMARTLine(disks []DiskStatus) string {
 		return ""
 	}
 
-	failingLabels = append(failingLabels, dangerStyle.Render("Back up now"))
-	return fmt.Sprintf("%-*s %s", metricLabelWidth, "SMART", strings.Join(failingLabels, " · "))
+	failingLabels = append(failingLabels, dangerStyle.Render(i18n.T("status_back_up_now")))
+	return fmt.Sprintf("%-*s %s", metricLabelWidth, i18n.T("status_smart"), strings.Join(failingLabels, " · "))
 }
 
 func formatDiskIOLine(io DiskIOStatus) string {
@@ -618,7 +632,7 @@ func formatDiskIOLine(io DiskIOStatus) string {
 		ioBar(io.WriteRate),
 		formatRateCompact(io.WriteRate),
 	)
-	return fmt.Sprintf("%-*s %s", metricLabelWidth, "I/O", text)
+	return fmt.Sprintf("%-*s %s", metricLabelWidth, i18n.T("status_io"), text)
 }
 
 func ioBar(rate float64) string {
@@ -657,9 +671,9 @@ func renderProcessCard(procs []ProcessInfo, cardWidth int) cardData {
 		lines = append(lines, strings.TrimRight(line, " "))
 	}
 	if len(lines) == 0 {
-		lines = append(lines, subtleStyle.Render("Collecting..."))
+		lines = append(lines, subtleStyle.Render(i18n.T("status_collecting")))
 	}
-	return cardData{icon: iconProcs, title: "Processes", lines: lines}
+	return cardData{icon: iconProcs, title: i18n.T("status_process_title"), lines: lines}
 }
 
 func processBar(percent float64, cardWidth int) string {
@@ -693,9 +707,9 @@ func buildCards(m MetricsSnapshot, width int, cpuCores int, batteryProbed bool) 
 	switch {
 	case processSnapshotFresh(m.ProcessStale):
 		if !hasRenderedProcessData {
-			message := "No process activity"
+			message := i18n.T("status_process_no_activity")
 			if hasActiveProcessAlert {
-				message = "No process rows · active alert above"
+				message = i18n.T("status_process_no_rows_alert")
 			}
 			processCard.lines = []string{subtleStyle.Render(message)}
 		}
@@ -708,13 +722,13 @@ func buildCards(m MetricsSnapshot, width int, cpuCores int, batteryProbed bool) 
 		if hasRenderedProcessData {
 			processCard.lines = append([]string{warnStyle.Render(freshness)}, processCard.lines...)
 		} else {
-			processCard.lines = []string{warnStyle.Render(freshness + " · no retained process activity")}
+			processCard.lines = []string{warnStyle.Render(freshness + " · " + i18n.T("status_process_no_retained"))}
 		}
 	default:
 		if hasRenderedProcessData {
-			processCard.lines = append([]string{warnStyle.Render("UNKNOWN")}, processCard.lines...)
+			processCard.lines = append([]string{warnStyle.Render(i18n.T("status_unknown"))}, processCard.lines...)
 		} else if hasActiveProcessAlert || m.ProcessCollectedAt != nil || m.ZombieCount != nil {
-			processCard.lines = []string{warnStyle.Render("UNKNOWN · process sample unavailable")}
+			processCard.lines = []string{warnStyle.Render(i18n.T("status_unknown") + " · " + i18n.T("status_process_sample_unavailable"))}
 		}
 	}
 	cards := []cardData{
@@ -758,7 +772,7 @@ func renderNetworkCard(netStats []NetworkStatus, history NetworkHistory, proxy P
 	}
 
 	if len(netStats) == 0 {
-		lines = append(lines, subtleStyle.Render("Collecting..."))
+		lines = append(lines, subtleStyle.Render(i18n.T("status_collecting")))
 	} else {
 		// Calculate dynamic width
 		// Layout: "Down   " (7) + graph + "  " (2) + rate (approx 10-12)
@@ -769,15 +783,15 @@ func renderNetworkCard(netStats []NetworkStatus, history NetworkHistory, proxy P
 		// sparkline graphs
 		rxSparkline := sparkline(history.RxHistory, totalRx, graphWidth)
 		txSparkline := sparkline(history.TxHistory, totalTx, graphWidth)
-		lines = append(lines, fmt.Sprintf("Down   %s  %s", rxSparkline, formatRate(totalRx)))
-		lines = append(lines, fmt.Sprintf("Up     %s  %s", txSparkline, formatRate(totalTx)))
+		lines = append(lines, fmt.Sprintf("%-6s %s  %s", i18n.T("status_down"), rxSparkline, formatRate(totalRx)))
+		lines = append(lines, fmt.Sprintf("%-6s %s  %s", i18n.T("status_up"), txSparkline, formatRate(totalTx)))
 		// Show proxy and IP on one line.
 		var infoParts []string
 		if proxy.Enabled {
 			if proxy.IsTunnel {
-				infoParts = append(infoParts, "Tunnel")
+				infoParts = append(infoParts, i18n.T("status_tunnel"))
 			} else {
-				infoParts = append(infoParts, "Proxy "+proxy.Type)
+				infoParts = append(infoParts, i18n.T("status_proxy", proxy.Type))
 			}
 		}
 		if primaryIP != "" {
@@ -787,7 +801,7 @@ func renderNetworkCard(netStats []NetworkStatus, history NetworkHistory, proxy P
 			lines = append(lines, strings.Join(infoParts, " · "))
 		}
 	}
-	return cardData{icon: iconNetwork, title: "Network", lines: lines}
+	return cardData{icon: iconNetwork, title: i18n.T("status_network_title"), lines: lines}
 }
 
 // 8 levels: ▁▂▃▄▅▆▇█
@@ -846,12 +860,12 @@ func renderBatteryCard(batts []BatteryStatus, thermal ThermalStatus, probed bool
 		// shape with placeholders instead, so the real values replace them
 		// without the layout jumping.
 		lines = append(lines,
-			fmt.Sprintf("Level  %s  %6s", batteryProgressBar(0), placeholderValue),
-			fmt.Sprintf("Health %s  %6s", batteryProgressBar(0), placeholderValue),
+			fmt.Sprintf("%-6s %s  %6s", i18n.T("status_level"), batteryProgressBar(0), placeholderValue),
+			fmt.Sprintf("%-6s %s  %6s", i18n.T("status_battery_health"), batteryProgressBar(0), placeholderValue),
 			subtleStyle.Render(placeholderValue),
 		)
 	} else if len(batts) == 0 {
-		lines = append(lines, subtleStyle.Render("No battery"))
+		lines = append(lines, subtleStyle.Render(i18n.T("status_no_battery")))
 	} else {
 		b := batts[0]
 		statusLower := strings.ToLower(b.Status)
@@ -859,7 +873,7 @@ func renderBatteryCard(batts []BatteryStatus, thermal ThermalStatus, probed bool
 		if b.Percent < 20 && statusLower != "charging" && statusLower != "charged" {
 			percentText = dangerStyle.Render(percentText)
 		}
-		lines = append(lines, fmt.Sprintf("Level  %s  %s", batteryProgressBar(b.Percent), percentText))
+		lines = append(lines, fmt.Sprintf("%-6s %s  %s", i18n.T("status_level"), batteryProgressBar(b.Percent), percentText))
 
 		// Add capacity line if available.
 		if b.Capacity > 0 {
@@ -869,14 +883,14 @@ func renderBatteryCard(batts []BatteryStatus, thermal ThermalStatus, probed bool
 			} else if b.Capacity < 85 {
 				capacityText = warnStyle.Render(capacityText)
 			}
-			lines = append(lines, fmt.Sprintf("Health %s  %s", batteryProgressBar(float64(b.Capacity)), capacityText))
+			lines = append(lines, fmt.Sprintf("%-6s %s  %s", i18n.T("status_battery_health"), batteryProgressBar(float64(b.Capacity)), capacityText))
 		}
 
 		if thermal.AdapterPower > 0 && isPoweredByAC(statusLower) {
 			lines = append(lines, fmt.Sprintf("%-6s %s  %6s",
-				"Input",
+				i18n.T("status_input"),
 				okStyle.Render(plainProgressBar(100)),
-				fmt.Sprintf("%.0fW max", thermal.AdapterPower),
+				i18n.T("status_watts_max", thermal.AdapterPower),
 			))
 		}
 
@@ -896,6 +910,7 @@ func renderBatteryCard(batts []BatteryStatus, thermal ThermalStatus, probed bool
 		// Battery health assessment label.
 		if b.CycleCount > 0 || b.Capacity > 0 {
 			label, severity := batteryHealthLabel(b.CycleCount, b.Capacity)
+			label = localizedBatteryHealthLabel(label)
 			switch severity {
 			case "danger":
 				healthParts = append(healthParts, dangerStyle.Render(label))
@@ -910,7 +925,7 @@ func renderBatteryCard(batts []BatteryStatus, thermal ThermalStatus, probed bool
 		}
 
 		if b.CycleCount > 0 {
-			cycleText := fmt.Sprintf("%d cycles", b.CycleCount)
+			cycleText := i18n.T("status_cycles", b.CycleCount)
 			if b.CycleCount > batteryCycleWarn {
 				cycleText = warnStyle.Render(cycleText)
 			}
@@ -930,7 +945,35 @@ func renderBatteryCard(batts []BatteryStatus, thermal ThermalStatus, probed bool
 		lines = append(lines, strings.Join(summaryParts, " · "))
 	}
 
-	return cardData{icon: iconBattery, title: "Power", lines: lines}
+	return cardData{icon: iconBattery, title: i18n.T("status_power_title"), lines: lines}
+}
+
+func localizedBatteryHealthLabel(label string) string {
+	switch label {
+	case "Healthy":
+		return i18n.T("status_battery_health_good")
+	case "Fair":
+		return i18n.T("status_battery_health_fair")
+	case "Service Soon":
+		return i18n.T("status_battery_health_service")
+	default:
+		return label
+	}
+}
+
+func localizeUptime(value string) string {
+	parts := strings.Fields(value)
+	for i, part := range parts {
+		switch {
+		case strings.HasSuffix(part, "d"):
+			parts[i] = i18n.T("status_uptime_days", strings.TrimSuffix(part, "d"))
+		case strings.HasSuffix(part, "h"):
+			parts[i] = i18n.T("status_uptime_hours", strings.TrimSuffix(part, "h"))
+		case strings.HasSuffix(part, "m"):
+			parts[i] = i18n.T("status_uptime_minutes", strings.TrimSuffix(part, "m"))
+		}
+	}
+	return strings.Join(parts, " ")
 }
 
 func isPoweredByAC(statusLower string) bool {
@@ -943,18 +986,18 @@ func isPoweredByAC(statusLower string) bool {
 func formatBatteryStatus(status string) string {
 	status = strings.TrimSpace(status)
 	if status == "" {
-		return "Unknown"
+		return i18n.T("status_unknown_battery")
 	}
 	lower := strings.ToLower(status)
 	switch lower {
 	case "ac":
 		return "AC"
 	case "charged":
-		return "Charged"
+		return i18n.T("status_charged")
 	case "charging":
-		return "Charging"
+		return i18n.T("status_charging")
 	case "discharging":
-		return "Discharging"
+		return i18n.T("status_discharging")
 	}
 	return strings.ToUpper(status[:1]) + strings.ToLower(status[1:])
 }
