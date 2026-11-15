@@ -3248,7 +3248,7 @@ _batch_render_summary() {
             # If suggestion is same as reason, there was no suggestion part
             # Also check if suggestion is empty
             if [[ "$first_suggestion" != "$first_reason" && -n "$first_suggestion" ]]; then
-                suggestion_text="${GRAY}${ICON_REVIEW} ${first_suggestion}${NC}"
+                suggestion_text="${GRAY}${ICON_REVIEW} $(mole_display_text "$first_suggestion")${NC}"
             fi
 
             case "$first_reason" in
@@ -3259,7 +3259,7 @@ _batch_render_summary() {
                 *) reason_summary="$first_reason" ;;
             esac
         fi
-        summary_details+=("${ICON_LIST} Failed: ${RED}${failed_list}${NC} ${reason_summary}")
+        summary_details+=("${ICON_LIST} $(mole_t ui_uninstall_failed_summary "${RED}${failed_list}${NC}" "$(mole_display_text "$reason_summary")")")
         if [[ -n "$suggestion_text" ]]; then
             summary_details+=("$suggestion_text")
         fi
@@ -3279,9 +3279,9 @@ _batch_render_summary() {
         # repeating them plus a generic "review these" line only added noise to
         # the block the user reads last, with no action attached to it.
         local kept_count=${#review_only_system_leftovers[@]}
-        local kept_label="paths"
-        [[ $kept_count -eq 1 ]] && kept_label="path"
-        summary_details+=("${ICON_REVIEW} Kept ${kept_count} system-level ${kept_label}, which Mole never removes")
+        local kept_key="ui_uninstall_kept_system_path_many"
+        [[ $kept_count -eq 1 ]] && kept_key="ui_uninstall_kept_system_path_one"
+        summary_details+=("${ICON_REVIEW} $(mole_t "$kept_key" "$kept_count")")
     fi
 
     if [[ ${#system_extension_warning_apps[@]} -gt 0 ]]; then

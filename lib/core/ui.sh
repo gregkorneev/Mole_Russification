@@ -47,6 +47,13 @@ get_display_width() {
     export LC_ALL=C
     local byte_count=${#str}
 
+    # Two-byte characters (Cyrillic, Greek, accented Latin) take one column.
+    # Count their lead bytes so the CJK heuristic below does not widen them:
+    # a Russian label measured 1.5 times its real width and was cut early.
+    local two_byte_lead_class=$'[^\xc2-\xdf]'
+    local two_byte_leads="${str//$two_byte_lead_class/}"
+    local two_byte_count=${#two_byte_leads}
+
     # Restore Locale immediately
     if [[ -n "$old_lc" ]]; then
         export LC_ALL="$old_lc"
@@ -67,7 +74,7 @@ get_display_width() {
     # "A" (1 char, 1 byte) -> 1 + 0 = 1.
     # This is an approximation but very fast and sufficient for App names.
     # Integer arithmetic in bash automatically handles floor.
-    local extra_bytes=$((byte_count - char_count))
+    local extra_bytes=$((byte_count - char_count - two_byte_count))
     local padding=$((extra_bytes / 2))
     width=$((char_count + padding))
 

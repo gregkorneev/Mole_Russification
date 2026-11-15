@@ -1278,6 +1278,19 @@ EOF
     [ "$output" = $'Очистка...\nA😀B...' ]
 }
 
+@test "get_display_width counts two-byte characters as one column each" {
+    # 21 Cyrillic and space columns measured 30 under the CJK heuristic, so a
+    # label that fit in 28 columns was printed with a spurious ellipsis.
+    run /bin/bash -c "export MOLE_BASE_LOADED=1; source '$PROJECT_ROOT/lib/core/ui.sh'
+get_display_width 'Заметки и напоминания'
+get_display_width 'Écrivain café'
+get_display_width '中文 abc'
+LC_ALL=C get_display_width 'Заметки'
+truncate_by_display_width 'Заметки и напоминания' 28"
+    [ "$status" -eq 0 ]
+    [ "$output" = $'21\n13\n8\n7\nЗаметки и напоминания' ]
+}
+
 @test "read_key respects MOLE_READ_KEY_FORCE_CHAR" {
     run /bin/bash -c "export MOLE_BASE_LOADED=1; export MOLE_READ_KEY_FORCE_CHAR=1; source '$PROJECT_ROOT/lib/core/ui.sh'; echo -n 'j' | read_key"
     [ "$output" = "CHAR:j" ]

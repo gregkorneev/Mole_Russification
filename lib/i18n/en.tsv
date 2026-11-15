@@ -455,6 +455,9 @@ analyze_scan_path	Scanning %s...
 analyze_moved_some_failed	Moved %d items to Trash, some failed: %v
 analyze_moved_count	Moved %d items to Trash
 analyze_move_failed	Failed to move to Trash: %v
+analyze_trash_timeout	timeout moving to Trash
+analyze_trash_tool_failure	failed to move to Trash: %s
+analyze_trash_protected	protected path cannot be deleted: %s
 analyze_scan_failed	Scan failed: %v
 analyze_cache_refresh_path	Loaded cached data for %s, refreshing...
 analyze_size_unavailable	Size unavailable
@@ -655,6 +658,8 @@ analyze_local_snapshot	%d Time Machine local snapshot · snapshot-only space is 
 analyze_snapshot_stale	last successful check
 help_usage_label	Usage:
 help_purge_title	Mole Purge
+purge_project_artifacts_title	Purge Project Artifacts
+uninstall_checking_app_list	Checking application list...
 help_purge_description	Clean old project build artifacts
 help_purge_paths	Edit custom scan directories
 help_purge_dry_run	Preview purge actions without making changes
@@ -906,11 +911,6 @@ ui_summary_optimize_complete	Optimization Complete
 ui_summary_optimize_dry_run	Dry Run Complete, No Changes Made
 ui_summary_optimize_pass_complete	Optimization pass complete
 ui_summary_review_warnings	Review the warnings above
-ui_outcome_unchanged	unchanged
-ui_outcome_skipped	skipped
-ui_outcome_unavailable	unavailable
-ui_outcome_attention	require attention
-ui_outcome_failed	failed
 ui_summary_would_apply	Would apply %s optimizations
 ui_summary_run_without_dry_run	Run without %s to apply these changes
 ui_cache_cleaned	cache cleaned
@@ -1214,7 +1214,6 @@ ui_installer_summary_would_remove	Would remove %s installers, free %s
 ui_installer_summary_removed	Removed %s installers, freed %s
 ui_installer_summary_cleaner	Your Mac is cleaner now!
 ui_installer_summary_none	No installers were removed
-ui_installer_summary_failed	Failed to remove %s %s
 ui_installer_summary_more_failed	%s more failed
 ui_installer_no_files	No installer files to clean
 ui_uninstall_success_one	Removed %s app
@@ -1223,7 +1222,6 @@ ui_uninstall_dry_one	Would remove %s app
 ui_uninstall_dry_many	Would remove %s apps
 ui_uninstall_no_success_or_failure	No applications were uninstalled.
 ui_uninstall_failed_summary	Failed: %s %s
-ui_uninstall_kept_system_paths	Kept %s system-level %s, which Mole never removes
 ui_uninstall_extensions_remain	System extensions may remain after removal: %s
 ui_uninstall_extensions_settings	Check System Settings > General > Login Items & Extensions to remove leftover extensions
 ui_uninstall_background_item	Background item still running for %s, turn it off in System Settings > Login Items & Extensions
@@ -2074,3 +2072,70 @@ purge_summary_would_free	Would free approximately: %s
 purge_summary_items	Items: %s
 purge_summary_free	Free: %s
 slim_summary_apps_intel	%s apps, %s of Intel code
+opt_broken_launch_agents_left	left in ~/Library/LaunchAgents
+ui_outcome_unchanged_count	%s unchanged
+ui_outcome_skipped_count	%s skipped
+ui_outcome_unavailable_count	%s unavailable
+ui_outcome_attention_count	%s require attention
+ui_outcome_failed_count	%s failed
+ui_uninstall_kept_system_path_one	Kept %s system-level path, which Mole never removes
+ui_uninstall_kept_system_path_many	Kept %s system-level paths, which Mole never removes
+ui_installer_summary_failed_one	Failed to remove %s installer
+ui_installer_summary_failed_many	Failed to remove %s installers
+ui_title_select_installers_remove	Select Installers to Remove
+installer_menu_selection	%s, %s selected
+ui_uninstall_reason_app_changed	selected app changed after preview
+ui_uninstall_reason_metadata_changed	selected app metadata changed after preview
+ui_uninstall_reason_set_unverified	unable to verify the reviewed app installation set
+ui_uninstall_reason_set_changed	the app installation set changed after preview
+ui_uninstall_reason_siblings_unverified	unable to verify other apps with the same bundle id
+ui_uninstall_reason_brew_manual_failed	brew cleanup incomplete, manual removal failed
+ui_uninstall_reason_brew_still_installed	brew uninstall failed, package still installed
+ui_uninstall_reason_brew_state_unknown	brew uninstall failed, package state unknown
+ui_uninstall_reason_protected_symlink	protected system symlink, cannot remove
+ui_uninstall_reason_symlink_failed	failed to remove symlink
+ui_uninstall_reason_dry_run_validation	dry-run path validation failed
+ui_uninstall_reason_parent_not_writable	parent directory not writable
+ui_uninstall_reason_check_permissions	remove failed, check permissions
+ui_uninstall_reason_not_removed	could not be removed
+ui_uninstall_reason_still_running	is still running
+ui_uninstall_reason_try_sudo	%s, try with sudo
+ui_removal_reason_sip	protected by macOS (SIP/MDM)
+ui_removal_reason_auth_failed	authentication failed
+ui_removal_reason_readonly_fs	filesystem is read-only
+ui_removal_reason_mole_rules	protected by Mole safety rules
+ui_removal_reason_trash_denied	macOS denied Trash access
+ui_removal_reason_mutable_parent	Mole cannot safely use elevated deletion below a user-writable parent
+ui_removal_reason_permission_denied	permission denied
+ui_removal_hint_credentials	Check your credentials or restart Terminal
+ui_removal_hint_touchid	Try 'mole touchid' to enable fingerprint auth
+ui_removal_hint_disk_repair	Check if disk needs repair
+ui_removal_hint_finder_trash	Try moving the item to Trash in Finder. Run with --debug for details
+ui_removal_hint_finder_app	Move the app to Trash in Finder; Mole will leave protected containers and app data untouched
+ui_removal_hint_ownership	Try running again or check file ownership
+ui_removal_hint_touchid_or_ls	Try 'mole touchid' or check with 'ls -l'
+slim_summary_complete	Slim complete
+slim_summary_incomplete	Slim incomplete
+slim_summary_none	No apps were slimmed
+ui_whitelist_summary_updated	Whitelist Updated
+ui_whitelist_protected_mixed	Protected %s predefined + %s custom patterns
+ui_whitelist_protected_caches	Protected %s caches
+ui_whitelist_config_path	Config: %s
+clean_large_ai_agent_worktrees	AI agent worktrees
+clean_large_conductor_workspaces	Conductor workspaces
+clean_large_conductor_archives	Conductor archived contexts
+clean_large_xcode_archives	Xcode archives
+clean_large_lm_studio_models	LM Studio models
+clean_large_maven_repository	Maven local repository
+clean_large_ivy_repository	Ivy local repository
+clean_large_nuget_packages	NuGet packages
+clean_large_pnpm_store	pnpm store
+clean_large_conda_packages	Conda packages
+clean_large_anaconda_packages	Anaconda packages
+clean_large_compiled_model_cache	Compiled model cache (%s)
+clean_large_android_emulators	Android emulators
+clean_large_mise_installs	mise %s installs
+clean_large_fvm_sdks	FVM Flutter SDKs
+clean_large_snapshots_fact	macOS removes them when space runs low
+opt_diag_label_spotlight	Spotlight indexing
+opt_diag_label_coresim_images	CoreSimulator disk images

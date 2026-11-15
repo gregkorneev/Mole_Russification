@@ -128,18 +128,22 @@ source "$SCRIPT_DIR/lib/manage/config.sh"
 
 # Build the main-menu controls hint line. Pure so the show/hide logic can be
 # tested without a tty (the caller only renders it inside `[[ -t 0 ]]`).
-# Args: $1 touchid_configured (true/false), $2 show_update (true/false).
+# Args: Touch ID configured, show update, and split secondary hints.
 _main_menu_controls_line() {
     local touchid_configured="$1"
     local show_update="$2"
+    local separator="  |  "
+    if [[ "${3:-false}" == "true" ]]; then
+        separator=$'\n'
+    fi
     local controls="${GRAY}$(mole_t main_controls_navigation)"
     if [[ "$touchid_configured" != "true" ]]; then
-        controls="${controls}  |  $(mole_t main_controls_touchid)"
+        controls="${controls}${separator}$(mole_t main_controls_touchid)"
     fi
     if [[ "$show_update" == "true" ]]; then
-        controls="${controls}  |  $(mole_t main_controls_update)"
+        controls="${controls}${separator}$(mole_t main_controls_update)"
     fi
-    controls="${controls}  |  $(mole_t main_controls_quit)${NC}"
+    controls="${controls}${separator}$(mole_t main_controls_quit)${NC}"
     printf '%s' "$controls"
 }
 
@@ -150,6 +154,9 @@ _main_menu_update_notice() {
     # The cache keeps the English notice that update checks parse; only the
     # displayed copy is localized, and it still ends with the command.
     message="$(mole_display_text "$1")"
+    if [[ "${2:-false}" == "true" && "$message" == *", "* ]]; then
+        message="${message%%, *}"$'\n'"${message#*, }"
+    fi
     case "$message" in
         *"mo update --nightly") message="${message%mo update --nightly}${GREEN}mo update --nightly${NC}" ;;
         *"mo update") message="${message%mo update}${GREEN}mo update${NC}" ;;
@@ -163,6 +170,11 @@ show_main_menu() {
     local _full_draw="${2:-true}" # Kept for compatibility (unused)
     local banner="${MAIN_MENU_BANNER:-}"
     local update_message="${MAIN_MENU_UPDATE_MESSAGE:-}"
+    local columns="${3:-80}" compact=false
+    if ((columns < 60)); then
+        compact=true
+        banner="$(show_brand_banner false)"
+    fi
 
     if [[ -z "$banner" ]]; then
         banner="$(show_brand_banner)"
@@ -179,7 +191,13 @@ show_main_menu() {
     done <<< "$banner"
 
     if [[ -n "$update_message" ]]; then
-        update_message="$(_main_menu_update_notice "$update_message")"
+        # Split by the localized width, not the layout mode: the nightly notice
+        # is wider than a 60-column terminal that still fits the descriptions.
+        local split_notice=false
+        if (($(get_display_width "$(mole_display_text "$update_message")") > columns)); then
+            split_notice=true
+        fi
+        update_message="$(_main_menu_update_notice "$update_message" "$split_notice")"
         while IFS= read -r line || [[ -n "$line" ]]; do
             printf '\r\033[2K%s\n' "$line"
         done <<< "$update_message"
@@ -187,19 +205,30 @@ show_main_menu() {
 
     printf '\r\033[2K\n'
 
-    printf '\r\033[2K%s\n' "$(show_menu_option 1 "$(mole_t main_menu_clean)" "$([[ $selected -eq 1 ]] && echo true || echo false)")"
-    printf '\r\033[2K%s\n' "$(show_menu_option 2 "$(mole_t main_menu_uninstall)" "$([[ $selected -eq 2 ]] && echo true || echo false)")"
-    printf '\r\033[2K%s\n' "$(show_menu_option 3 "$(mole_t main_menu_optimize)" "$([[ $selected -eq 3 ]] && echo true || echo false)")"
-    printf '\r\033[2K%s\n' "$(show_menu_option 4 "$(mole_t main_menu_analyze)" "$([[ $selected -eq 4 ]] && echo true || echo false)")"
-    printf '\r\033[2K%s\n' "$(show_menu_option 5 "$(mole_t main_menu_status)" "$([[ $selected -eq 5 ]] && echo true || echo false)")"
+    local option_key option_text option_selected index=0
+    for option_key in clean uninstall optimize analyze status; do
+        index=$((index + 1))
+        option_text="$(mole_t "main_menu_${option_key}")"
+        if [[ "$compact" == "true" ]]; then
+            option_text="${option_text%%  *}"
+        fi
+        option_selected=false
+        [[ $selected -eq $index ]] && option_selected=true
+        printf '\r\033[2K%s\n' "$(show_menu_option "$index" "$option_text" "$option_selected")"
+    done
 
     if [[ -t 0 ]]; then
         printf '\r\033[2K\n'
         local touchid_state=false
         is_touchid_configured && touchid_state=true
-        local controls
-        controls=$(_main_menu_controls_line "$touchid_state" "${MAIN_MENU_SHOW_UPDATE:-false}")
-        printf '\r\033[2K%s\n' "$controls"
+        local controls split_hints=false
+        if ((columns < 80)); then
+            split_hints=true
+        fi
+        controls=$(_main_menu_controls_line "$touchid_state" "${MAIN_MENU_SHOW_UPDATE:-false}" "$split_hints")
+        while IFS= read -r line; do
+            printf '\r\033[2K%s\n' "$line"
+        done <<< "$controls"
         printf '\r\033[2K\n'
     fi
 
@@ -216,6 +245,7 @@ interactive_main_menu() {
     local brand_banner=""
     local msg_cache="$HOME/.cache/mole/update_message"
     local update_message=""
+    local columns=80 last_columns=0 terminal_size=""
 
     brand_banner="$(show_brand_banner)"
     MAIN_MENU_BANNER="$brand_banner"
@@ -243,6 +273,16 @@ interactive_main_menu() {
     hide_cursor
 
     while true; do
+        if [[ -t 0 ]]; then
+            terminal_size="$(stty size 2> /dev/null || true)"
+            if [[ "${terminal_size#* }" =~ ^[1-9][0-9]*$ ]]; then
+                columns="${terminal_size#* }"
+            fi
+        fi
+        if [[ $columns -ne $last_columns ]]; then
+            last_columns=$columns
+            first_draw=true
+        fi
         update_message="$(read_update_message_cache "$msg_cache")"
         if [[ "$update_message" != "$MAIN_MENU_UPDATE_MESSAGE" ]]; then
             MAIN_MENU_UPDATE_MESSAGE="$update_message"
@@ -250,7 +290,7 @@ interactive_main_menu() {
             first_draw=true
         fi
         if [[ "$first_draw" == "true" ]]; then
-            show_main_menu $current_option "$first_draw"
+            show_main_menu "$current_option" "$first_draw" "$columns"
             first_draw=false
         fi
 

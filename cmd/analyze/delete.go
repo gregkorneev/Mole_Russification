@@ -17,6 +17,7 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/tw93/mole/internal/i18n"
 	"golang.org/x/sys/unix"
 )
 
@@ -74,7 +75,7 @@ func deleteMultiplePathsCmd(paths []string, counter *int64, audit *deleteAudit) 
 					removedPaths = append(removedPaths, path)
 					continue
 				}
-				errors = append(errors, err.Error())
+				errors = append(errors, trashErrorText(err))
 				continue
 			}
 			removedPaths = append(removedPaths, path)
@@ -100,6 +101,22 @@ func deleteMultiplePathsCmd(paths []string, counter *int64, audit *deleteAudit) 
 // multiDeleteError holds multiple deletion errors.
 type multiDeleteError struct {
 	errors []string
+}
+
+// Translate only Mole's own reason at the UI boundary. The audit log still
+// receives the original error, and output from macOS tools stays intact.
+func trashErrorText(err error) string {
+	message := err.Error()
+	if message == "timeout moving to Trash" {
+		return i18n.T("analyze_trash_timeout")
+	}
+	if detail, ok := strings.CutPrefix(message, "failed to move to Trash: "); ok {
+		return i18n.T("analyze_trash_tool_failure", detail)
+	}
+	if path, ok := strings.CutPrefix(message, "protected path cannot be deleted: "); ok {
+		return i18n.T("analyze_trash_protected", path)
+	}
+	return message
 }
 
 func (e *multiDeleteError) Error() string {

@@ -1280,7 +1280,7 @@ opt_launch_agents_cleanup() {
         return 0
     fi
 
-    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_broken_launch_agents "$broken_count") · left in ~/Library/LaunchAgents"
+    echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_broken_launch_agents "$broken_count") · $(mole_t opt_broken_launch_agents_left)"
     optimize_task_result "$MOLE_OPTIMIZE_OUTCOME_ATTENTION"
 }
 

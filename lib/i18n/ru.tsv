@@ -455,6 +455,9 @@ analyze_scan_path	Сканирование %s...
 analyze_moved_some_failed	Перемещено в Корзину элементов: %d; часть переместить не удалось: %v
 analyze_moved_count	Перемещено в Корзину элементов: %d
 analyze_move_failed	Не удалось переместить в Корзину: %v
+analyze_trash_timeout	истекло время ожидания перемещения
+analyze_trash_tool_failure	системная команда завершилась с ошибкой: %s
+analyze_trash_protected	объект защищён от удаления: %s
 analyze_scan_failed	Ошибка сканирования: %v
 analyze_cache_refresh_path	Загружены сохранённые данные для %s, обновление...
 analyze_size_unavailable	Размер недоступен
@@ -655,6 +658,8 @@ analyze_unknown_flag	Неизвестный параметр: %s
 analyze_snapshot_stale	последняя успешная проверка
 help_usage_label	Использование:
 help_purge_title	Очистка проектов Mole
+purge_project_artifacts_title	Очистка артефактов проектов
+uninstall_checking_app_list	Проверка списка приложений...
 help_purge_description	Удаление старых артефактов сборки проектов
 help_purge_paths	Изменить каталоги поиска
 help_purge_dry_run	Показать, что будет удалено, без изменений
@@ -906,11 +911,6 @@ ui_summary_optimize_complete	Оптимизация завершена
 ui_summary_optimize_dry_run	Предпросмотр завершён, изменений нет
 ui_summary_optimize_pass_complete	Оптимизация завершена
 ui_summary_review_warnings	Проверьте предупреждения выше
-ui_outcome_unchanged	без изменений
-ui_outcome_skipped	пропущено
-ui_outcome_unavailable	недоступно
-ui_outcome_attention	требуют внимания
-ui_outcome_failed	с ошибкой
 ui_summary_would_apply	Будет применено оптимизаций: %s
 ui_summary_run_without_dry_run	Запустите без %s, чтобы применить изменения
 ui_cache_cleaned	кеша очищено
@@ -1015,10 +1015,10 @@ spinner_scan_project_roots	Сканирование проектов · %s
 ui_clean_cancelled_section	%s Раздел: %s.
 ui_external_metadata_scan_stopped	Очистка метаданных внешнего диска остановлена (код завершения %s).
 ui_browser_signature_cache_count	Кеши подписей браузеров: %s объектов
-ui_rebuildable_system_cache_one	Восстановлен системный кеш: %s объект
-ui_rebuildable_system_cache_many	Восстановлены системные кеши: %s объектов
-ui_rebuildable_gpu_cache_one	Восстановлен доступный кеш GPU: %s объект
-ui_rebuildable_gpu_cache_many	Восстановлены доступные кеши GPU: %s объектов
+ui_rebuildable_system_cache_one	Пересоздаваемые системные кеши, объектов: %s
+ui_rebuildable_system_cache_many	Пересоздаваемые системные кеши, объектов: %s
+ui_rebuildable_gpu_cache_one	Доступные пересоздаваемые кеши GPU, объектов: %s
+ui_rebuildable_gpu_cache_many	Доступные пересоздаваемые кеши GPU, объектов: %s
 ui_dry_remove_memory_reports_with_size	[ПРЕДПРОСМОТР] Будут удалены старые отчёты об исключениях памяти: %s шт. (%s КБ)
 ui_dry_remove_memory_reports	[ПРЕДПРОСМОТР] Будут удалены старые отчёты об исключениях памяти: %s шт.
 ui_uninstall_temp_file_list_create_failed	Не удалось создать временный файл со списком файлов приложения %s
@@ -1214,7 +1214,6 @@ ui_installer_summary_would_remove	Будут удалены установщик
 ui_installer_summary_removed	Удалены установщики: %s шт.; освобождено %s
 ui_installer_summary_cleaner	Теперь на Mac стало чище!
 ui_installer_summary_none	Установщики не удалены
-ui_installer_summary_failed	Не удалось удалить: %s %s
 ui_installer_summary_more_failed	Ещё ошибок: %s
 ui_installer_no_files	Нет файлов установщиков для удаления
 ui_uninstall_success_one	Удалено приложений: %s
@@ -1222,8 +1221,7 @@ ui_uninstall_success_many	Удалено приложений: %s
 ui_uninstall_dry_one	Будет удалено приложений: %s
 ui_uninstall_dry_many	Будет удалено приложений: %s
 ui_uninstall_no_success_or_failure	Приложения не удалены.
-ui_uninstall_failed_summary	Не удалось удалить: %s %s
-ui_uninstall_kept_system_paths	Сохранены системные пути: %s %s; Mole их не удаляет
+ui_uninstall_failed_summary	Сбой: %s — %s
 ui_uninstall_extensions_remain	После удаления могут остаться системные расширения: %s
 ui_uninstall_extensions_settings	Чтобы удалить оставшиеся расширения, откройте «Системные настройки» > «Основные» > «Объекты входа и расширения»
 ui_uninstall_background_item	Фоновый элемент приложения %s продолжает работать. Отключите его в «Системные настройки» > «Объекты входа и расширения»
@@ -1349,7 +1347,7 @@ clean_auth_failed	Не удалось пройти проверку подлин
 clean_continue_user	продолжается очистка пользовательских данных
 clean_preview_file_failed	Не удалось безопасно создать файл предварительного просмотра очистки
 clean_dry_run_mode	Режим предварительного просмотра
-clean_preview_only	Только просмотр, удаление не выполняется
+clean_preview_only	удаление не выполняется
 clean_flags_hint	Для просмотра используйте --dry-run, для настройки защищённых путей — --whitelist
 clean_admin_preview	Права администратора доступны; системные файлы включены в просмотр
 clean_sudo_preview_prefix	Для системных кешей нужен sudo; выполните
@@ -1368,10 +1366,10 @@ clean_items_many	объектов: %s
 clean_would_clean	будет очищено
 clean_docker_review	Неиспользуемые данные Docker · проверьте с помощью docker system df -v
 clean_brew_would_free	Очистка Homebrew · возможно освободить %s
-clean_npm_cache	кеш npm
-clean_npm_logs	журналы npm
-clean_pnpm_cache	кеш pnpm
-clean_pip_cache	кеш pip
+clean_npm_cache	Кеш npm
+clean_npm_logs	Журналы npm
+clean_pnpm_cache	Кеш pnpm
+clean_pip_cache	Кеш pip
 clean_trash_no_access	Корзина · пропущена; предоставьте терминалу полный доступ к диску
 clean_trash_preview	Корзина · будет очищена, %s
 clean_trash_partial	Корзина · удалено: %s; не удалось удалить: %s
@@ -2074,3 +2072,70 @@ purge_summary_would_free	Можно освободить примерно: %s
 purge_summary_items	Объектов: %s
 purge_summary_free	Свободно: %s
 slim_summary_apps_intel	Приложений: %s, кода Intel: %s
+opt_broken_launch_agents_left	оставлены в ~/Library/LaunchAgents
+ui_outcome_unchanged_count	без изменений: %s
+ui_outcome_skipped_count	пропущено: %s
+ui_outcome_unavailable_count	недоступно: %s
+ui_outcome_attention_count	требуют внимания: %s
+ui_outcome_failed_count	с ошибкой: %s
+ui_uninstall_kept_system_path_one	Оставлено системных путей: %s; Mole их никогда не удаляет
+ui_uninstall_kept_system_path_many	Оставлено системных путей: %s; Mole их никогда не удаляет
+ui_installer_summary_failed_one	Не удалось удалить установщиков: %s
+ui_installer_summary_failed_many	Не удалось удалить установщиков: %s
+ui_title_select_installers_remove	Выберите установщики для удаления
+installer_menu_selection	%s, выбрано: %s
+ui_uninstall_reason_app_changed	выбранное приложение изменилось после предпросмотра
+ui_uninstall_reason_metadata_changed	метаданные выбранного приложения изменились после предпросмотра
+ui_uninstall_reason_set_unverified	не удалось проверить набор установленных копий приложения
+ui_uninstall_reason_set_changed	набор установленных копий приложения изменился после предпросмотра
+ui_uninstall_reason_siblings_unverified	не удалось проверить другие приложения с тем же идентификатором пакета
+ui_uninstall_reason_brew_manual_failed	очистка brew не завершена, удалить вручную не удалось
+ui_uninstall_reason_brew_still_installed	brew uninstall завершился с ошибкой, пакет всё ещё установлен
+ui_uninstall_reason_brew_state_unknown	brew uninstall завершился с ошибкой, состояние пакета неизвестно
+ui_uninstall_reason_protected_symlink	защищённая системная символическая ссылка, удаление невозможно
+ui_uninstall_reason_symlink_failed	не удалось удалить символическую ссылку
+ui_uninstall_reason_dry_run_validation	путь не прошёл проверку в режиме предпросмотра
+ui_uninstall_reason_parent_not_writable	родительский каталог недоступен для записи
+ui_uninstall_reason_check_permissions	не удалось удалить, проверьте права доступа
+ui_uninstall_reason_not_removed	не удалось удалить
+ui_uninstall_reason_still_running	приложение запущено
+ui_uninstall_reason_try_sudo	%s, попробуйте с sudo
+ui_removal_reason_sip	защищено macOS (SIP/MDM)
+ui_removal_reason_auth_failed	ошибка аутентификации
+ui_removal_reason_readonly_fs	файловая система доступна только для чтения
+ui_removal_reason_mole_rules	защищено правилами безопасности Mole
+ui_removal_reason_trash_denied	macOS запретила доступ к Корзине
+ui_removal_reason_mutable_parent	Mole не может безопасно удалять с правами администратора внутри каталога, доступного пользователю для записи
+ui_removal_reason_permission_denied	нет прав доступа
+ui_removal_hint_credentials	Проверьте учётные данные или перезапустите Терминал
+ui_removal_hint_touchid	Выполните «mole touchid», чтобы включить вход по отпечатку
+ui_removal_hint_disk_repair	Проверьте, не требуется ли восстановление диска
+ui_removal_hint_finder_trash	Переместите объект в Корзину через Finder. Подробности — с параметром --debug
+ui_removal_hint_finder_app	Переместите приложение в Корзину через Finder; защищённые контейнеры и данные приложения Mole не тронет
+ui_removal_hint_ownership	Повторите попытку или проверьте владельца файлов
+ui_removal_hint_touchid_or_ls	Выполните «mole touchid» или проверьте права командой «ls -l»
+slim_summary_complete	Удаление кода Intel завершено
+slim_summary_incomplete	Удаление кода Intel завершено не полностью
+slim_summary_none	Ни одно приложение не изменено
+ui_whitelist_summary_updated	Список исключений обновлён
+ui_whitelist_protected_mixed	Защищено шаблонов: встроенных — %s, пользовательских — %s
+ui_whitelist_protected_caches	Защищено кешей: %s
+ui_whitelist_config_path	Файл настроек: %s
+clean_large_ai_agent_worktrees	Рабочие деревья ИИ-агентов
+clean_large_conductor_workspaces	Рабочие области Conductor
+clean_large_conductor_archives	Архивные контексты Conductor
+clean_large_xcode_archives	Архивы Xcode
+clean_large_lm_studio_models	Модели LM Studio
+clean_large_maven_repository	Локальный репозиторий Maven
+clean_large_ivy_repository	Локальный репозиторий Ivy
+clean_large_nuget_packages	Пакеты NuGet
+clean_large_pnpm_store	Хранилище pnpm
+clean_large_conda_packages	Пакеты Conda
+clean_large_anaconda_packages	Пакеты Anaconda
+clean_large_compiled_model_cache	Кеш скомпилированных моделей (%s)
+clean_large_android_emulators	Эмуляторы Android
+clean_large_mise_installs	Установки mise: %s
+clean_large_fvm_sdks	Flutter SDK в FVM
+clean_large_snapshots_fact	macOS удаляет их при нехватке места
+opt_diag_label_spotlight	Индексация Spotlight
+opt_diag_label_coresim_images	Образы дисков CoreSimulator

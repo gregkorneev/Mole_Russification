@@ -70,11 +70,11 @@ show_optimization_summary() {
     failed=$(optimize_outcome_count "$MOLE_OPTIMIZE_OUTCOME_FAILED")
 
     local -a outcome_parts=()
-    [[ $unchanged -gt 0 ]] && outcome_parts+=("$unchanged $(mole_t ui_outcome_unchanged)")
-    [[ $skipped -gt 0 ]] && outcome_parts+=("$skipped $(mole_t ui_outcome_skipped)")
-    [[ $unavailable -gt 0 ]] && outcome_parts+=("$unavailable $(mole_t ui_outcome_unavailable)")
-    [[ $attention -gt 0 ]] && outcome_parts+=("$attention $(mole_t ui_outcome_attention)")
-    [[ $failed -gt 0 ]] && outcome_parts+=("$failed $(mole_t ui_outcome_failed)")
+    [[ $unchanged -gt 0 ]] && outcome_parts+=("$(mole_t ui_outcome_unchanged_count "$unchanged")")
+    [[ $skipped -gt 0 ]] && outcome_parts+=("$(mole_t ui_outcome_skipped_count "$skipped")")
+    [[ $unavailable -gt 0 ]] && outcome_parts+=("$(mole_t ui_outcome_unavailable_count "$unavailable")")
+    [[ $attention -gt 0 ]] && outcome_parts+=("$(mole_t ui_outcome_attention_count "$attention")")
+    [[ $failed -gt 0 ]] && outcome_parts+=("$(mole_t ui_outcome_failed_count "$failed")")
 
     local outcome_line=""
     if [[ ${#outcome_parts[@]} -gt 0 ]]; then

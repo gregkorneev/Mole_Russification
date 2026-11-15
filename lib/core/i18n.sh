@@ -49,11 +49,20 @@ _mole_i18n_load_catalog() {
     local language="$1"
     local file="${MOLE_I18N_DIR}/${language}.tsv"
     local key value variable
+    local -a keys=() values=()
     [[ -r "$file" ]] || return 1
 
     while IFS=$'\t' read -r key value || [[ -n "${key:-}" ]]; do
         [[ -z "$key" || "$key" == \#* ]] && continue
         [[ "$key" =~ ^[a-z][a-z0-9_]*$ && -n "$value" ]] || return 1
+        keys+=("$key")
+        values+=("$value")
+    done < "$file"
+
+    local index
+    for index in "${!keys[@]}"; do
+        key="${keys[index]}"
+        value="${values[index]}"
         variable="MOLE_I18N_${language}_${key}"
         printf -v "$variable" '%s' "$value"
         if [[ "$language" == "en" ]]; then
@@ -62,16 +71,20 @@ _mole_i18n_load_catalog() {
                 MOLE_I18N_TEMPLATE_KEYS+=("$key")
             fi
         fi
-    done < "$file"
+    done
 }
 
 mole_i18n_activate_language() {
-    MOLE_LANG="$(_mole_i18n_normalize_language "$1")"
+    local requested
+    requested="$(_mole_i18n_normalize_language "$1")"
+    MOLE_LANG=en
     export MOLE_LANG
     MOLE_I18N_KEYS=()
     MOLE_I18N_TEMPLATE_KEYS=()
     _mole_i18n_load_catalog en || return 1
-    _mole_i18n_load_catalog ru || return 1
+    if [[ "$requested" == "ru" ]] && _mole_i18n_load_catalog ru; then
+        MOLE_LANG=ru
+    fi
 }
 
 mole_i18n_init() {
@@ -138,7 +151,15 @@ mole_t() {
     local key="${1:-}" variable value=""
     shift || true
 
+    # A one-word English phrase such as "whitelisted" has the shape of a key.
+    # Only a name the English catalog defines is a key; anything else is text.
+    local is_catalog_key=false
     if [[ "$key" =~ ^[a-z][a-z0-9_]*$ ]]; then
+        variable="MOLE_I18N_en_${key}"
+        [[ -z "${!variable:-}" ]] || is_catalog_key=true
+    fi
+
+    if [[ "$is_catalog_key" == "true" ]]; then
         variable="MOLE_I18N_${MOLE_LANG:-en}_${key}"
         value="${!variable:-}"
         if [[ -z "$value" ]]; then

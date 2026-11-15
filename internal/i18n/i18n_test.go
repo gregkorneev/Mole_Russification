@@ -108,6 +108,27 @@ func TestSourceTranslationKeysExistInBothCatalogs(t *testing.T) {
 		regexp.MustCompile(`\bi18n\.T\(\s*"([a-z][a-z0-9_]*)"`),
 	}
 	var missing []string
+	displayLiteral := regexp.MustCompile(`\bmole_display_text "([^"$\\\n]+)"`)
+	knownDisplay := make(map[string]bool, len(english))
+	var displayTemplates []*regexp.Regexp
+	for _, value := range english {
+		knownDisplay[value] = true
+		if strings.Contains(value, "%s") || strings.Contains(value, "%d") {
+			pattern := strings.NewReplacer("%s", ".*", "%d", ".*").Replace(regexp.QuoteMeta(value))
+			displayTemplates = append(displayTemplates, regexp.MustCompile("^"+pattern+"$"))
+		}
+	}
+	checkDisplay := func(path string, data []byte) {
+		for _, match := range displayLiteral.FindAllSubmatch(data, -1) {
+			value := string(match[1])
+			if knownDisplay[value] || slices.ContainsFunc(displayTemplates, func(template *regexp.Regexp) bool {
+				return template.MatchString(value)
+			}) {
+				continue
+			}
+			missing = append(missing, path+": missing display translation for "+value)
+		}
+	}
 	for _, directory := range []string{"bin", "lib", "cmd"} {
 		base := filepath.Join(root, directory)
 		err := filepath.WalkDir(base, func(path string, entry os.DirEntry, walkErr error) error {
@@ -125,6 +146,7 @@ func TestSourceTranslationKeysExistInBothCatalogs(t *testing.T) {
 			if err != nil {
 				return err
 			}
+			checkDisplay(path, data)
 			for _, pattern := range patterns {
 				for _, match := range pattern.FindAllSubmatch(data, -1) {
 					key := string(match[1])
@@ -144,6 +166,7 @@ func TestSourceTranslationKeysExistInBothCatalogs(t *testing.T) {
 	}
 	mainRouter := filepath.Join(root, "mole")
 	if data, err := os.ReadFile(mainRouter); err == nil {
+		checkDisplay(mainRouter, data)
 		pattern := patterns[0]
 		for _, match := range pattern.FindAllSubmatch(data, -1) {
 			key := string(match[1])
@@ -174,6 +197,28 @@ func TestCatalogFallbackAndFormatting(t *testing.T) {
 	if got := catalog.Text("missing"); got != "missing" {
 		t.Fatalf("missing key fallback = %q", got)
 	}
+}
+
+func TestLoadFallsBackWhenRussianCatalogIsUnavailable(t *testing.T) {
+	directory := t.TempDir()
+	if err := os.WriteFile(filepath.Join(directory, "en.tsv"), []byte("greeting\tHello\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	check := func() {
+		t.Helper()
+		catalog, err := Load(directory, "ru")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := catalog.Text("greeting"); got != "Hello" {
+			t.Fatalf("fallback = %q, want Hello", got)
+		}
+	}
+	check()
+	if err := os.WriteFile(filepath.Join(directory, "ru.tsv"), []byte("greeting\tПривет\ninvalid\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	check()
 }
 
 func TestCatalogDirectorySearchFromPackageWorkingDirectory(t *testing.T) {

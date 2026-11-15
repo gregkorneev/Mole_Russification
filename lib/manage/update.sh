@@ -1120,12 +1120,16 @@ run_mole_command() {
 
 # UI helpers
 show_brand_banner() {
+    local tagline=""
+    if [[ "${1:-true}" == "true" ]]; then
+        tagline="  ${GREEN}${MOLE_TAGLINE}${NC}"
+    fi
     cat << EOF
 ${GREEN} __  __       _      ${NC}
 ${GREEN}|  \/  | ___ | | ___ ${NC}
 ${GREEN}| |\/| |/ _ \| |/ _ \\${NC}
 ${GREEN}| |  | | (_) | |  __/${NC}  ${BLUE}https://mole.fit${NC}
-${GREEN}|_|  |_|\___/|_|\___|${NC}  ${GREEN}${MOLE_TAGLINE}${NC}
+${GREEN}|_|  |_|\___/|_|\___|${NC}${tagline}
 
 EOF
 }

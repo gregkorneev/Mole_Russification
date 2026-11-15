@@ -169,7 +169,7 @@ perform_purge() {
     # Show scanning with spinner below the title line
     if [[ -t 1 ]]; then
         # Print title ONCE with newline; spinner occupies the line below
-        printf '%s\n' "${PURPLE_BOLD}Purge Project Artifacts${NC}"
+        printf '%s\n' "${PURPLE_BOLD}$(mole_t purge_project_artifacts_title)${NC}"
 
         # Capture terminal width in parent (most reliable before forking)
         local _parent_cols=80
@@ -231,7 +231,7 @@ perform_purge() {
         ) &
         monitor_pid=$!
     else
-        echo -e "${PURPLE_BOLD}$(mole_display_text "Purge Project Artifacts")${NC}"
+        echo -e "${PURPLE_BOLD}$(mole_t purge_project_artifacts_title)${NC}"
     fi
 
     clean_project_artifacts
@@ -286,7 +286,7 @@ perform_purge() {
             summary_line="$(mole_t purge_summary_would_free "${GREEN}${freed_size_human}${NC}")"
         fi
         if [[ ${PURGE_UNKNOWN_SIZE_COUNT:-0} -gt 0 ]]; then
-            summary_line+=" + ${PURGE_UNKNOWN_SIZE_COUNT} unmeasured"
+            summary_line+=" $(mole_t purge_size_unknown_count "$PURGE_UNKNOWN_SIZE_COUNT")"
         fi
         [[ $total_items_cleaned -gt 0 ]] && summary_line+=" | $(mole_t purge_summary_items "$total_items_cleaned")"
         summary_line+=" | $(mole_t purge_summary_free "$(get_free_space)")"

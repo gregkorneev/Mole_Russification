@@ -414,6 +414,32 @@ EOF
 	[ "$status" -eq 0 ] || { echo "$output"; return 1; }
 }
 
+@test "show_main_menu splits an update notice only when it is wider than the terminal" {
+	local columns
+	for columns in 60 80; do
+		run env MOLE_LANG=ru COLUMNS_UNDER_TEST="$columns" /bin/bash --noprofile --norc <<'EOF'
+set -euo pipefail
+HOME="$(mktemp -d)"
+export HOME MOLE_TEST_MODE=1 MOLE_SKIP_MAIN=1
+source "$PROJECT_ROOT/mole"
+MAIN_MENU_BANNER=""
+MAIN_MENU_UPDATE_MESSAGE='New nightly commit abc1234 available, run mo update --nightly'
+MAIN_MENU_SHOW_UPDATE=true
+show_main_menu 1 true "$COLUMNS_UNDER_TEST"
+EOF
+		[ "$status" -eq 0 ] || return 1
+		[[ "$output" == *"Анализ       Изучить использование диска"* ]] || return 1
+		[[ "$output" == *"mo update --nightly"* ]] || return 1
+		if [[ "$columns" -eq 60 ]]; then
+			# 67 columns of Russian text: the command moves to its own row.
+			[[ "$output" != *"abc1234, выполните"* ]] || return 1
+			[[ "$output" == *"abc1234"$'\n'*"выполните "* ]] || return 1
+		else
+			[[ "$output" == *"abc1234, выполните "* ]] || return 1
+		fi
+	done
+}
+
 @test "interactive_main_menu ignores U shortcut when update notice is hidden" {
 	run /bin/bash --noprofile --norc <<'EOF'
 set -euo pipefail

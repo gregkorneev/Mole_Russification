@@ -8,13 +8,16 @@ mole_config_language_name() {
 }
 
 mole_config_command() {
+    if [[ $# -eq 1 && ("$1" == "--help" || "$1" == "-h") ]]; then
+        set -- language --help
+    fi
     if [[ "${1:-}" != "language" ]]; then
         printf '%s\n' "$(mole_t config_usage)" >&2
         return 1
     fi
 
     shift
-    if [[ "${1:-}" == "--help" || $# -eq 0 ]]; then
+    if [[ $# -eq 0 || ($# -eq 1 && ("$1" == "--help" || "$1" == "-h")) ]]; then
         printf '%s\n' "$(mole_t config_usage)" "$(mole_t help_options)" \
             "  en                $(mole_t help_config_language)" \
             "  ru                $(mole_t help_config_language)" \
@@ -41,11 +44,15 @@ mole_config_command() {
         printf '%s\n' "$(mole_t config_write_failed "$config_file")" >&2
         return 1
     fi
+    if [[ -d "$config_file" ]]; then
+        printf '%s\n' "$(mole_t config_write_failed "$config_file")" >&2
+        return 1
+    fi
     temp_file="$(mktemp "$config_dir/.language.XXXXXX")" || {
         printf '%s\n' "$(mole_t config_write_failed "$config_file")" >&2
         return 1
     }
-    if ! printf '%s\n' "$target" > "$temp_file" || ! mv -f "$temp_file" "$config_file"; then
+    if ! printf '%s\n' "$target" > "$temp_file" || ! /bin/mv -fh "$temp_file" "$config_file"; then
         rm -f "$temp_file" # SAFE: own mktemp scratch file
         printf '%s\n' "$(mole_t config_write_failed "$config_file")" >&2
         return 1

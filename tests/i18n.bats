@@ -7,6 +7,39 @@ setup() {
     export NO_COLOR=1
 }
 
+@test "config help succeeds and an invalid preference path cannot report success" {
+    local test_home="$BATS_TEST_TMPDIR/home"
+    local preference="$test_home/.config/mole/language"
+    mkdir -p "$preference"
+
+    run env HOME="$test_home" MOLE_LANG=ru "$PROJECT_ROOT/mole" config --help
+    [ "$status" -eq 0 ] || return 1
+    [[ "$output" == *"mo config language"* ]] || return 1
+
+    run env HOME="$test_home" MOLE_LANG=ru "$PROJECT_ROOT/mole" config language ru
+    [ "$status" -ne 0 ] || return 1
+    [[ "$output" != *"Язык интерфейса сохранён"* ]] || return 1
+    [ -z "$(ls -A "$preference")" ]
+}
+
+@test "Bash keeps English when the Russian catalog is absent or malformed" {
+    local catalogs="$BATS_TEST_TMPDIR/catalogs"
+    mkdir -p "$catalogs"
+    printf 'test_greeting\tHello\n' > "$catalogs/en.tsv"
+    local catalog_state language
+    for catalog_state in missing malformed; do
+        if [[ "$catalog_state" == "malformed" ]]; then
+            printf 'test_greeting\tПривет\ninvalid\n' > "$catalogs/ru.tsv"
+        fi
+        for language in en ru; do
+            run /bin/bash -euc 'source "$1"; MOLE_I18N_DIR="$2"; mole_i18n_activate_language "$3"; mole_t test_greeting' \
+                _ "$PROJECT_ROOT/lib/core/i18n.sh" "$catalogs" "$language"
+            [ "$status" -eq 0 ] || return 1
+            [ "$output" = Hello ] || return 1
+        done
+    done
+}
+
 @test "language resolution prefers the environment, then saved preference, then macOS locale" {
     run /bin/bash -c 'source "$1"; printf "%s\n" \
         "$(_mole_i18n_resolve_language 1 ru en en_US)" \
@@ -140,6 +173,42 @@ setup() {
     [[ "$output" == *"SUCCESS: System caches"* ]] || return 1
     [[ "$output" == *"Удаление приложений отменено: protected path"* ]] || return 1
     [[ "$output" == *"ERROR: Uninstall aborted: protected path"* ]]
+}
+
+@test "summary rows translate behind their icon and one-word phrases are text, not keys" {
+    local test_home="$BATS_TEST_TMPDIR/home" language
+    mkdir -p "$test_home"
+
+    for language in ru en; do
+        # shellcheck disable=SC2016 # The child Bash program expands its own variables.
+        run env HOME="$test_home" MOLE_LANG="$language" MOLE_TEST_NO_AUTH=1 NO_COLOR=1 \
+            /bin/bash -c 'set -euo pipefail; source "$1/lib/core/common.sh"
+print_summary_block "Slim incomplete" \
+    "${ICON_REVIEW} Still running during uninstall, files removed but process kept alive: Example" \
+    "${ICON_WARNING} 3 more failed" \
+    "${ICON_LIST} $(mole_t ui_uninstall_failed_summary Example "$(mole_display_text "is still running")")" \
+    "${ICON_LIST} no catalog entry for this row"
+mole_review_row "Docker Desktop data" "" "1GB" "macOS removes them when space runs low"
+printf "%s|%s|%s\n" "$(mole_display_text whitelisted)" "$(mole_display_text "permission denied")" "$(mole_t no_such_key)"' \
+            _ "$PROJECT_ROOT"
+        [ "$status" -eq 0 ] || return 1
+        [[ "$output" == *"• no catalog entry for this row"* ]] || return 1
+        if [[ "$language" == "ru" ]]; then
+            [[ "$output" == *"Удаление кода Intel завершено не полностью"* ]] || return 1
+            [[ "$output" == *"⊙ Продолжают работать после удаления (процесс остался активным): Example"* ]] || return 1
+            [[ "$output" == *"◎ Ещё ошибок: 3"* ]] || return 1
+            [[ "$output" == *"• Сбой: Example — приложение запущено"* ]] || return 1
+            [[ "$output" == *"⊙ Данные Docker Desktop · 1GB · macOS удаляет их при нехватке места"* ]] || return 1
+            [[ "$output" == *"в списке исключений|нет прав доступа|no_such_key"* ]] || return 1
+        else
+            [[ "$output" == *"Slim incomplete"* ]] || return 1
+            [[ "$output" == *"⊙ Still running during uninstall, files removed but process kept alive: Example"* ]] || return 1
+            [[ "$output" == *"◎ 3 more failed"* ]] || return 1
+            [[ "$output" == *"• Failed: Example is still running"* ]] || return 1
+            [[ "$output" == *"⊙ Docker Desktop data · 1GB · macOS removes them when space runs low"* ]] || return 1
+            [[ "$output" == *"whitelisted|permission denied|no_such_key"* ]] || return 1
+        fi
+    done
 }
 
 @test "spinner and optimization messages use display-only translations" {

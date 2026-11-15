@@ -425,7 +425,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, cmd
 			}
 			if msg.err != nil {
-				m.status = i18n.T("analyze_move_failed", msg.err)
+				m.status = i18n.T("analyze_move_failed", trashErrorText(msg.err))
 			} else {
 				m.status = i18n.T("analyze_moved_count", msg.count)
 			}

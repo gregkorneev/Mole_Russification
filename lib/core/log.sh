@@ -492,6 +492,71 @@ log_system_info() {
 # Formatted Output
 # ============================================================================
 
+# Translate one summary row for display. Catalog phrases never start with an
+# icon, so a row such as "<icon> Kept 2 system-level paths" would not match:
+# keep the leading color codes and icon, and the trailing reset, in place and
+# look up only the text between them.
+_mole_summary_detail_text() {
+    local detail="$1"
+    if [[ "${MOLE_LANG:-en}" != "ru" ]]; then
+        printf '%s' "$detail"
+        return 0
+    fi
+
+    local color_prefix_re=$'^(\033\\[[0-9;]*m)+'
+    local color_suffix_re=$'(\033\\[[0-9;]*m)+$'
+    local lead="" rest="$detail" tail="" icon found_icon=false
+    if [[ "$rest" =~ $color_prefix_re ]]; then
+        lead+="${BASH_REMATCH[0]}"
+        rest="${rest#"${BASH_REMATCH[0]}"}"
+    fi
+    for icon in "$ICON_REVIEW" "$ICON_WARNING" "$ICON_LIST" "$ICON_SUCCESS" "$ICON_ERROR" \
+        "$ICON_EMPTY" "$ICON_SOLID" "$ICON_SUBLIST" "$ICON_ARROW" "$ICON_ADMIN"; do
+        if [[ "$rest" == "$icon"* ]]; then
+            lead+="$icon"
+            rest="${rest#"$icon"}"
+            found_icon=true
+            break
+        fi
+    done
+    if [[ "$found_icon" == "true" ]]; then
+        if [[ "$rest" =~ $color_prefix_re ]]; then
+            lead+="${BASH_REMATCH[0]}"
+            rest="${rest#"${BASH_REMATCH[0]}"}"
+        fi
+        if [[ "$rest" == " "* ]]; then
+            lead+=" "
+            rest="${rest# }"
+        else
+            found_icon=false
+        fi
+    fi
+    if [[ "$found_icon" != "true" ]]; then
+        mole_display_text "$detail"
+        return 0
+    fi
+    if [[ "$rest" =~ $color_suffix_re ]]; then
+        tail="${BASH_REMATCH[0]}"
+        rest="${rest%"$tail"}"
+    fi
+    local shown
+    shown="$(mole_display_text "$rest")"
+    if [[ "$shown" == "$rest" ]]; then
+        # Emphasis inside the row (a settings path, an app name) also hides it
+        # from the catalog; a translated row without it beats an English one.
+        local color_any_re=$'\033\\[[0-9;]*m' plain="$rest"
+        while [[ "$plain" =~ $color_any_re ]]; do
+            plain="${plain//"${BASH_REMATCH[0]}"/}"
+        done
+        if [[ "$plain" != "$rest" ]]; then
+            local plain_shown
+            plain_shown="$(mole_display_text "$plain")"
+            [[ "$plain_shown" == "$plain" ]] || shown="$plain_shown"
+        fi
+    fi
+    printf '%s%s%s' "$lead" "$shown" "$tail"
+}
+
 # Print formatted summary block
 print_summary_block() {
     local heading=""
@@ -525,7 +590,7 @@ print_summary_block() {
     # Print details
     for detail in "${details[@]}"; do
         [[ -z "$detail" ]] && continue
-        echo -e "$(mole_display_text "$detail")"
+        echo -e "$(_mole_summary_detail_text "$detail")"
     done
     echo "$divider"
 

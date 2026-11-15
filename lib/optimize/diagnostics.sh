@@ -392,14 +392,14 @@ run_optimize_diagnostics() {
         : # extra findings print below; no CPU-family bottleneck to headline
     else
         label=$(opt_diag_family_label "$primary_family")
-        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_diag_likely_bottleneck "$label" "$primary_avg")"
+        echo -e "  ${YELLOW}${ICON_WARNING}${NC} $(mole_t opt_diag_likely_bottleneck "$(mole_display_text "$label")" "$primary_avg")"
         echo -e "  ${GRAY}${ICON_REVIEW}${NC} $(opt_diag_family_note "$primary_family")"
 
         if [[ $sustained_count -gt 1 ]]; then
             echo -e "  ${GRAY}${ICON_LIST}${NC} $(mole_t opt_diag_additional_pressure)"
             while IFS=$'\t' read -r family avg label; do
                 [[ -z "$family" || "$family" == "$primary_family" ]] && continue
-                echo -e "    ${GRAY}${label}${NC} ~${avg}%"
+                echo -e "    ${GRAY}$(mole_display_text "$label")${NC} ~${avg}%"
             done <<< "$sustained_details"
         fi
     fi

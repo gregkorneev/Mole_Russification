@@ -2141,7 +2141,7 @@ main() {
         start_uninstall_interactive_screen
 
         if [[ $first_scan == false ]]; then
-            echo -e "${GRAY}$(mole_display_text "Checking application list...")${NC}" >&2
+            echo -e "${GRAY}$(mole_t uninstall_checking_app_list)${NC}" >&2
         fi
         first_scan=false
 

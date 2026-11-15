@@ -534,7 +534,8 @@ select_installers() {
             scroll_indicator=" ${GRAY}[${current_pos}/${total_items}]${NC}"
         fi
 
-        printf "${PURPLE_BOLD}Select Installers to Remove${NC}%s ${GRAY}, ${selected_human}, ${selected_count} selected${NC}\n" "$scroll_indicator"
+        printf "${PURPLE_BOLD}%s${NC}%s ${GRAY}, %s${NC}\n" "$(mole_t ui_title_select_installers_remove)" "$scroll_indicator" \
+            "$(mole_t installer_menu_selection "$selected_human" "$selected_count")"
         printf "%s\n" "$clear_line"
 
         # Calculate visible range
@@ -964,9 +965,9 @@ show_summary() {
     fi
 
     if [[ $total_delete_failed -gt 0 ]]; then
-        local failure_label="installers"
-        [[ $total_delete_failed -eq 1 ]] && failure_label="installer"
-        summary_details+=("Failed to remove ${YELLOW}$total_delete_failed${NC} $failure_label")
+        local failure_key="ui_installer_summary_failed_many"
+        [[ $total_delete_failed -eq 1 ]] && failure_key="ui_installer_summary_failed_one"
+        summary_details+=("$(mole_t "$failure_key" "${YELLOW}$total_delete_failed${NC}")")
 
         local failure_count=${#INSTALLER_DELETE_FAILURES[@]}
         local failure_limit=5

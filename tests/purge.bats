@@ -2416,8 +2416,8 @@ EOF
 	[[ "$output" != *"No old project artifacts"* ]] || return 1
 }
 
-@test "perform_purge: unknown-size successes remain visible in the summary" {
-	run env HOME="$HOME" PROJECT_ROOT="$PROJECT_ROOT" MOLE_SKIP_MAIN=1 /bin/bash --noprofile --norc <<'EOF'
+@test "perform_purge: unknown-size successes use the selected language in the summary" {
+	run env HOME="$HOME" PROJECT_ROOT="$PROJECT_ROOT" MOLE_SKIP_MAIN=1 MOLE_LANG=ru /bin/bash --noprofile --norc <<'EOF'
 set -euo pipefail
 source "$PROJECT_ROOT/bin/purge.sh"
 clean_project_artifacts() {
@@ -2429,8 +2429,8 @@ clean_project_artifacts() {
 perform_purge </dev/null
 EOF
 	[ "$status" -eq 0 ] || return 1
-	[[ "$output" == *"1 unmeasured"* ]] || return 1
-	[[ "$output" == *"Items: 1"* ]] || return 1
+	[[ "$output" == *"+ не измерено: 1"* ]] || return 1
+	[[ "$output" == *"Объектов: 1"* ]] || return 1
 	[[ "$output" != *"No artifacts were removed"* ]] || return 1
 }
 

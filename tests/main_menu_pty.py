@@ -7,6 +7,7 @@ import re
 import select
 import shlex
 import signal
+import struct
 import subprocess
 import sys
 import tempfile
@@ -17,13 +18,15 @@ from pathlib import Path
 root = Path(__file__).resolve().parents[1]
 
 
-def check_exit(key):
+def check_exit(key, narrow_russian=False):
     with tempfile.TemporaryDirectory(prefix="mole-menu-") as home:
         master, slave = pty.openpty()
+        if narrow_russian:
+            fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 24, 44, 0, 0))
         original = termios.tcgetattr(slave)
         env = dict(os.environ, HOME=home, TERM="xterm-256color",
                    MOLE_TEST_MODE="1", MOLE_SKIP_MAIN="1", MOLE_TEST_NO_AUTH="1",
-                   TEST_ROOT=str(root))
+                   TEST_ROOT=str(root), MOLE_LANG="ru" if narrow_russian else "en")
 
         def own_terminal():
             os.setsid()
@@ -45,10 +48,23 @@ def check_exit(key):
         output = b''
         try:
             deadline = time.monotonic() + 10
-            while b'Q Quit' not in output or termios.tcgetattr(slave)[3] & termios.ECHO:
+            quit_hint = ("Q Выход" if narrow_russian else "Q Quit").encode()
+            while quit_hint not in output or termios.tcgetattr(slave)[3] & termios.ECHO:
                 assert time.monotonic() < deadline, ('menu did not start reading', output)
                 if select.select([master], [], [], .01)[0]:
                     output += os.read(master, 65536)
+            if narrow_russian:
+                plain = re.sub(rb'\x1b\[[0-?]*[ -/]*[@-~]', b'', output).decode()
+                assert "4. Анализ" in plain, plain
+                assert all(len(line) <= 44 for line in plain.splitlines()), plain
+                fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 24, 88, 0, 0))
+                description = "Изучить использование диска".encode()
+                assert description not in output, plain
+                deadline = time.monotonic() + 5
+                while description not in output:
+                    assert time.monotonic() < deadline, ('menu did not redraw after resize', output)
+                    if select.select([master], [], [], .02)[0]:
+                        output += os.read(master, 65536)
             os.write(master, key)
             deadline = time.monotonic() + 5
             while b'MENU_EXIT=' not in output and time.monotonic() < deadline:
@@ -74,6 +90,7 @@ def check_exit(key):
 
 check_exit(b'q')
 check_exit(b'\x03')
+check_exit(b'q', narrow_russian=True)
 
 
 def instrument_router(needle, replacement):
@@ -108,8 +125,9 @@ def check_notice(script, expected_status=0, wait_marker=None, keys=b'', required
     with tempfile.TemporaryDirectory(prefix="mole-update-terminal-") as home:
         master, slave = pty.openpty()
         env = dict(os.environ, HOME=home, TERM="xterm-256color", TEST_ROOT=str(root),
-                   MOLE_TEST_MODE="1", MOLE_SKIP_MAIN="1", MOLE_TEST_NO_AUTH="1")
-        child = 'source "$TEST_ROOT/mole"; mkdir -p "$HOME/.cache/mole"; ' + script
+                   MOLE_TEST_MODE="1", MOLE_SKIP_MAIN="1", MOLE_TEST_NO_AUTH="1",
+                   MOLE_LANG="en")
+        child ='source "$TEST_ROOT/mole"; mkdir -p "$HOME/.cache/mole"; ' + script
         inherited_mask = 'signal.pthread_sigmask(signal.SIG_BLOCK,{signal.SIGTERM}); ' if block_term else ''
         keeper = ('import subprocess,time,signal; signal.signal(signal.SIGINT,lambda *a:None); '
                   + inherited_mask

@@ -1237,6 +1237,8 @@ format_path_link() {
 # may each be empty.
 mole_review_row() {
     local label="$1" path="${2:-}" value="${3:-}" fact="${4:-}"
+    label="$(mole_display_text "$label")"
+    [[ -z "$fact" ]] || fact="$(mole_display_text "$fact")"
     local shown="$label" tail=""
     if [[ -n "$path" ]]; then
         # Settle the check here: inside $(...) stdout is a pipe.

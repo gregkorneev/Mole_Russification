@@ -40,9 +40,8 @@ func Load(directory, language string) (Catalog, error) {
 	}
 	selected := english
 	if Normalize(language) == "ru" {
-		selected, err = readCatalog(filepath.Join(directory, "ru.tsv"))
-		if err != nil {
-			return Catalog{}, err
+		if russian, err := readCatalog(filepath.Join(directory, "ru.tsv")); err == nil {
+			selected = russian
 		}
 	}
 	return Catalog{selected: selected, english: english}, nil
